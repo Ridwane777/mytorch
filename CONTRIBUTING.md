@@ -17,6 +17,7 @@ git push -u origin <type>/<sujet-court>
 
 Types de branche et de commit : `feat`, `fix`, `docs`, `test`, `refactor`, `chore`, `perf`.
 Messages : `type(portée): description` (ex. `feat(my_torch): couche dense et rétropropagation`).
+Relier l'issue dans la PR (`Closes #12`).
 
 ## Relecture
 
@@ -27,7 +28,7 @@ Une approbation suffit, puis l'auteur fusionne. Branches courtes : une PR = une 
 ```bash
 make re
 make tests_run
-ruff check src tests scripts my_torch_analyzer
+find include src tests -name '*.[ch]pp' | xargs clang-format --dry-run --Werror
 ```
 
 La CI (`.github/workflows/ci.yml`) lance les mêmes vérifications. Une PR rouge ne se fusionne pas.

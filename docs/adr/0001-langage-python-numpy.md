@@ -1,6 +1,6 @@
 # ADR-0001 : Python 3 avec NumPy comme langage du projet
 
-- **Statut** : Proposé
+- **Statut** : Abandonné, remplacé par [ADR-0002](0002-langage-cpp.md)
 - **Date** : 2026-10-21
 - **Décideurs** : Ridwane777
 
