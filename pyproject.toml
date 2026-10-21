@@ -1,0 +1,21 @@
+[project]
+name = "my_torch"
+version = "0.1.0"
+description = "Réseau de neurones écrit à la main et analyseur d'échiquier"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0", "ruff>=0.6"]
+
+[tool.ruff]
+line-length = 100
+src = ["src"]
+
+[tool.ruff.lint]
+# Jeu de règles explicite : sans ça, la CI suit les défauts de ruff, qui changent selon les versions.
+select = ["E", "F", "I", "UP", "B", "RUF"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]

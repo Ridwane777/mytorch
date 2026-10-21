@@ -1,0 +1,20 @@
+venv/
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+.env
+
+# Jeux de données : trop lourds, montrés en soutenance (voir README)
+dataset/
+dataset.zip
+# Sujet fourni par the school
+my_torch-project.pdf
+
+# Réseaux intermédiaires ; seul my_torch_network_* est poussé
+*.nn
+!my_torch_network_*.nn
+
+.DS_Store

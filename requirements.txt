@@ -1,0 +1,2 @@
+# Dépendances d'exécution, versions testées. Vide tant que l'ADR du langage
+# (docs/adr/0001) n'est pas accepté. Détail et licences : docs/dependances.md.
