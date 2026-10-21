@@ -1,4 +1,0 @@
-# Outils de développement (tests et lint), en plus des dépendances d'exécution.
--r requirements.txt
-pytest>=8.0
-ruff>=0.6
