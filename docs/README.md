@@ -7,7 +7,7 @@ Point d'entrée pour suivre le travail **sans lire le code**. Règles de rédact
 
 | Volet | Document | État |
 | --- | --- | --- |
-| Décisions | [adr/](adr/README.md) : ADR et index, [modèle](adr/TEMPLATE.md) | 2 ADR : 0001 (Python, abandonné), 0002 (C++20, accepté) |
+| Décisions | [adr/](adr/README.md) : ADR et index, [modèle](adr/TEMPLATE.md) | 4 ADR : 0001 (Python, abandonné), 0002 (C++20, accepté), 0003 (algèbre linéaire) et 0004 (API) proposés |
 | Architecture | `architecture.md` : bibliothèque `my_torch`, analyseur, flux d'entraînement et de prédiction | À écrire |
 | Performance | [performance/](performance/README.md) : benchmarks, courbes d'apprentissage, scripts | À écrire |
 | Légal | [legal/](legal/README.md) : licences, données, risques | À écrire |
