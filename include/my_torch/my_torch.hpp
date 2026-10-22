@@ -2,6 +2,8 @@
 
 // En-tête public du module my_torch : l'analyseur et le générateur n'incluent que lui.
 
+#include "my_torch/Activations.hpp"
+#include "my_torch/Dense.hpp"
 #include "my_torch/Error.hpp"
 #include "my_torch/Layer.hpp"
 #include "my_torch/Loss.hpp"

@@ -48,3 +48,45 @@ Test(matrix, matmul_rejects_wrong_dimensions)
 
     cr_assert_throw(a.matmul(b), my_torch::Error);
 }
+
+Test(matrix, add_row_vector_broadcasts_over_rows)
+{
+    Matrix m(2, 2, 1);
+    Matrix b(1, 2);
+    b(0, 0) = 0.1;
+    b(0, 1) = 0.2;
+
+    Matrix r = m.addRowVector(b);
+    cr_assert_float_eq(r(0, 0), 1.1, 1e-12);
+    cr_assert_float_eq(r(1, 1), 1.2, 1e-12);
+    cr_assert_throw(m.addRowVector(Matrix(2, 2)), my_torch::Error);
+}
+
+Test(matrix, sum_rows_adds_each_column)
+{
+    Matrix m(2, 2);
+    m(0, 0) = 1;
+    m(0, 1) = 2;
+    m(1, 0) = 3;
+    m(1, 1) = 4;
+
+    Matrix s = m.sumRows();
+    cr_assert_eq(s.rows(), 1);
+    cr_assert_eq(s(0, 0), 4);
+    cr_assert_eq(s(0, 1), 6);
+}
+
+Test(matrix, elementwise_operations)
+{
+    Matrix a(1, 2, 2);
+    Matrix b(1, 2, 3);
+
+    cr_assert_eq(a.hadamard(b)(0, 1), 6);
+    cr_assert_eq(a.map([](double x) { return x * x; })(0, 0), 4);
+    a += b;
+    cr_assert_eq(a(0, 0), 5);
+    a.fill(0);
+    cr_assert_eq(a(0, 1), 0);
+    cr_assert_throw(a += Matrix(2, 2), my_torch::Error);
+    cr_assert_throw(a.hadamard(Matrix(2, 1)), my_torch::Error);
+}
