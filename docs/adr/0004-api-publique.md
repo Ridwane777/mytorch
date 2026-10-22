@@ -1,8 +1,8 @@
 # ADR-0004 : API publique de la bibliothèque my_torch
 
-- **Statut** : Proposé
+- **Statut** : Accepté
 - **Date** : 2026-10-21
-- **Décideurs** : Ridwane777, Meric-BG (en attente de validation)
+- **Décideurs** : Ridwane777, Meric-BG
 - **Issue** : #1
 
 ## Contexte

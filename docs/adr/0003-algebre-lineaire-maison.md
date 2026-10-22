@@ -1,8 +1,8 @@
 # ADR-0003 : Algèbre linéaire maison, en double, rangée ligne par ligne
 
-- **Statut** : Proposé
+- **Statut** : Accepté
 - **Date** : 2026-10-21
-- **Décideurs** : Ridwane777, Meric-BG (en attente de validation)
+- **Décideurs** : Ridwane777, Meric-BG
 - **Issue** : #1
 
 ## Contexte
