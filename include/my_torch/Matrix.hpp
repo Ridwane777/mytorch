@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstddef>
+#include <functional>
 #include <vector>
 
 namespace my_torch {
@@ -28,6 +29,17 @@ class Matrix {
     Matrix transpose() const;
     // Produit matriciel ; lève my_torch::Error si les dimensions ne correspondent pas.
     Matrix matmul(const Matrix &other) const;
+
+    // Opérations élément par élément ; lèvent my_torch::Error si les formes diffèrent.
+    Matrix &operator+=(const Matrix &other);
+    Matrix hadamard(const Matrix &other) const;
+    Matrix map(const std::function<Scalar(Scalar)> &fn) const;
+    void fill(Scalar value);
+
+    // Ajoute le vecteur ligne (1 × cols) à chaque ligne : le biais partagé par tout le batch.
+    Matrix addRowVector(const Matrix &row) const;
+    // Somme de toutes les lignes (1 × cols) : le gradient du biais sur le batch.
+    Matrix sumRows() const;
 
   private:
     std::size_t _rows = 0;
