@@ -43,7 +43,7 @@ tests_run:
 	./$(TESTS)
 
 clean:
-	rm -rf $(BUILD) *.gcda *.gcno
+	rm -rf $(BUILD) *.gcda *.gcno $(TESTS).d
 
 fclean:	clean
 	rm -f $(ANALYZER) $(GENERATOR) $(TESTS)
