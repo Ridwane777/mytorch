@@ -56,8 +56,8 @@ Test(schedulers, warmup_ramps_up_then_hands_over)
     cr_assert_float_eq(warmup.rate(0), 0.25, 1e-12);
     cr_assert_float_eq(warmup.rate(1), 0.5, 1e-12);
     cr_assert_float_eq(warmup.rate(3), 1.0, 1e-12);
-    cr_assert_float_eq(warmup.rate(4), 1.0, 1e-12);  // époque 0 du cosinus
-    cr_assert_float_eq(warmup.rate(54), 0.5, 1e-12); // époque 50 du cosinus
+    cr_assert_float_eq(warmup.rate(4), 1.0, 1e-12);  // cosine epoch 0
+    cr_assert_float_eq(warmup.rate(54), 0.5, 1e-12); // cosine epoch 50
     cr_assert_str_eq(warmup.type().c_str(), "warmup_cosine");
 }
 
@@ -69,6 +69,22 @@ Test(schedulers, rates_drive_an_optimizer)
     for (std::size_t epoch = 0; epoch < 3; epoch++)
         sgd.setLearningRate(step.rate(epoch));
     cr_assert_float_eq(sgd.learningRate(), 0.25, 1e-15);
+}
+
+Test(schedulers, a_zero_rate_is_accepted_by_every_optimizer)
+{
+    my_torch::SGD sgd(1.0);
+    my_torch::Adam adam(1.0);
+    my_torch::RMSProp rms(1.0);
+    my_torch::Adagrad adagrad(1.0);
+    const CosineAnnealing cosine(1.0, 10);
+
+    // Past the last epoch the cosine returns its minimum, 0 by default.
+    for (my_torch::Optimizer *o :
+         std::initializer_list<my_torch::Optimizer *>{&sgd, &adam, &rms, &adagrad}) {
+        o->setLearningRate(cosine.rate(10));
+        cr_assert_eq(o->learningRate(), 0);
+    }
 }
 
 Test(schedulers, reject_bad_parameters)

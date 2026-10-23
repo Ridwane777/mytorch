@@ -7,19 +7,19 @@
 
 namespace my_torch {
 
-// Optimiseurs : à chaque pas, ils lisent le gradient de chaque paramètre et déplacent sa valeur.
-// Ceux qui ont une mémoire (vitesse, moyennes des gradients…) la rangent dans des matrices de la
-// même forme que les paramètres, créées au premier appel et indexées par position : le même
-// vecteur de paramètres, dans le même ordre, doit donc être donné à chaque pas, sinon
-// my_torch::Error. Les gradients ne sont pas remis à zéro ici : c'est le rôle de la boucle
-// d'entraînement. Tous lèvent my_torch::Error si un hyperparamètre est hors domaine.
+// Optimizers: at each step they read every parameter's gradient and move its value.
+// Those with a memory (velocity, running averages of gradients...) keep it in matrices shaped like
+// the parameters, created on the first call and indexed by position: the same parameter vector, in
+// the same order, must therefore be passed at every step, otherwise my_torch::Error is thrown.
+// Gradients are not zeroed here: that is the training loop's job. Every constructor throws
+// my_torch::Error on an out-of-range hyperparameter; setLearningRate accepts 0 (a scheduler may
+// reach it) but not a negative rate.
 
-// Descente de gradient : w -= lr·v, avec v = momentum·v + g.
-// - momentum = 0 : SGD simple, w -= lr·g.
-// - momentum > 0 : la vitesse v accumule les gradients passés, ce qui accélère le long des vallées
-//   et amortit les oscillations.
-// - nesterov : on avance avec g + momentum·v au lieu de v, c'est-à-dire en regardant un peu plus
-// loin.
+// Gradient descent: w -= lr·v, with v = momentum·v + g.
+// - momentum = 0: plain SGD, w -= lr·g.
+// - momentum > 0: the velocity v accumulates past gradients, which speeds up travel along valleys
+//   and damps oscillations.
+// - nesterov: move with g + momentum·v instead of v, i.e. look slightly ahead.
 class SGD : public Optimizer {
   public:
     explicit SGD(Scalar learningRate, Scalar momentum = 0, bool nesterov = false);
@@ -36,11 +36,10 @@ class SGD : public Optimizer {
     std::vector<Matrix> _velocity;
 };
 
-// Adam : un pas adapté à chaque poids. m est la moyenne mobile des gradients, v celle de leurs
-// carrés (corrigées du biais de démarrage), et w -= lr·m̂ / (√v̂ + ε). Un poids au gradient
-// toujours grand avance donc par pas d'environ lr, quel que soit l'échelle du gradient.
-// - amsgrad : v̂ ne décroît jamais (maximum des v passés), ce qui garantit des pas qui ne
-// regrossissent pas.
+// Adam: a per-weight step size. m is the running average of gradients, v that of their squares
+// (both corrected for the start-up bias), and w -= lr·m̂ / (√v̂ + ε). A weight with a steadily large
+// gradient moves by about lr per step, whatever the gradient's scale.
+// - amsgrad: v never decreases (maximum of the past v), so steps never grow back.
 class Adam : public Optimizer {
   public:
     explicit Adam(Scalar learningRate = 0.001, Scalar beta1 = 0.9, Scalar beta2 = 0.999,
@@ -69,16 +68,16 @@ class Adam : public Optimizer {
     std::vector<Matrix> _vmax;
 };
 
-// Adam avec décroissance des poids découplée : w -= lr·weightDecay·w, indépendamment du gradient.
-// Une pénalité L2 ajoutée au gradient d'Adam serait « adaptée » comme lui et perdrait son effet.
+// Adam with decoupled weight decay: w -= lr·weightDecay·w, independently of the gradient.
+// An L2 penalty added to Adam's gradient would be rescaled like the gradient and lose its effect.
 class AdamW : public Adam {
   public:
     explicit AdamW(Scalar learningRate = 0.001, Scalar weightDecay = 0.01, Scalar beta1 = 0.9,
                    Scalar beta2 = 0.999, Scalar epsilon = 1e-8, bool amsgrad = false);
 };
 
-// RMSProp : divise le gradient par la racine d'une moyenne mobile de ses carrés, ce qui calme les
-// poids aux gradients violents et accélère ceux aux gradients faibles.
+// RMSProp: divides the gradient by the root of a running average of its squares, which calms
+// weights with violent gradients and speeds up those with weak ones.
 class RMSProp : public Optimizer {
   public:
     explicit RMSProp(Scalar learningRate = 0.001, Scalar decay = 0.9, Scalar epsilon = 1e-8);
@@ -95,9 +94,8 @@ class RMSProp : public Optimizer {
     std::vector<Matrix> _square;
 };
 
-// Adagrad : divise par la racine de la somme de tous les carrés passés. Le pas de chaque poids ne
-// fait que diminuer, ce qui convient aux problèmes convexes ou parcimonieux mais finit par figer
-// l'apprentissage d'un réseau profond.
+// Adagrad: divides by the root of the sum of all past squares. Each weight's step only shrinks,
+// which suits convex or sparse problems but eventually freezes the learning of a deep network.
 class Adagrad : public Optimizer {
   public:
     explicit Adagrad(Scalar learningRate = 0.01, Scalar epsilon = 1e-10);

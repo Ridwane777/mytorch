@@ -16,6 +16,12 @@ void requirePositive(const char *optimizer, const char *name, Scalar value)
         throw Error(std::string(optimizer) + ": " + name + " must be positive");
 }
 
+void requireNonNegative(const char *optimizer, const char *name, Scalar value)
+{
+    if (!(value >= 0))
+        throw Error(std::string(optimizer) + ": " + name + " must be non-negative");
+}
+
 void requireInUnit(const char *optimizer, const char *name, Scalar value)
 {
     if (!(value >= 0 && value < 1))
@@ -29,9 +35,8 @@ void requireSameShape(const char *optimizer, const Matrix &a, const Matrix &b)
                     ": parameter and its state or gradient differ in shape");
 }
 
-// Crée la mémoire de l'optimiseur au premier pas, puis vérifie qu'elle correspond toujours aux
-// paramètres reçus (même nombre, mêmes formes, même ordre) et que chaque gradient a la forme du
-// paramètre.
+// Creates the optimizer's memory on the first step, then checks it still matches the parameters
+// received (same count, same shapes, same order) and that each gradient has its parameter's shape.
 void prepare(const char *optimizer, std::vector<Matrix> &state,
              const std::vector<Parameter> &params)
 {
@@ -74,7 +79,7 @@ void SGD::step(const std::vector<Parameter> &parameters)
 
 void SGD::setLearningRate(Scalar rate)
 {
-    requirePositive("sgd", "learning rate", rate);
+    requireNonNegative("sgd", "learning rate", rate);
     _rate = rate;
 }
 
@@ -113,7 +118,7 @@ void Adam::step(const std::vector<Parameter> &parameters)
     if (_amsgrad)
         prepare(_name, _vmax, parameters);
     _steps++;
-    // Corrige le biais : m et v démarrent à 0 et sous-estiment les premières moyennes.
+    // Bias correction: m and v start at 0 and underestimate the first averages.
     const Scalar correction1 = 1 - std::pow(_beta1, static_cast<Scalar>(_steps));
     const Scalar correction2 = 1 - std::pow(_beta2, static_cast<Scalar>(_steps));
 
@@ -140,7 +145,7 @@ void Adam::step(const std::vector<Parameter> &parameters)
 
 void Adam::setLearningRate(Scalar rate)
 {
-    requirePositive(_name, "learning rate", rate);
+    requireNonNegative(_name, "learning rate", rate);
     _rate = rate;
 }
 
@@ -185,7 +190,7 @@ void RMSProp::step(const std::vector<Parameter> &parameters)
 
 void RMSProp::setLearningRate(Scalar rate)
 {
-    requirePositive("rmsprop", "learning rate", rate);
+    requireNonNegative("rmsprop", "learning rate", rate);
     _rate = rate;
 }
 
@@ -222,7 +227,7 @@ void Adagrad::step(const std::vector<Parameter> &parameters)
 
 void Adagrad::setLearningRate(Scalar rate)
 {
-    requirePositive("adagrad", "learning rate", rate);
+    requireNonNegative("adagrad", "learning rate", rate);
     _rate = rate;
 }
 

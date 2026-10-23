@@ -18,7 +18,7 @@ using my_torch::SGD;
 
 namespace {
 
-// Un paramètre scalaire (1 × 1) et son gradient.
+// A scalar parameter (1 × 1) and its gradient.
 struct One {
     Matrix value;
     Matrix grad;
@@ -33,8 +33,8 @@ struct One {
     }
 };
 
-// Problème simple : f(w) = Σ c_i·(w_i - a_i)², minimum en a. Les courbures c valent 1 et 10, donc
-// la vallée est étroite dans une direction : un test sévère pour un pas fixe.
+// Simple problem: f(w) = Σ c_i·(w_i - a_i)², minimum at a. The curvatures c are 1 and 10, so the
+// valley is narrow in one direction: a demanding test for a fixed step.
 struct Quadratic {
     Matrix w{1, 2};
     Matrix grad{1, 2};
@@ -57,7 +57,7 @@ struct Quadratic {
             grad(0, i) = 2 * curvature(0, i) * (w(0, i) - target(0, i));
     }
 
-    // Distance au minimum.
+    // Distance to the minimum.
     Scalar error() const
     {
         return std::hypot(w(0, 0) - target(0, 0), w(0, 1) - target(0, 1));
@@ -73,9 +73,9 @@ struct Quadratic {
     }
 };
 
-// XOR avec un petit réseau 2-8-1, appris en batch complet : tout le chemin
-// forward / coût / backward / optimiseur sur un problème qui n'est pas linéairement séparable.
-// Renvoie le nombre d'exemples (sur 4) du bon côté de 0,5.
+// XOR with a small 2-8-1 network, learned full-batch: the whole forward / loss / backward /
+// optimizer path on a problem that is not linearly separable. Returns how many of the 4 examples
+// are on the right side of 0.5.
 int learnXor(Optimizer &optimizer, int epochs)
 {
     Dense first(2, 8, 1);
@@ -140,7 +140,7 @@ Test(sgd, nesterov_looks_ahead)
     One w(0, 1);
     SGD sgd(0.1, 0.9, true);
 
-    sgd.step(w.params()); // v = 1, pas = g + 0.9·v = 1.9
+    sgd.step(w.params()); // v = 1, step = g + 0.9·v = 1.9
     cr_assert_float_eq(w.value(0, 0), -0.19, 1e-12);
 }
 
@@ -153,8 +153,8 @@ Test(sgd, rejects_bad_hyperparameters)
 
 Test(adam, first_step_is_about_the_learning_rate)
 {
-    // Après correction du biais, m̂ = g et v̂ = g² : le pas vaut lr·g / (|g| + ε) ≈ lr, pour
-    // n'importe quelle échelle du gradient.
+    // After bias correction m̂ = g and v̂ = g², so the step is lr·g / (|g| + ε) ≈ lr, whatever the
+    // gradient's scale.
     One small(1, 1e-3);
     One large(1, 1e3);
     Adam a(0.01);
@@ -172,13 +172,13 @@ Test(adam, matches_a_two_step_hand_computation)
     Adam adam(0.1, 0.9, 0.999, 1e-8);
 
     adam.step(w.params());
-    // Deuxième pas avec un gradient 3 : m = 0.9·0.1 + 0.1·3 = 0.39, v = 0.999·0.001 + 0.001·9.
+    // Second step with a gradient of 3: m = 0.9·0.1 + 0.1·3 = 0.39, v = 0.999·0.001 + 0.001·9.
     w.grad(0, 0) = 3;
     adam.step(w.params());
     const Scalar mHat = 0.39 / (1 - 0.81);
     const Scalar vHat = (0.999 * 0.001 + 0.001 * 9) / (1 - 0.999 * 0.999);
 
-    const Scalar first = -0.1 / (1 + 1e-8); // m̂ = 1, v̂ = 1 au premier pas
+    const Scalar first = -0.1 / (1 + 1e-8); // m̂ = 1, v̂ = 1 on the first step
 
     cr_assert_float_eq(w.value(0, 0), first - 0.1 * mHat / (std::sqrt(vHat) + 1e-8), 1e-12);
 }
@@ -197,7 +197,7 @@ Test(adam, amsgrad_never_lets_the_second_moment_shrink)
         adam.step(plain.params());
         amsgrad.step(ams.params());
     }
-    // Sans amsgrad, v décroît et le pas regrossit ; avec, il reste plus petit.
+    // Without amsgrad v decays and the step grows back; with it, the step stays smaller.
     cr_assert_gt(std::abs(plain.value(0, 0)), std::abs(ams.value(0, 0)));
 }
 
@@ -221,7 +221,7 @@ Test(rmsprop, first_step_matches_hand_computation)
     One w(0, 2);
     RMSProp rms(0.1, 0.9);
 
-    rms.step(w.params()); // s = 0.1·4 = 0.4, pas = 0.1·2 / (√0.4 + 1e-8)
+    rms.step(w.params()); // s = 0.1·4 = 0.4, step = 0.1·2 / (√0.4 + 1e-8)
     cr_assert_float_eq(w.value(0, 0), -0.2 / std::sqrt(0.4), 1e-6);
 }
 
@@ -230,8 +230,8 @@ Test(adagrad, step_shrinks_as_squares_accumulate)
     One w(0, 1);
     Adagrad adagrad(1.0);
 
-    adagrad.step(w.params()); // s = 1, pas 1
-    adagrad.step(w.params()); // s = 2, pas 1/√2
+    adagrad.step(w.params()); // s = 1, step 1
+    adagrad.step(w.params()); // s = 2, step 1/√2
     cr_assert_float_eq(w.value(0, 0), -1 - 1 / std::sqrt(2.0), 1e-6);
 }
 
@@ -246,7 +246,8 @@ Test(optimizers, learning_rate_is_readable_and_settable)
     for (Optimizer *o : std::initializer_list<Optimizer *>{&sgd, &adam, &rms, &ada, &adamw}) {
         o->setLearningRate(0.5);
         cr_assert_float_eq(o->learningRate(), 0.5, 1e-15);
-        cr_assert_throw(o->setLearningRate(0), my_torch::Error);
+        o->setLearningRate(0); // a scheduler may reach 0
+        cr_assert_eq(o->learningRate(), 0);
         cr_assert_throw(o->setLearningRate(-1), my_torch::Error);
     }
 }
