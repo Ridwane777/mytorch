@@ -28,3 +28,7 @@ my_torch-project.pdf
 .vscode/
 .idea/
 .DS_Store
+
+# Bonus
+/bonus/my_torch_oracle
+/bonus/unit_tests
