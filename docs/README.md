@@ -7,7 +7,7 @@ Point d'entrée pour suivre le travail **sans lire le code**. Règles de rédact
 
 | Volet | Document | État |
 | --- | --- | --- |
-| Décisions | [adr/](adr/README.md) : ADR et index, [modèle](adr/TEMPLATE.md) | 6 ADR : 0001 (Python, abandonné), 0002 (C++20, accepté), 0003 (algèbre linéaire) et 0004 (API) acceptés, 0005 (lecture des FEN) et 0006 (oracle) proposés |
+| Décisions | [adr/](adr/README.md) : ADR et index, [modèle](adr/TEMPLATE.md) | 7 ADR : 0001 (Python, abandonné), 0002 (C++20, accepté), 0003 (algèbre linéaire) et 0004 (API) acceptés, 0005 (lecture des FEN), 0006 (oracle) et 0007 (entropie croisée couplée à Softmax) proposés |
 | Données | [lire-une-fen.md](lire-une-fen.md) : règles d'échecs utiles, lecture d'une ligne du dataset champ par champ, répartition des labels | Écrit |
 | Données | [verification-dataset.md](verification-dataset.md) : labels du dataset vérifiés par l'oracle (100 % d'accord) | Écrit |
 | Architecture | `architecture.md` : bibliothèque `my_torch`, analyseur, flux d'entraînement et de prédiction | À écrire |
