@@ -5,3 +5,5 @@ reproduction (`scripts/`), résultats **avec graphiques** (`data/`), seuils et l
 
 À écrire : précision par classe, matrice de confusion, courbes d'apprentissage (entraînement et
 validation), comparaison des configurations, temps d'entraînement et de prédiction.
+
+Done: [optimizers.md](optimizers.md) (optimizers and learning-rate schedulers, issue #5).
