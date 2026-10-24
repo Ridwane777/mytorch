@@ -11,7 +11,7 @@ namespace my_torch {
 
 namespace {
 
-// Borne les probabilités avant un logarithme ou une division.
+// Bounds probabilities before a logarithm or a division.
 constexpr Scalar epsilon = 1e-15;
 
 void requireSameShape(const char *loss, const Matrix &prediction, const Matrix &target)
@@ -24,7 +24,7 @@ void requireSameShape(const char *loss, const Matrix &prediction, const Matrix &
         throw Error(std::string(loss) + ": empty batch");
 }
 
-// Somme de f(p, t) sur toutes les cases, divisée par la taille du batch.
+// Sum of f(p, t) over every cell, divided by the batch size.
 template <typename F> Scalar batchMean(const Matrix &prediction, const Matrix &target, F f)
 {
     Scalar sum = 0;
@@ -34,7 +34,7 @@ template <typename F> Scalar batchMean(const Matrix &prediction, const Matrix &t
     return sum / static_cast<Scalar>(prediction.rows());
 }
 
-// Matrice des f(p, t) / taille du batch.
+// Matrix of f(p, t) / batch size.
 template <typename F> Matrix batchGradient(const Matrix &prediction, const Matrix &target, F f)
 {
     Matrix result(prediction.rows(), prediction.cols());
@@ -70,7 +70,7 @@ Scalar MAE::value(const Matrix &prediction, const Matrix &target) const
     return batchMean(prediction, target, [](Scalar p, Scalar t) { return std::abs(p - t); });
 }
 
-// Sous-gradient : 0 en p = t, où |x| n'est pas dérivable.
+// Subgradient: 0 at p = t, where |x| is not differentiable.
 Matrix MAE::gradient(const Matrix &prediction, const Matrix &target) const
 {
     requireSameShape("mae", prediction, target);
@@ -148,7 +148,7 @@ Scalar CrossEntropy::weight(std::size_t cls) const noexcept
     return _weights.empty() ? 1.0 : _weights[cls];
 }
 
-// Cible lissée q = (1 - s)·t + s / classes.
+// Smoothed target q = (1 - s)·t + s / classes.
 Matrix CrossEntropy::smoothed(const Matrix &prediction, const Matrix &target) const
 {
     requireSameShape("cross_entropy", prediction, target);
@@ -171,7 +171,8 @@ Scalar CrossEntropy::value(const Matrix &prediction, const Matrix &target) const
     return sum / static_cast<Scalar>(q.rows());
 }
 
-// L = -Σ_c w_c·q_c·log p_c avec p = softmax(z) donne dL/dz_j = p_j·W - w_j·q_j, où W = Σ_c w_c·q_c.
+// L = -Σ_c w_c·q_c·log p_c with p = softmax(z) gives dL/dz_j = p_j·W - w_j·q_j, where W = Σ_c
+// w_c·q_c.
 Matrix CrossEntropy::gradient(const Matrix &prediction, const Matrix &target) const
 {
     const Matrix q = smoothed(prediction, target);
