@@ -1,6 +1,6 @@
 #pragma once
 
-// En-tête public du module my_torch : l'analyseur et le générateur n'incluent que lui.
+// Public header of the my_torch module: the analyzer and the generator include only this one.
 
 #include "my_torch/Activations.hpp"
 #include "my_torch/Dense.hpp"

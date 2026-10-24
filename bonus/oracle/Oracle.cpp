@@ -23,8 +23,8 @@ constexpr std::array<Step, 8> kingSteps = {
 constexpr std::array<Step, 4> straight = {{{1, 0}, {-1, 0}, {0, 1}, {0, -1}}};
 constexpr std::array<Step, 4> diagonal = {{{1, 1}, {1, -1}, {-1, 1}, {-1, -1}}};
 
-// Les cases sont manipulées en (colonne 0-7, rangée 1-8) : un pas hors de ces bornes sort de
-// l'échiquier, alors qu'un indice 0-63 « déborderait » de h4 vers a3.
+// Squares are handled as (file 0-7, rank 1-8): a step outside these bounds leaves
+// the board, whereas a 0-63 index would "overflow" from h4 to a3.
 int fileOf(int sq)
 {
     return sq % 8;
@@ -55,7 +55,7 @@ bool belongsTo(char piece, Color color)
     return !isEmpty(piece) && colorOf(piece) == color;
 }
 
-// Lettre FEN d'une pièce de la couleur donnée ('N' pour un cavalier blanc, 'n' pour un noir).
+// FEN letter of a piece of the given colour ('N' for a white knight, 'n' for a black one).
 char pieceOf(char type, Color color)
 {
     return color == Color::White ? type : static_cast<char>(std::tolower(type));
@@ -66,7 +66,7 @@ char at(const Position &p, int file, int rank)
     return p.board[square(file, rank)];
 }
 
-// Une pièce qui glisse (tour, fou, dame) attaque-t-elle la case depuis l'une de ces directions ?
+// Does a sliding piece (rook, bishop, queen) attack the square from one of these directions?
 template <std::size_t N>
 bool slidingAttack(const Position &p, int file, int rank, const std::array<Step, N> &steps,
                    char rook, char queen)
@@ -132,7 +132,7 @@ void addSteps(const Position &p, int from, const std::array<Step, N> &steps, boo
         }
 }
 
-// Coups qui respectent le déplacement des pièces, sans vérifier que le roi reste à l'abri.
+// Moves that follow how the pieces move, without checking that the king stays safe.
 std::vector<Move> pseudoLegalMoves(const Position &p)
 {
     std::vector<Move> moves;
@@ -177,7 +177,7 @@ bool isAttacked(const Position &p, int sq, Color by)
 {
     const int file = fileOf(sq);
     const int rank = rankOf(sq);
-    // Un pion blanc attaque vers le haut : s'il attaque cette case, il est une rangée plus bas.
+    // A white pawn attacks upwards: if it attacks this square, it is one rank lower.
     const int pawnRank = by == Color::White ? rank - 1 : rank + 1;
 
     for (const int df : {-1, 1})
@@ -208,7 +208,7 @@ bool inCheck(const Position &p, Color color)
     return isAttacked(p, findKing(p, color), opponent(color));
 }
 
-// Les droits de roque ne sont pas mis à jour : le roque n'est jamais généré (ADR-0006).
+// Castling rights are not updated: castling is never generated (ADR-0006).
 Position play(const Position &p, const Move &move)
 {
     Position next = p;

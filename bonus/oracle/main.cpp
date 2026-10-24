@@ -36,7 +36,7 @@ void check(const std::string &path, Report &report)
             report.agree++;
             continue;
         }
-        // parseFile ignore les lignes vides : l'indice est celui de la position dans le fichier.
+        // parseFile skips empty lines: the index is the position's index in the file.
         std::cout << path << ": position " << i + 1 << ": expected "
                   << analyzer::labelName(*samples[i].label) << ", oracle "
                   << oracle::verdictName(verdict) << "\n";

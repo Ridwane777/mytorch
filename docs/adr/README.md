@@ -1,14 +1,14 @@
 # Architecture Decision Records
 
-Un fichier par décision, à partir de [TEMPLATE.md](TEMPLATE.md). Un ADR accepté n'est jamais réécrit : s'il change, un nouvel ADR le remplace.
+One file per decision, based on [TEMPLATE.md](TEMPLATE.md). An accepted ADR is never rewritten: if it changes, a new ADR supersedes it.
 
-| ADR | Titre | Statut | Date |
+| ADR | Title | Status | Date |
 | --- | --- | --- | --- |
-| [0001](0001-langage-python-numpy.md) | Python 3 avec NumPy comme langage du projet | Abandonné, remplacé par ADR-0002 | 2026-10-21 |
-| [0002](0002-langage-cpp.md) | C++20 comme langage du projet | Accepté | 2026-10-21 |
-| [0003](0003-algebre-lineaire-maison.md) | Algèbre linéaire maison, en double, rangée ligne par ligne | Accepté | 2026-10-21 |
-| [0004](0004-api-publique.md) | API publique de la bibliothèque my_torch | Accepté | 2026-10-21 |
-| [0005](0005-lecture-fen.md) | Lecture des FEN : validation du format et représentation du plateau | Proposé | 2026-10-23 |
-| [0006](0006-oracle-sans-roque.md) | Oracle par les règles : génération des coups par copie et sans roque | Proposé | 2026-10-23 |
+| [0001](0001-python-numpy-language.md) | Python 3 with NumPy as the project language | Abandoned, superseded by ADR-0002 | 2026-10-21 |
+| [0002](0002-cpp-language.md) | C++20 as the project language | Accepted | 2026-10-21 |
+| [0003](0003-in-house-linear-algebra.md) | In-house linear algebra, in double, stored row by row | Accepted | 2026-10-21 |
+| [0004](0004-public-api.md) | Public API of the my_torch library | Accepted | 2026-10-21 |
+| [0005](0005-fen-parsing.md) | Reading FEN: format validation and board representation | Proposed | 2026-10-23 |
+| [0006](0006-oracle-without-castling.md) | Rule-based oracle: move generation by copy and without castling | Proposed | 2026-10-23 |
 | [0007](0007-softmax-cross-entropy-coupling.md) | Cross-entropy coupled to Softmax, Softmax gradient skipped in backpropagation | Proposed | 2026-10-24 |
 | [0008](0008-optimizers-and-schedulers.md) | Optimizers keep their own state; schedulers are stateless functions of the epoch | Proposed | 2026-10-24 |

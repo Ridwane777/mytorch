@@ -72,8 +72,8 @@ Matrix Matrix::transpose() const
     return result;
 }
 
-// Version naïve, ordre i-k-j pour parcourir les lignes en mémoire contiguë.
-// L'optimisation (blocs, SIMD) est l'objet de #33.
+// Naive version, i-k-j order to walk the rows through contiguous memory.
+// Optimization (blocking, SIMD) is the subject of #33.
 Matrix Matrix::matmul(const Matrix &other) const
 {
     if (_cols != other._rows)

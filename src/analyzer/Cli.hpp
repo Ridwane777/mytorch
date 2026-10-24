@@ -7,7 +7,7 @@ namespace analyzer {
 
 constexpr int EXIT_ERROR = 84;
 
-// Point d'entrée testable de my_torch_analyzer : renvoie le code de sortie.
+// Testable entry point of my_torch_analyzer: returns the exit code.
 int run(const std::vector<std::string> &args);
 
 } // namespace analyzer

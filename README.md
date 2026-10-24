@@ -1,51 +1,51 @@
-# my_torch — réseau de neurones fait main et analyseur d'échiquier
+# my_torch — hand-written neural network and chessboard analyzer
 
-Projet the school , en C++20 ([ADR-0002](docs/adr/0002-langage-cpp.md)). Deux livrables :
+Project in C++20 ([ADR-0002](docs/adr/0002-cpp-language.md)). Two deliverables:
 
-- **`my_torch`** (`include/my_torch/`, `src/my_torch/`) : une bibliothèque de réseau de neurones
-  générique, écrite sans bibliothèque de deep learning (PyTorch, TensorFlow… sont interdits). Elle
-  permet de créer, entraîner, sauvegarder et recharger un réseau.
-- **`my_torch_analyzer`** : un exécutable qui lit des positions d'échecs en notation FEN et prédit
-  l'état de la partie (`Checkmate`, `Check`, `Nothing`, avec la couleur), par apprentissage supervisé.
+- **`my_torch`** (`include/my_torch/`, `src/my_torch/`): a generic neural-network library, written
+  without any deep learning library (PyTorch, TensorFlow… are forbidden). It can create, train,
+  save and reload a network.
+- **`my_torch_analyzer`**: an executable that reads chess positions in FEN notation and predicts
+  the state of the game (`Checkmate`, `Check`, `Nothing`, with the color), by supervised learning.
 
-> État : squelette du dépôt. Les choix techniques sont dans [docs/adr/](docs/adr/README.md).
+> Status: repository skeleton. The technical choices are in [docs/adr/](docs/adr/README.md).
 
-## Compilation et utilisation
+## Build and usage
 
-Prérequis : g++ (C++20) et make ; Criterion pour les tests.
+Requirements: g++ (C++20) and make; Criterion for the tests.
 
 ```bash
-make                    # my_torch_analyzer et my_torch_generator
-./my_torch_analyzer --predict my_torch_network_<nom>.nn chessboards.txt
-./my_torch_analyzer --train [--save NOUVEAU.nn] RESEAU.nn chessboards.txt
+make                    # my_torch_analyzer and my_torch_generator
+./my_torch_analyzer --predict my_torch_network_<name>.nn chessboards.txt
+./my_torch_analyzer --train [--save NEW.nn] NETWORK.nn chessboards.txt
 ./my_torch_generator config.conf 3
 ```
 
-En cas d'erreur, le message part sur la sortie d'erreur et le programme quitte avec le code 84.
+On error, the message goes to standard error and the program exits with code 84.
 
-| Règle | Effet |
+| Rule | Effect |
 | --- | --- |
-| `make` | Compile en `-O2` |
-| `make debug` | Recompile avec AddressSanitizer et UBSan |
-| `make tests_run` | Compile et lance les tests Criterion (avec couverture) |
-| `make clean` / `fclean` / `re` | Nettoyage et recompilation |
+| `make` | Builds with `-O2` |
+| `make debug` | Rebuilds with AddressSanitizer and UBSan |
+| `make tests_run` | Builds and runs the Criterion tests (with coverage) |
+| `make clean` / `fclean` / `re` | Cleaning and rebuilding |
 
-## Organisation du dépôt
+## Repository layout
 
-| Chemin | Contenu |
+| Path | Content |
 | --- | --- |
-| `include/my_torch/` | En-têtes publics de la bibliothèque : seul contrat entre le module et l'analyseur |
-| `src/my_torch/` | Implémentation de la bibliothèque, compilée en `build/libmy_torch.a` |
-| `src/analyzer/` | Partie échecs : lecture FEN, encodage, interface en ligne de commande |
-| `src/generator/` | `my_torch_generator` : crée des réseaux vierges à partir d'une configuration |
-| `tests/` | Tests Criterion, mêmes sous-dossiers que `src/` |
-| `my_torch_network_*.nn` | Réseau pré-entraîné évalué par l'autograder |
-| `configs/` | Configurations de réseaux (hyperparamètres) |
-| `scripts/` | Entraînement, benchmarks et graphiques, pour reproduire nos résultats |
-| `bonus/` | Bonus (exigé par le sujet) |
-| `docs/` | Dossier projet : décisions, performance, légal, business, rétrospective. Carte : [docs/README.md](docs/README.md) |
+| `include/my_torch/` | Public headers of the library: the only contract between the module and the analyzer |
+| `src/my_torch/` | Library implementation, compiled into `build/libmy_torch.a` |
+| `src/analyzer/` | Chess part: FEN reading, encoding, command-line interface |
+| `src/generator/` | `my_torch_generator`: creates blank networks from a configuration |
+| `tests/` | Criterion tests, same subfolders as `src/` |
+| `my_torch_network_*.nn` | Pre-trained network evaluated by the autograder |
+| `configs/` | Network configurations (hyperparameters) |
+| `scripts/` | Training, benchmarks and graphs, to reproduce our results |
+| `bonus/` | Bonus (required by the subject) |
+| `docs/` | Project file: decisions, performance, legal, business, retrospective. Map: [docs/README.md](docs/README.md) |
 
-Les jeux de données (`dataset/`) ne sont pas poussés : ils sont trop lourds. Ils sont montrés en
-soutenance et décrits dans `docs/performance/`.
+The datasets (`dataset/`) are not pushed: they are too heavy. They are shown at the defense and
+described in `docs/performance/`.
 
-Avant le premier commit : [CONTRIBUTING.md](CONTRIBUTING.md).
+Before the first commit: [CONTRIBUTING.md](CONTRIBUTING.md).

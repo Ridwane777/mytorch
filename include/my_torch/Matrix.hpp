@@ -6,12 +6,12 @@
 
 namespace my_torch {
 
-// double plutôt que float : la vérification des gradients par différences finies (#3) exige
-// une erreur relative < 1e-6, hors de portée en simple précision. Voir ADR-0003.
+// double rather than float: the finite-difference gradient check (#3) requires
+// a relative error < 1e-6, out of reach in single precision. See ADR-0003.
 using Scalar = double;
 
-// Matrice dense, stockage contigu en ligne (row-major). Un batch est une matrice
-// (taille du batch × nombre de caractéristiques) : une ligne par exemple.
+// Dense matrix, contiguous row-major storage. A batch is a matrix
+// (batch size × number of features): one row per example.
 class Matrix {
   public:
     Matrix() = default;
@@ -27,18 +27,18 @@ class Matrix {
     const Scalar *data() const noexcept;
 
     Matrix transpose() const;
-    // Produit matriciel ; lève my_torch::Error si les dimensions ne correspondent pas.
+    // Matrix product; throws my_torch::Error if the dimensions do not match.
     Matrix matmul(const Matrix &other) const;
 
-    // Opérations élément par élément ; lèvent my_torch::Error si les formes diffèrent.
+    // Element-wise operations; throw my_torch::Error if the shapes differ.
     Matrix &operator+=(const Matrix &other);
     Matrix hadamard(const Matrix &other) const;
     Matrix map(const std::function<Scalar(Scalar)> &fn) const;
     void fill(Scalar value);
 
-    // Ajoute le vecteur ligne (1 × cols) à chaque ligne : le biais partagé par tout le batch.
+    // Adds the row vector (1 × cols) to every row: the bias shared by the whole batch.
     Matrix addRowVector(const Matrix &row) const;
-    // Somme de toutes les lignes (1 × cols) : le gradient du biais sur le batch.
+    // Sum of all rows (1 × cols): the bias gradient over the batch.
     Matrix sumRows() const;
 
   private:

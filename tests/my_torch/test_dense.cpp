@@ -7,7 +7,7 @@ using my_torch::Matrix;
 
 namespace {
 
-// L'exemple 2 × 2 du cours : X = [[1, 2], [3, 0]], W = [[0.5, -1], [0.5, 1]], b = [0.1, 0.2].
+// The 2 × 2 example from the course: X = [[1, 2], [3, 0]], W = [[0.5, -1], [0.5, 1]], b = [0.1, 0.2].
 Dense example()
 {
     Dense dense(2, 2);

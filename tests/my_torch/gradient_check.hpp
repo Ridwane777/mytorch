@@ -10,10 +10,10 @@
 
 #include "my_torch/my_torch.hpp"
 
-// Vérification des gradients par différences finies centrées. On prend comme coût
-// L = Σ sortie ⊙ R, avec R fixé au hasard : dL/dsortie vaut alors exactement R, que l'on donne
-// à backward. Chaque nombre de la matrice testée est ensuite bougé de ±h et la pente mesurée
-// (L(+h) - L(-h)) / 2h est comparée au gradient calculé par backward.
+// Gradient check by centred finite differences. The cost is taken as
+// L = Σ output ⊙ R, with R fixed at random: dL/doutput is then exactly R, which is passed
+// to backward. Each number of the tested matrix is then moved by ±h and the measured slope
+// (L(+h) - L(-h)) / 2h is compared with the gradient computed by backward.
 namespace gradient_check {
 
 using my_torch::Layer;
@@ -45,7 +45,7 @@ inline Scalar loss(Layer &layer, const Matrix &input, const Matrix &weights)
     return sum;
 }
 
-// Plus grand écart relatif entre analytic et la pente mesurée en bougeant chaque case de target.
+// Largest relative gap between analytic and the slope measured by moving each cell of target.
 inline Scalar maxError(Layer &layer, const Matrix &input, const Matrix &weights, Matrix &target,
                        const Matrix &analytic)
 {
@@ -66,7 +66,7 @@ inline Scalar maxError(Layer &layer, const Matrix &input, const Matrix &weights,
     return worst;
 }
 
-// Gradient par rapport à l'entrée : vérifie le dX renvoyé par backward.
+// Gradient with respect to the input: checks the dX returned by backward.
 inline Scalar inputError(Layer &layer, Matrix input, std::size_t outputs, std::uint32_t seed = 7)
 {
     const Matrix weights = random(input.rows(), outputs, seed);

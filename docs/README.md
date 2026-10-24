@@ -1,19 +1,19 @@
-# Dossier projet — carte des documents
+# Project file — document map
 
-Point d'entrée pour suivre le travail **sans lire le code**. Règles de rédaction :
-[AGENTS.md](../AGENTS.md). Tenir ce tableau à jour à chaque document ajouté.
+Entry point to follow the work **without reading the code**. Writing rules:
+[AGENTS.md](../AGENTS.md). Keep this table up to date with each document added.
 
-État au 2026-10-23 :
+Status as of 2026-10-23:
 
-| Volet | Document | État |
+| Area | Document | Status |
 | --- | --- | --- |
-| Décisions | [adr/](adr/README.md) : ADR et index, [modèle](adr/TEMPLATE.md) | 8 ADR : 0001 (Python, abandonné), 0002 (C++20, accepté), 0003 (algèbre linéaire) et 0004 (API) acceptés, 0005 (lecture des FEN), 0006 (oracle), 0007 (cross-entropy couplée à Softmax) et 0008 (optimiseurs et planificateurs) proposés |
-| Données | [lire-une-fen.md](lire-une-fen.md) : règles d'échecs utiles, lecture d'une ligne du dataset champ par champ, répartition des labels | Écrit |
-| Données | [verification-dataset.md](verification-dataset.md) : labels du dataset vérifiés par l'oracle (100 % d'accord) | Écrit |
-| Architecture | `architecture.md` : bibliothèque `my_torch`, analyseur, flux d'entraînement et de prédiction | À écrire |
-| Performance | [performance/](performance/README.md) : benchmarks, courbes d'apprentissage, scripts ; [optimizers.md](performance/optimizers.md) : optimiseurs et planificateurs, mesuré sur 5 graines | Optimiseurs écrit, reste à écrire pour le vrai jeu de données |
-| Légal | [legal/](legal/README.md) : licences, données, risques | À écrire |
-| Dépendances | [dependances.md](dependances.md) | Squelette |
-| Coûts | `business/couts.md` : mesuré et estimé | À écrire |
-| Commercial | [business/](business/README.md) : business plan, SWOT, feuille de route | À écrire |
-| Rétrospective | [retrospective/](retrospective/README.md) | À alimenter pendant le projet |
+| Decisions | [adr/](adr/README.md): ADRs and index, [template](adr/TEMPLATE.md) | 8 ADRs: 0001 (Python, abandoned), 0002 (C++20, accepted), 0003 (linear algebra) and 0004 (API) accepted, 0005 (reading FENs), 0006 (oracle), 0007 (cross-entropy coupled with Softmax) and 0008 (optimizers and schedulers) proposed |
+| Data | [reading-a-fen.md](reading-a-fen.md): useful chess rules, reading a dataset line field by field, label distribution | Written |
+| Data | [verification-dataset.md](verification-dataset.md): dataset labels checked by the oracle (100% agreement) | Written |
+| Architecture | `architecture.md`: `my_torch` library, analyzer, training and prediction flow | To write |
+| Performance | [performance/](performance/README.md): benchmarks, learning curves, scripts; [optimizers.md](performance/optimizers.md): optimizers and schedulers, measured over 5 seeds | Optimizers written, still to write for the real dataset |
+| Legal | [legal/](legal/README.md): licenses, data, risks | To write |
+| Dependencies | [dependencies.md](dependencies.md) | Skeleton |
+| Costs | `business/costs.md`: measured and estimated | To write |
+| Commercial | [business/](business/README.md): business plan, SWOT, roadmap | To write |
+| Retrospective | [retrospective/](retrospective/README.md) | To fill in during the project |

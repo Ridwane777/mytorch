@@ -12,7 +12,7 @@
 
 namespace my_torch {
 
-// Entrées et sorties attendues, une ligne par exemple.
+// Inputs and expected outputs, one row per example.
 struct Dataset {
     Matrix inputs;
     Matrix targets;
@@ -25,7 +25,7 @@ struct TrainConfig {
     bool shuffle = true;
 };
 
-// Mesures d'une époque ; les métriques détaillées (#11) s'ajouteront ici.
+// Measurements of one epoch; the detailed metrics (#11) will be added here.
 struct EpochStats {
     Scalar trainLoss = 0;
     Scalar validationLoss = 0;
@@ -33,8 +33,8 @@ struct EpochStats {
 
 using History = std::vector<EpochStats>;
 
-// Réseau séquentiel : les couches s'appliquent dans l'ordre d'ajout. Une architecture en
-// graphe (blocs résiduels, #31) fera l'objet d'un ADR séparé.
+// Sequential network: layers apply in the order they were added. A graph architecture
+// (residual blocks, #31) will get its own ADR.
 class Network {
   public:
     void add(std::unique_ptr<Layer> layer);
@@ -48,7 +48,7 @@ class Network {
     std::vector<Parameter> parameters();
     const std::vector<std::unique_ptr<Layer>> &layers() const noexcept;
 
-    // Format défini par l'ADR de #8. Lèvent my_torch::Error si le fichier est illisible.
+    // Format defined by the ADR of #8. Throw my_torch::Error if the file is unreadable.
     void save(const std::string &path) const;
     static Network load(const std::string &path);
 

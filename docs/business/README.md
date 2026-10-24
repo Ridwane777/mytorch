@@ -1,4 +1,4 @@
-# Volet commercial
+# Commercial
 
-À écrire : business plan (problème, solution, marché, concurrence, modèle économique, SWOT, feuille
-de route) et `couts.md` (mesuré séparé de l'estimé, avec la méthode de chaque estimation).
+To write: business plan (problem, solution, market, competition, business model, SWOT, roadmap)
+and `costs.md` (measured separated from estimated, with the method of each estimate).

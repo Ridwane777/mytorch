@@ -1,5 +1,5 @@
 #!/bin/sh
-# Reproduces the optimizer and scheduler comparison (docs/performance/optimiseurs.md).
+# Reproduces the optimizer and scheduler comparison (docs/performance/optimizers.md).
 # Builds the benchmark against src/my_torch, runs it, then draws the graphs (matplotlib).
 set -eu
 
