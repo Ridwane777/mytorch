@@ -34,7 +34,7 @@ Matrix matrix(std::initializer_list<std::initializer_list<Scalar>> rows)
     return m;
 }
 
-// Une distribution one-hot par ligne, la classe étant tirée parmi `classes`.
+// One one-hot distribution per row, the class being picked among `classes`.
 Matrix oneHot(std::size_t rows, std::size_t classes)
 {
     Matrix m(rows, classes);
@@ -132,7 +132,7 @@ Test(losses, label_smoothing_softens_the_target)
     const Matrix t = matrix({{1, 0, 0}});
     const Matrix g = CrossEntropy(0.3).gradient(p, t);
 
-    // q = [0.8, 0.1, 0.1] : le gradient vaut p - q.
+    // q = [0.8, 0.1, 0.1]: the gradient is p - q.
     cr_assert_float_eq(g(0, 0), -0.3, 1e-12);
     cr_assert_float_eq(g(0, 1), 0.15, 1e-12);
     cr_assert_throw(CrossEntropy(1), my_torch::Error);
@@ -145,7 +145,7 @@ Test(losses, class_weights_scale_each_class)
     const CrossEntropy loss(0, {1, 3});
 
     cr_assert_float_eq(loss.value(p, t), (-std::log(0.5) - 3 * std::log(0.5)) / 2, 1e-12);
-    // Exemple de la classe 1 (poids 3) : gradient 3·(p - t).
+    // Example of class 1 (weight 3): gradient 3·(p - t).
     cr_assert_float_eq(loss.gradient(p, t)(1, 1), 3 * (0.5 - 1) / 2, 1e-12);
     cr_assert_throw(CrossEntropy(0, {1, 2, 3}).value(p, t), my_torch::Error);
     cr_assert_throw(CrossEntropy(0, {1, -2}), my_torch::Error);
@@ -172,6 +172,7 @@ Test(losses, standalone_gradients_match_finite_differences)
     const Matrix binary = oneHot(4, 3);
 
     cr_assert_lt(gradient_check::lossError(MSE(), prediction, target), gradient_check::tolerance);
+    cr_assert_lt(gradient_check::lossError(MAE(), prediction, target), gradient_check::tolerance);
     cr_assert_lt(gradient_check::lossError(Huber(0.3), prediction, target),
                  gradient_check::tolerance);
     cr_assert_lt(gradient_check::lossError(BinaryCrossEntropy(), prediction, binary),
@@ -222,8 +223,8 @@ Test(gradient_check, cross_entropy_with_smoothing_and_weights_through_a_full_net
         gradient_check::tolerance);
 }
 
-// Le contrôle doit détecter un gradient faux : sans le saut du Softmax, le gradient fusionné
-// (p - q) passerait dans le backward du Softmax et serait faux.
+// The check must catch a wrong gradient: without skipping the Softmax, the fused gradient (p - q)
+// would go through the Softmax backward and be wrong.
 Test(gradient_check, detects_a_wrong_gradient)
 {
     struct Unfused : CrossEntropy {
