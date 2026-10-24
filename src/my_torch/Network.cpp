@@ -67,6 +67,16 @@ void checkDataset(const Dataset &data, const char *name)
 
 } // namespace
 
+std::vector<std::size_t> permutation(std::size_t count, std::uint64_t seed)
+{
+    std::vector<std::size_t> order(count);
+    std::mt19937_64 rng(seed);
+
+    std::iota(order.begin(), order.end(), 0);
+    shuffle(order, rng);
+    return order;
+}
+
 void Network::add(std::unique_ptr<Layer> layer)
 {
     if (!layer)

@@ -38,7 +38,14 @@ struct TrainConfig {
     std::size_t patience = 0;
     Scalar minDelta = 0;
     bool restoreBest = true;
+    // Fraction of a single data file held out for validation by the analyzer's --train
+    // (ADR-0014), in [0, 1[. fit itself takes the validation set as an argument.
+    Scalar validation = 0;
 };
+
+// The numbers 0..count-1 in an order shuffled by seed, with the same portable Fisher-Yates as
+// fit (ADR-0009): the same seed gives the same order on every toolchain.
+std::vector<std::size_t> permutation(std::size_t count, std::uint64_t seed);
 
 // Measurements of one epoch; the detailed metrics (#11) will be added here.
 struct EpochStats {

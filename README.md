@@ -10,8 +10,9 @@ Project in C++20 ([ADR-0002](docs/adr/0002-cpp-language.md)). Two deliverables:
 
 > Status (2026-10-24): the library is complete enough to train and save a network (dense layers,
 > activations, losses, optimizers and schedulers, mini-batch training, regularization, dropout,
-> early stopping, metrics, network file). The generator, the FEN parser and a rule-based oracle
-> are done. Still to do: input encoding, the analyzer command line, and the trained network. The
+> early stopping, metrics, network file). The generator, the analyzer (`--train`, `--predict`)
+> with a baseline input encoding, the FEN parser and a rule-based oracle are done. Still to do:
+> the encoding variants (#14), training on the full dataset and the final network (#17). The
 > technical choices are in [docs/adr/](docs/adr/README.md).
 
 ## Build and usage
@@ -25,7 +26,8 @@ make                    # my_torch_analyzer and my_torch_generator
 ./my_torch_generator configs/basic_network.conf 3   # writes basic_network_1.nn to _3.nn
 ```
 
-On error, the message goes to standard error and the program exits with code 84.
+On error, the message goes to standard error and the program exits with code 84. Step by step:
+[docs/usage.md](docs/usage.md).
 
 | Rule | Effect |
 | --- | --- |

@@ -6,7 +6,7 @@
 //   loss <type> key=value…
 //   optimizer <type> key=value…
 //   scheduler <type> key=value…
-//   train epochs=… batch=… seed=… shuffle=… patience=… min_delta=… restore_best=…
+//   train epochs=… batch=… seed=… shuffle=… patience=… min_delta=… restore_best=… validation=…
 //   layers <count>            then each layer as written by Layer::save
 //   end checksum=<16 hex digits>
 //
@@ -345,7 +345,7 @@ void writeConfig(std::ostream &out, const TrainConfig &c)
 {
     out << "train epochs=" << c.epochs << " batch=" << c.batchSize << " seed=" << c.seed
         << " shuffle=" << c.shuffle << " patience=" << c.patience << " min_delta=" << c.minDelta
-        << " restore_best=" << c.restoreBest << '\n';
+        << " restore_best=" << c.restoreBest << " validation=" << c.validation << '\n';
 }
 
 TrainConfig readTrainConfig(Reader &reader, const std::vector<std::string> &w)
@@ -371,6 +371,11 @@ TrainConfig readTrainConfig(Reader &reader, const std::vector<std::string> &w)
             c.minDelta = reader.number(value);
         else if (key == "restore_best")
             c.restoreBest = flag();
+        else if (key == "validation") {
+            c.validation = reader.number(value);
+            if (!(c.validation >= 0 && c.validation < 1))
+                reader.fail("train: validation must be in [0, 1[");
+        }
         else
             reader.fail("train: unknown setting '" + key + "'");
     }

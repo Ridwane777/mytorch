@@ -35,7 +35,7 @@ Checkmate Black
 loss cross_entropy
 optimizer adam lr=0.001
 scheduler none
-train epochs=20 batch=64 seed=42 patience=5
+train epochs=20 batch=64 seed=42 patience=5 validation=0.1
 init seed=1
 
 layers 4
@@ -74,7 +74,7 @@ the last one has one output per label; the generator refuses any other combinati
 | `loss <type>` (`cross_entropy`) | `mse`, `mae`, `huber` (`delta` 1), `binary_cross_entropy`, `cross_entropy` (`smoothing` 0, `weights` w1,w2,… one per label) |
 | `optimizer <type>` (`adam`) | `sgd` (`lr` 0.01, `momentum` 0, `nesterov` 0/1), `adam` (`lr` 0.001, `beta1` 0.9, `beta2` 0.999, `epsilon` 1e-8, `amsgrad` 0/1), `adamw` (same as adam plus `weight_decay` 0.01), `rmsprop` (`lr` 0.001, `decay` 0.9, `epsilon` 1e-8), `adagrad` (`lr` 0.01, `epsilon` 1e-10) |
 | `scheduler <type>` (`none`) | `constant` (`base`), `step` (`base`, `step` 10, `gamma` 0.1), `exponential` (`base`, `gamma` 0.95), `cosine` (`base`, `epochs` 10, `min` 0); each accepts `warmup` (epochs); `base` defaults to 0.001 |
-| `train` | `epochs` (10), `batch` (32), `seed` (42), `shuffle` (1), `patience` (0 = no early stopping), `min_delta` (0), `restore_best` (1) |
+| `train` | `epochs` (10), `batch` (32), `seed` (42), `shuffle` (1), `patience` (0 = no early stopping), `min_delta` (0), `restore_best` (1), `validation` (0): fraction of the training file held out by `my_torch_analyzer --train`, required when `patience` > 0 |
 
 ### Generation
 
