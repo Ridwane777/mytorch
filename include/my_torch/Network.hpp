@@ -9,6 +9,7 @@
 #include "my_torch/Layer.hpp"
 #include "my_torch/Loss.hpp"
 #include "my_torch/Optimizer.hpp"
+#include "my_torch/Schedulers.hpp"
 
 namespace my_torch {
 
@@ -42,8 +43,13 @@ class Network {
     Matrix forward(const Matrix &input, bool training = false);
     Matrix predict(const Matrix &input);
 
+    // Mini-batch training (ADR-0009). Each epoch: apply the scheduler if any, shuffle with the
+    // seed, then for each batch zero the gradients, forward, loss, backward, optimizer step. When
+    // loss.fusesSoftmax(), the last layer must be a Softmax and its backward is skipped (ADR-0007).
+    // Throws my_torch::Error on empty or mismatched data, a zero batch size or a missing Softmax.
     History fit(const Dataset &train, const Dataset *validation, Loss &loss,
-                Optimizer &optimizer, const TrainConfig &config);
+                Optimizer &optimizer, const TrainConfig &config,
+                const Scheduler *scheduler = nullptr);
 
     std::vector<Parameter> parameters();
     const std::vector<std::unique_ptr<Layer>> &layers() const noexcept;

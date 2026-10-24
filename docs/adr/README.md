@@ -12,3 +12,4 @@ One file per decision, based on [TEMPLATE.md](TEMPLATE.md). An accepted ADR is n
 | [0006](0006-oracle-without-castling.md) | Rule-based oracle: move generation by copy and without castling | Proposed | 2026-10-23 |
 | [0007](0007-softmax-cross-entropy-coupling.md) | Cross-entropy coupled to Softmax, Softmax gradient skipped in backpropagation | Proposed | 2026-10-24 |
 | [0008](0008-optimizers-and-schedulers.md) | Optimizers keep their own state; schedulers are stateless functions of the epoch | Proposed | 2026-10-24 |
+| [0009](0009-training-loop.md) | Training loop, scheduler parameter and portable shuffling | Proposed | 2026-10-24 |
