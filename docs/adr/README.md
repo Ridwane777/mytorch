@@ -14,3 +14,4 @@ One file per decision, based on [TEMPLATE.md](TEMPLATE.md). An accepted ADR is n
 | [0008](0008-optimizers-and-schedulers.md) | Optimizers keep their own state; schedulers are stateless functions of the epoch | Proposed | 2026-10-24 |
 | [0009](0009-training-loop.md) | Training loop, scheduler parameter and portable shuffling | Proposed | 2026-10-24 |
 | [0010](0010-overfitting-remedies.md) | Overfitting remedies: per-layer L1/L2, dropout layer and early stopping in fit | Proposed | 2026-10-24 |
+| [0011](0011-classification-metrics.md) | Classification metrics in the library, conventions and export formats | Proposed | 2026-10-24 |

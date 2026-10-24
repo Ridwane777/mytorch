@@ -5,6 +5,7 @@
 #include <random>
 
 #include "my_torch/Error.hpp"
+#include "my_torch/Metrics.hpp"
 
 namespace my_torch {
 
@@ -40,6 +41,18 @@ Matrix gatherRows(const Matrix &source, const std::vector<std::size_t> &order, s
         for (std::size_t c = 0; c < source.cols(); c++)
             batch(r - begin, c) = source(order[r], c);
     return batch;
+}
+
+// Rows whose predicted class matches the target's (ADR-0011).
+std::size_t countCorrect(const Matrix &prediction, const Matrix &targets)
+{
+    const auto predicted = classesOf(prediction);
+    const auto expected = classesOf(targets);
+    std::size_t correct = 0;
+
+    for (std::size_t r = 0; r < predicted.size(); r++)
+        correct += predicted[r] == expected[r];
+    return correct;
 }
 
 void checkDataset(const Dataset &data, const char *name)
@@ -125,6 +138,7 @@ History Network::fit(const Dataset &train, const Dataset *validation, Loss &loss
         Scalar lossSum = 0;
         Scalar penaltySum = 0;
         std::size_t batches = 0;
+        std::size_t correct = 0;
         for (std::size_t begin = 0; begin < count; begin += config.batchSize) {
             const std::size_t end = std::min(begin + config.batchSize, count);
             const Matrix inputs = gatherRows(train.inputs, order, begin, end);
@@ -139,6 +153,7 @@ History Network::fit(const Dataset &train, const Dataset *validation, Loss &loss
             for (const auto &layer : _layers)
                 penaltySum += layer->penalty();
             batches++;
+            correct += countCorrect(prediction, targets);
             Matrix grad = loss.gradient(prediction, targets);
             for (std::size_t i = lastBackward; i-- > 0;)
                 grad = _layers[i]->backward(grad);
@@ -147,8 +162,14 @@ History Network::fit(const Dataset &train, const Dataset *validation, Loss &loss
         EpochStats stats;
         stats.trainLoss = lossSum / static_cast<Scalar>(count);
         stats.penalty = penaltySum / static_cast<Scalar>(batches);
-        if (validation)
-            stats.validationLoss = loss.value(predict(validation->inputs), validation->targets);
+        stats.trainAccuracy = static_cast<Scalar>(correct) / static_cast<Scalar>(count);
+        if (validation) {
+            const Matrix predicted = predict(validation->inputs);
+            stats.validationLoss = loss.value(predicted, validation->targets);
+            stats.validationAccuracy =
+                static_cast<Scalar>(countCorrect(predicted, validation->targets)) /
+                static_cast<Scalar>(predicted.rows());
+        }
         history.push_back(stats);
         if (config.patience == 0)
             continue;

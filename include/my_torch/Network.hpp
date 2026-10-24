@@ -37,6 +37,11 @@ struct EpochStats {
     Scalar trainLoss = 0;      // data loss only, comparable with validationLoss
     Scalar validationLoss = 0; // data loss on the validation set, 0 without one
     Scalar penalty = 0;        // sum of the layers' penalty(), averaged over the epoch's batches
+    // Fraction of examples whose predicted class (argmax, or >= 0.5 for one output) matches the
+    // target's; meaningful for classification only (ADR-0011). Training accuracy is measured on
+    // the batches as they are trained, so with dropout it is the accuracy of the dropped network.
+    Scalar trainAccuracy = 0;
+    Scalar validationAccuracy = 0; // 0 without a validation set
 };
 
 using History = std::vector<EpochStats>;
