@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include <memory>
+#include <string>
 
 #include "my_torch/my_torch.hpp"
 
@@ -212,8 +213,12 @@ Test(adam, adamw_decays_weights_even_with_a_zero_gradient)
     adam.step(untouched.params());
     cr_assert_float_eq(w.value(0, 0), 1 - 0.1 * 0.1, 1e-12);
     cr_assert_float_eq(untouched.value(0, 0), 1, 1e-12);
-    cr_assert_str_eq(adamw.type().c_str(), "adamw");
-    cr_assert_str_eq(adam.type().c_str(), "adam");
+    // Keep the strings alive: c_str() of a temporary would dangle inside the assertion.
+    const std::string adamwType = adamw.type();
+    const std::string adamType = adam.type();
+
+    cr_assert_str_eq(adamwType.c_str(), "adamw");
+    cr_assert_str_eq(adamType.c_str(), "adam");
 }
 
 Test(rmsprop, first_step_matches_hand_computation)

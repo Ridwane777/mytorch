@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include <memory>
+#include <string>
 
 #include "my_torch/my_torch.hpp"
 
@@ -58,7 +59,9 @@ Test(schedulers, warmup_ramps_up_then_hands_over)
     cr_assert_float_eq(warmup.rate(3), 1.0, 1e-12);
     cr_assert_float_eq(warmup.rate(4), 1.0, 1e-12);  // cosine epoch 0
     cr_assert_float_eq(warmup.rate(54), 0.5, 1e-12); // cosine epoch 50
-    cr_assert_str_eq(warmup.type().c_str(), "warmup_cosine");
+    const std::string type = warmup.type(); // c_str() of a temporary would dangle in the assertion
+
+    cr_assert_str_eq(type.c_str(), "warmup_cosine");
 }
 
 Test(schedulers, rates_drive_an_optimizer)
