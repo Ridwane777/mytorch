@@ -7,10 +7,10 @@ Status as of 2026-10-24:
 
 | Area | Document | Status |
 | --- | --- | --- |
-| Decisions | [adr/](adr/README.md): ADRs and index, [template](adr/TEMPLATE.md) | 13 ADRs: 0001 (Python) abandoned, 0002 to 0013 accepted |
+| Decisions | [adr/](adr/README.md): ADRs and index, [template](adr/TEMPLATE.md) | 14 ADRs: 0001 (Python) abandoned, 0002 to 0014 accepted |
 | Data | [reading-a-fen.md](reading-a-fen.md): useful chess rules, reading a dataset line field by field, label distribution | Written |
 | Data | [verification-dataset.md](verification-dataset.md): dataset labels checked by the oracle (100% agreement) | Written |
-| Usage | [configuration.md](configuration.md): every key of a generator configuration file, with an example | Written |
+| Usage | [usage.md](usage.md): generate, train and predict from the command line; [configuration.md](configuration.md): every key of a configuration file | Written |
 | Architecture | `architecture.md`: `my_torch` library, analyzer, training and prediction flow | To write |
 | Performance | [performance/](performance/README.md): [optimizers.md](performance/optimizers.md) (optimizers and schedulers), [overfitting.md](performance/overfitting.md) (L1, L2, dropout, early stopping), [serialization.md](performance/serialization.md) (network file size and load time) | Three measurements written on test problems; the chess network measurements come with #17 and #18 |
 | Legal | [legal/](legal/README.md): licenses, data, risks | To write |

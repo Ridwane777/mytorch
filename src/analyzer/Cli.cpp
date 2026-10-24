@@ -1,14 +1,202 @@
 #include "Cli.hpp"
 
+#include <iomanip>
 #include <iostream>
+#include <optional>
+
+#include "Encoding.hpp"
+#include "Fen.hpp"
+#include "my_torch/my_torch.hpp"
 
 namespace analyzer {
 
+namespace {
+
+using my_torch::Error;
+
+constexpr const char *usage =
+    "USAGE\n"
+    "    ./my_torch_analyzer [--predict | --train [--save SAVEFILE]] LOADFILE CHESSFILE\n"
+    "\n"
+    "DESCRIPTION\n"
+    "    --train     Launch the neural network in training mode. Each chessboard in CHESSFILE\n"
+    "                must contain inputs to send to the neural network in FEN notation and the\n"
+    "                expected output separated by space. If specified, the newly trained neural\n"
+    "                network will be saved in SAVEFILE. Otherwise, it will be saved in the\n"
+    "                original LOADFILE.\n"
+    "    --predict   Launch the neural network in prediction mode. Each chessboard in CHESSFILE\n"
+    "                must contain inputs to send to the neural network in FEN notation, and\n"
+    "                optionally an expected output.\n"
+    "    --save      Save neural network into SAVEFILE. Only works in train mode.\n"
+    "    LOADFILE    File containing an artificial neural network\n"
+    "    CHESSFILE   File containing chessboards\n";
+
+struct Options {
+    bool train = false;
+    std::optional<std::string> save;
+    std::string network;
+    std::string chessboards;
+};
+
+Options parseArguments(const std::vector<std::string> &args)
+{
+    Options o;
+    bool predict = false;
+    std::vector<std::string> files;
+
+    for (std::size_t i = 0; i < args.size(); i++) {
+        const std::string &a = args[i];
+        if (a == "--predict" || a == "--train") {
+            if (predict || o.train)
+                throw Error("give exactly one of --predict and --train");
+            (a == "--train" ? o.train : predict) = true;
+        } else if (a == "--save") {
+            if (o.save || i + 1 >= args.size())
+                throw Error("--save needs exactly one SAVEFILE");
+            o.save = args[++i];
+        } else if (a.size() > 1 && a[0] == '-') {
+            throw Error("unknown option '" + a + "'");
+        } else {
+            files.push_back(a);
+        }
+    }
+    if (!predict && !o.train)
+        throw Error("give exactly one of --predict and --train");
+    if (o.save && !o.train)
+        throw Error("--save only works with --train");
+    if (files.size() != 2)
+        throw Error("expected LOADFILE and CHESSFILE");
+    o.network = files[0];
+    o.chessboards = files[1];
+    return o;
+}
+
+const Encoding &encodingOf(const my_torch::Network &net)
+{
+    const Encoding &encoding = findEncoding(net.info().encoding);
+    if (encoding.width() != net.info().inputs)
+        throw Error("encoding '" + encoding.name() + "' gives " + std::to_string(encoding.width()) +
+                    " inputs but the network takes " + std::to_string(net.info().inputs));
+    return encoding;
+}
+
+int predict(const Options &o)
+{
+    my_torch::Network net = my_torch::Network::load(o.network);
+    const Encoding &encoding = encodingOf(net);
+    // Read and check the whole file before printing the first prediction.
+    const std::vector<Sample> samples = parseFile(o.chessboards, LabelPolicy::Optional);
+    const auto &labels = net.info().labels;
+
+    for (std::size_t begin = 0; begin < samples.size(); begin += PREDICT_CHUNK) {
+        const std::size_t end = std::min(begin + PREDICT_CHUNK, samples.size());
+        const my_torch::Matrix rows = encodeRows(encoding, samples, begin, end);
+        for (const std::size_t c : my_torch::classesOf(net.predict(rows)))
+            std::cout << labels[c] << '\n';
+    }
+    return 0;
+}
+
+my_torch::Dataset subset(const my_torch::Matrix &inputs, const my_torch::Matrix &targets,
+                         const std::vector<std::size_t> &rows)
+{
+    my_torch::Dataset d{my_torch::Matrix(rows.size(), inputs.cols()),
+                        my_torch::Matrix(rows.size(), targets.cols())};
+    for (std::size_t r = 0; r < rows.size(); r++) {
+        for (std::size_t c = 0; c < inputs.cols(); c++)
+            d.inputs(r, c) = inputs(rows[r], c);
+        for (std::size_t c = 0; c < targets.cols(); c++)
+            d.targets(r, c) = targets(rows[r], c);
+    }
+    return d;
+}
+
+int train(const Options &o)
+{
+    my_torch::Network net = my_torch::Network::load(o.network);
+    const Encoding &encoding = encodingOf(net);
+    const my_torch::TrainingSpec &spec = net.info().training;
+    const auto &labels = net.info().labels;
+    const std::vector<Sample> samples = parseFile(o.chessboards, LabelPolicy::Required);
+    if (samples.empty())
+        throw Error(o.chessboards + ": no chessboard to train on");
+
+    const my_torch::Matrix inputs = encodeRows(encoding, samples, 0, samples.size());
+    my_torch::Matrix targets(samples.size(), labels.size());
+    for (std::size_t r = 0; r < samples.size(); r++) {
+        try {
+            targets(r, labelIndex(std::string(labelName(*samples[r].label)), labels)) = 1;
+        } catch (const Error &error) {
+            throw Error(o.chessboards + ": position " + std::to_string(r + 1) + ": " +
+                        error.what());
+        }
+    }
+
+    // Hold out a seeded fraction for validation (ADR-0014).
+    const auto order = my_torch::permutation(samples.size(), spec.config.seed);
+    const auto held = static_cast<std::size_t>(spec.config.validation *
+                                               static_cast<my_torch::Scalar>(samples.size()));
+    if (spec.config.patience > 0 && held == 0)
+        throw Error("early stopping (patience) needs a validation fraction holding at least one "
+                    "position");
+    if (held >= samples.size())
+        throw Error("the validation fraction leaves no position to train on");
+    const std::vector<std::size_t> validationRows(order.begin(), order.begin() + held);
+    const std::vector<std::size_t> trainRows(order.begin() + held, order.end());
+    const my_torch::Dataset trainSet = subset(inputs, targets, trainRows);
+    const my_torch::Dataset validationSet = subset(inputs, targets, validationRows);
+
+    const auto loss = my_torch::makeLoss(spec.loss);
+    const auto optimizer = my_torch::makeOptimizer(spec.optimizer);
+    const auto scheduler = my_torch::makeScheduler(spec.scheduler);
+    const my_torch::History history = net.fit(trainSet, held ? &validationSet : nullptr, *loss,
+                                              *optimizer, spec.config, scheduler.get());
+
+    std::cout << std::fixed << std::setprecision(4);
+    for (std::size_t e = 0; e < history.size(); e++) {
+        const my_torch::EpochStats &s = history[e];
+        std::cout << "epoch " << e + 1 << "/" << spec.config.epochs << "  loss " << s.trainLoss
+                  << "  accuracy " << s.trainAccuracy;
+        if (held)
+            std::cout << "  validation loss " << s.validationLoss << "  validation accuracy "
+                      << s.validationAccuracy;
+        std::cout << '\n';
+    }
+    net.save(o.save ? *o.save : o.network);
+    return 0;
+}
+
+} // namespace
+
+std::size_t labelIndex(const std::string &expected, const std::vector<std::string> &labels)
+{
+    for (std::size_t i = 0; i < labels.size(); i++)
+        if (labels[i] == expected)
+            return i;
+    const std::string firstWord = expected.substr(0, expected.find(' '));
+    for (std::size_t i = 0; i < labels.size(); i++)
+        if (labels[i] == firstWord)
+            return i;
+    std::string known;
+    for (const std::string &l : labels)
+        known += (known.empty() ? "'" : ", '") + l + "'";
+    throw Error("expected output '" + expected + "' matches none of the network's labels (" +
+                known + ")");
+}
+
 int run(const std::vector<std::string> &args)
 {
-    (void)args;
-    std::cerr << "my_torch_analyzer: not implemented yet" << std::endl;
-    return EXIT_ERROR;
+    if (args.size() == 1 && (args[0] == "--help" || args[0] == "-h")) {
+        std::cout << usage;
+        return 0;
+    }
+    Options options;
+    try {
+        options = parseArguments(args);
+    } catch (const Error &error) {
+        throw Error(std::string(error.what()) + "\n" + usage);
+    }
+    return options.train ? train(options) : predict(options);
 }
 
 } // namespace analyzer

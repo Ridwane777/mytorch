@@ -17,3 +17,4 @@ One file per decision, based on [TEMPLATE.md](TEMPLATE.md). An accepted ADR is n
 | [0011](0011-classification-metrics.md) | Classification metrics in the library, conventions and export formats | Accepted | 2026-10-24 |
 | [0012](0012-network-file-format.md) | Network file format: versioned self-describing text with a checksum | Accepted | 2026-10-24 |
 | [0013](0013-configuration-format.md) | Generator configuration in the network file syntax, seeded and checked before writing | Accepted | 2026-10-24 |
+| [0014](0014-analyzer-command-line.md) | Analyzer command line, encoding table, label matching and validation hold-out | Accepted | 2026-10-24 |
