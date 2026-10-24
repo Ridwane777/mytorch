@@ -1,70 +1,78 @@
-# ADR-0007 : Entropie croisée couplée à Softmax, gradient sauté dans la rétropropagation
+# ADR-0007: Cross-entropy coupled to Softmax, Softmax gradient skipped in backpropagation
 
-- **Statut** : Proposé
-- **Date** : 2026-10-24
-- **Décideurs** : Meric-BG (en attente de Ridwane777, qui écrit la rétropropagation dans #4)
-- **Issue** : #3
+- **Status**: Proposed
+- **Date**: 2026-10-24
+- **Deciders**: Meric-BG (awaiting Ridwane777, who writes backpropagation in #4)
+- **Issue**: #3
 
-## Contexte
+## Context
 
-Le réseau de l'analyseur finit par une couche `Softmax`, qui transforme les scores `z` en
-probabilités `p` (positives, de somme 1), puis le coût compare `p` à la cible `t` (un vecteur
-one-hot : 1 pour la bonne classe, 0 ailleurs). Pour l'entropie croisée, `L = -Σ t_i·log p_i`.
+The analyzer's network ends with a `Softmax` layer, which turns scores `z` into probabilities `p`
+(positive, summing to 1); the loss then compares `p` with the target `t` (a one-hot vector: 1 for
+the right class, 0 elsewhere). For cross-entropy, `L = -Σ t_i·log p_i`.
 
-La rétropropagation applique la règle de dérivation en chaîne : le gradient du coût par rapport à `p`
-est d'abord calculé, puis chaque couche le transforme en remontant. Pour l'entropie croisée,
-`dL/dp_i = -t_i / p_i`. Le backward de `Softmax` le multiplie ensuite par `p_i` environ. Quand le
-réseau se trompe gravement, la bonne classe a `p_i ≈ 0` : la division par `p_i` donne un nombre
-énorme, que le Softmax multiplie par un nombre minuscule, et **l'information du gradient est perdue
-par arrondi**. C'est précisément le cas où l'on a le plus besoin d'un gradient fort.
+Backpropagation applies the chain rule: the gradient of the loss with respect to `p` is computed
+first, then each layer turns it into a gradient for its own input. For cross-entropy,
+`dL/dp_i = -t_i / p_i`, and the `Softmax` backward then multiplies it by roughly `p_i`. When the
+network is badly wrong, the right class has `p_i ≈ 0`, so the division by `p_i` must be guarded
+(`p_i` is bounded to ε = 1e-15, otherwise it divides by zero) and the guard destroys the gradient.
 
-Mesure (programme jetable appelant `Softmax::backward` sur deux classes, bonne classe écrasée de
-`écart` points de score, `-t/p` borné à ε = 1e-15) : à écart 10 et 30 le chemin naïf est encore
-exact (−0,99996 et −1,0), mais à écart 40 (`p = 4e-18 < ε`) il donne **−0,004 au lieu de −1** :
-le gradient disparaît d'un coup, sans erreur ni NaN. Le chemin couplé donne −1 dans les trois cas.
+Measured by [scripts/softmax_ce_gradient.cpp](../../scripts/softmax_ce_gradient.cpp) (two classes,
+the right class pushed down by `gap` score points, naive path `-t/max(p, ε)` through
+`Softmax::backward`, compared with the exact value `p - t`):
 
-Mathématiquement, les deux étapes se simplifient : `dL/dz_i = p_i - t_i`. Cette forme ne divise
-jamais par `p_i` et se calcule en une soustraction. L'ADR-0004 annonçait déjà ce couplage sans en
-fixer le mécanisme.
+| gap | p of the right class | naive gradient | coupled gradient | exact `p - t` |
+| --- | --- | --- | --- | --- |
+| 10 | 4.54e-05 | -0.999955 | -0.999955 | -0.999955 |
+| 30 | 9.36e-14 | -1.000000 | -1.000000 | -1.000000 |
+| 40 | 4.25e-18 | **-0.004248** | -1.000000 | -1.000000 |
 
-## Options envisagées
+So the naive path is exact while `p > ε`, and loses the gradient abruptly below ε: at gap 40 it
+returns -0.004 instead of -1, with no error and no NaN, exactly when the network is most wrong.
+Without the guard it would instead return NaN once `p` underflows to 0 (not measured here).
 
-| Option | Pour | Contre |
+Mathematically the two steps simplify: `dL/dz_i = p_i - t_i`. That form never divides by `p_i`.
+ADR-0004 already announced this coupling without fixing the mechanism.
+
+## Options considered
+
+| Option | Pros | Cons |
 | --- | --- | --- |
-| **`CrossEntropy` prend la sortie du Softmax, renvoie `dL/dz` et se déclare « fusionnée » (`fusesSoftmax()`) ; la rétropropagation saute alors le backward du Softmax final** | Gradient stable ; le réseau garde sa couche `Softmax` visible, donc `predict` renvoie des probabilités, comme dans l'exemple de l'ADR-0004 ; aucun changement de la liste de couches | Un cas particulier dans la rétropropagation ; `gradient()` ne renvoie plus `dL/dprédiction` pour ce coût, ce qu'il faut documenter |
-| `CrossEntropy` prend les scores `z` (logits) et applique le softmax en interne ; le réseau n'a pas de couche Softmax | Aucun cas particulier : c'est le modèle de `nn.CrossEntropyLoss` de PyTorch ; calcul stable par soustraction du maximum | `predict` ne renvoie plus de probabilités : il faut un softmax à part à la prédiction ; l'exemple de l'ADR-0004 et les fichiers de réseau changent |
-| Garder `dL/dp = -t/p` et borner `p` à ε (1e-15) | Aucune modification de l'API | Le gradient reste faux quand `p < ε` (la bonne classe est justement celle qui est écrasée) ; seulement un pansement |
+| **`CrossEntropy` takes the Softmax output, returns `dL/dz` and declares itself "fused" (`fusesSoftmax()`); backpropagation then skips the final Softmax backward** | Stable gradient; the network keeps its visible `Softmax` layer, so `predict` returns probabilities as in ADR-0004's example; no change to the layer list | One special case in backpropagation; `gradient()` no longer returns `dL/dprediction` for this loss, which must be documented |
+| `CrossEntropy` takes the raw scores `z` (logits) and applies softmax internally; the network has no Softmax layer | No special case: this is PyTorch's `nn.CrossEntropyLoss` model; stable by subtracting the maximum | `predict` no longer returns probabilities (a separate softmax is needed at prediction time); ADR-0004's example and the network files change |
+| Keep `dL/dp = -t/p` and bound `p` to ε | No API change | The gradient is wrong when `p < ε`, which is exactly the crushed right class; a band-aid |
 
-## Décision
+## Decision
 
-On retient la première option. `Loss` gagne une méthode virtuelle `fusesSoftmax()` (faux par défaut).
-`CrossEntropy` la renvoie à vrai : sa `value()` lit les probabilités (bornées à 1e-15 avant le
-logarithme), et son `gradient()` renvoie directement le gradient par rapport à l'**entrée** du
-Softmax final, `(p·W - w⊙q) / taille_du_batch` (`W = Σ w_c·q_c`), soit `(p - t) / batch` sans
-pondération ni lissage. `Network::fit` (#4) doit, quand `loss.fusesSoftmax()` est vrai, sauter le
-`backward` de la dernière couche si c'est un `Softmax`. Le test de gradient du réseau complet
-(`tests/my_torch/gradient_check.hpp`) fait déjà ce saut et prouve par différences finies que le
-résultat est juste ; un test vérifie aussi qu'il détecte l'oubli du saut.
+We take the first option. `Loss` gains a virtual `fusesSoftmax()` (false by default).
+`CrossEntropy` returns true: its `value()` reads probabilities (bounded to 1e-15 before the
+logarithm) and its `gradient()` returns the gradient with respect to the **input** of the final
+Softmax, `(p·W - w⊙q) / batch_size` (`W = Σ w_c·q_c`), i.e. `(p - t) / batch` without weights or
+smoothing. When `loss.fusesSoftmax()` is true, `Network::fit` (#4) must skip the `backward` of the
+last layer, which must be a `Softmax`, and must **throw `my_torch::Error` if it is not**: otherwise
+the gradient would silently be the wrong one. The full-network gradient test
+(`tests/my_torch/gradient_check.hpp`) already does the skip and the check, and proves by finite
+differences that the result is correct; one test also verifies that it detects a forgotten skip.
 
-Deux options de la même classe, sans effet sur l'API : le **lissage des étiquettes** `s` remplace la
-cible par `q = (1 - s)·t + s/classes` (le réseau n'est plus poussé vers des probabilités de 0 ou 1,
-donc des scores infinis), et des **poids par classe** `w_c` multiplient le coût des exemples de la
-classe `c`, pour le déséquilibre des classes (#16). La moyenne reste divisée par la taille du batch,
-pas par la somme des poids.
+Two options of the same class, with no API impact: **label smoothing** `s` replaces the target with
+`q = (1 - s)·t + s/classes` (the network is no longer pushed toward probabilities of 0 or 1, i.e.
+infinite scores), and **class weights** `w_c` multiply the loss of the examples of class `c`, for
+class imbalance (#16). The mean is still divided by the batch size, not by the sum of the weights.
 
-## Conséquences
+## Consequences
 
-- ✅ Gradient exact et stable même quand la bonne classe a une probabilité presque nulle.
-- ✅ `predict` renvoie toujours des probabilités ; l'API de l'ADR-0004 ne change pas.
-- ✅ Lissage et pondération des classes sont couverts par le même test de gradient.
-- ❌ Cas particulier à connaître dans la rétropropagation : si #4 l'oublie, le gradient est faux sans
-  erreur visible (seul le test de gradient du réseau complet le détecte).
-- ❌ `gradient()` n'a pas le même sens pour tous les coûts (`dL/dp` pour MSE, `dL/dz` pour
-  `CrossEntropy`) ; documenté dans `Loss.hpp`.
-- ❌ Un réseau dont la dernière couche n'est pas un `Softmax` ne peut pas utiliser `CrossEntropy` :
-  le gradient serait celui d'un autre calcul. Un coût pour les sorties Sigmoid existe
-  (`BinaryCrossEntropy`).
-- ❌ La *focal loss* n'est pas faite : son gradient par rapport aux scores n'a pas cette forme
-  simple et demanderait son propre ADR.
-- Suivi : #4 appelle `fusesSoftmax()` dans `Network::fit` et ajoute un test sur un réseau qui apprend
-  XOR avec Softmax + `CrossEntropy`. À revoir si une couche suit le Softmax (non prévu).
+- ✅ Exact, stable gradient even when the right class has a probability close to 0.
+- ✅ `predict` still returns probabilities; ADR-0004's API does not change.
+- ✅ Smoothing and class weights are covered by the same gradient test (relative error under 1e-6
+  through a full network).
+- ❌ A special case to remember in backpropagation: if #4 forgets it, the gradient is wrong with no
+  visible error (only the full-network gradient test catches it).
+- ❌ `gradient()` does not mean the same thing for every loss (`dL/dp` for MSE, `dL/dz` for
+  `CrossEntropy`); documented in `Loss.hpp`.
+- ❌ A network whose last layer is not a `Softmax` cannot use `CrossEntropy`: the gradient would be
+  that of another computation. `BinaryCrossEntropy` exists for Sigmoid outputs.
+- ❌ *Focal loss* is not implemented: its gradient with respect to the scores does not have this
+  simple form and would need its own ADR.
+- Follow-up: #4 calls `fusesSoftmax()` in `Network::fit`, throws on a mismatch, and adds a test of a
+  network learning XOR with Softmax + `CrossEntropy`. To revisit if a layer is ever placed after the
+  Softmax (not planned).
