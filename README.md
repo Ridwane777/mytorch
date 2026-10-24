@@ -8,7 +8,11 @@ Project in C++20 ([ADR-0002](docs/adr/0002-cpp-language.md)). Two deliverables:
 - **`my_torch_analyzer`**: an executable that reads chess positions in FEN notation and predicts
   the state of the game (`Checkmate`, `Check`, `Nothing`, with the color), by supervised learning.
 
-> Status: repository skeleton. The technical choices are in [docs/adr/](docs/adr/README.md).
+> Status (2026-10-24): the library is complete enough to train and save a network (dense layers,
+> activations, losses, optimizers and schedulers, mini-batch training, regularization, dropout,
+> early stopping, metrics, network file). The FEN parser and a rule-based oracle are done. Still
+> to do: input encoding, the analyzer and generator command lines, and the trained network. The
+> technical choices are in [docs/adr/](docs/adr/README.md).
 
 ## Build and usage
 
@@ -42,7 +46,7 @@ On error, the message goes to standard error and the program exits with code 84.
 | `my_torch_network_*.nn` | Pre-trained network evaluated by the autograder |
 | `configs/` | Network configurations (hyperparameters) |
 | `scripts/` | Training, benchmarks and graphs, to reproduce our results |
-| `bonus/` | Bonus (required by the subject) |
+| `bonus/` | Bonuses, with their own Makefile (required by the subject): the rule-based chess oracle |
 | `docs/` | Project file: decisions, performance, legal, business, retrospective. Map: [docs/README.md](docs/README.md) |
 
 The datasets (`dataset/`) are not pushed: they are too heavy. They are shown at the defense and

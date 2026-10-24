@@ -1,8 +1,8 @@
 # ADR-0011: Classification metrics in the library, conventions and export formats
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-10-24
-- **Deciders**: Ridwane777 (awaiting Meric-BG, since `Network.hpp` changes)
+- **Deciders**: Ridwane777
 - **Issue**: #11
 
 ## Context

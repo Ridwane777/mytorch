@@ -1,8 +1,8 @@
 # ADR-0007: Cross-entropy coupled to Softmax, Softmax gradient skipped in backpropagation
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-10-24
-- **Deciders**: Meric-BG (awaiting Ridwane777, who writes backpropagation in #4)
+- **Deciders**: Meric-BG (author), Ridwane777 (accepted)
 - **Issue**: #3
 
 ## Context
