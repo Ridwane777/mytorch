@@ -11,3 +11,4 @@ Un fichier par décision, à partir de [TEMPLATE.md](TEMPLATE.md). Un ADR accept
 | [0005](0005-lecture-fen.md) | Lecture des FEN : validation du format et représentation du plateau | Proposé | 2026-10-23 |
 | [0006](0006-oracle-sans-roque.md) | Oracle par les règles : génération des coups par copie et sans roque | Proposé | 2026-10-23 |
 | [0007](0007-softmax-cross-entropy-coupling.md) | Cross-entropy coupled to Softmax, Softmax gradient skipped in backpropagation | Proposed | 2026-10-24 |
+| [0008](0008-optimizers-and-schedulers.md) | Optimizers keep their own state; schedulers are stateless functions of the epoch | Proposed | 2026-10-24 |
