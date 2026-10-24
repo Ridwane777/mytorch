@@ -1,8 +1,12 @@
 #pragma once
 
+#include <algorithm>
 #include <cmath>
 #include <functional>
+#include <memory>
 #include <random>
+#include <stdexcept>
+#include <vector>
 
 #include "my_torch/my_torch.hpp"
 
@@ -56,7 +60,8 @@ inline Scalar maxError(Layer &layer, const Matrix &input, const Matrix &weights,
         target.data()[i] = saved;
         const Scalar numeric = (plus - minus) / (2 * step);
         const Scalar a = analytic.data()[i];
-        worst = std::max(worst, std::abs(a - numeric) / std::max(1.0, std::abs(a) + std::abs(numeric)));
+        worst =
+            std::max(worst, std::abs(a - numeric) / std::max(1.0, std::abs(a) + std::abs(numeric)));
     }
     return worst;
 }
@@ -68,6 +73,78 @@ inline Scalar inputError(Layer &layer, Matrix input, std::size_t outputs, std::u
     layer.forward(input, true);
     const Matrix analytic = layer.backward(weights);
     return maxError(layer, input, weights, input, analytic);
+}
+
+// Gradient of a loss with respect to the prediction (for losses not coupled to Softmax).
+inline Scalar lossError(const my_torch::Loss &loss, Matrix prediction, const Matrix &target)
+{
+    const Matrix analytic = loss.gradient(prediction, target);
+    Scalar worst = 0;
+
+    for (std::size_t i = 0; i < prediction.size(); i++) {
+        const Scalar saved = prediction.data()[i];
+        prediction.data()[i] = saved + step;
+        const Scalar plus = loss.value(prediction, target);
+        prediction.data()[i] = saved - step;
+        const Scalar minus = loss.value(prediction, target);
+        prediction.data()[i] = saved;
+        const Scalar numeric = (plus - minus) / (2 * step);
+        const Scalar a = analytic.data()[i];
+        worst = std::max(worst,
+                         std::abs(a - numeric) / std::max(1e-10, std::abs(a) + std::abs(numeric)));
+    }
+    return worst;
+}
+
+using Layers = std::vector<std::unique_ptr<Layer>>;
+
+inline Matrix forward(Layers &layers, const Matrix &input)
+{
+    Matrix x = input;
+
+    for (auto &layer : layers)
+        x = layer->forward(x, true);
+    return x;
+}
+
+// Checks the gradients of every parameter of a complete network, from the prediction to the loss:
+// backpropagation written by hand like Network::fit (the final Softmax backward is skipped when
+// the loss fuses it), then compared with the finite differences of loss.value. Returns the largest
+// relative error over all weights and biases.
+inline Scalar networkError(Layers &layers, const my_torch::Loss &loss, const Matrix &input,
+                           const Matrix &target)
+{
+    if (loss.fusesSoftmax() && (layers.empty() || layers.back()->type() != "softmax"))
+        throw std::logic_error("a loss that fuses Softmax needs a final Softmax layer");
+    std::vector<my_torch::Parameter> params;
+
+    for (auto &layer : layers)
+        for (const auto &p : layer->parameters()) {
+            p.grad->fill(0);
+            params.push_back(p);
+        }
+    Matrix grad = loss.gradient(forward(layers, input), target);
+    for (std::size_t i = layers.size(); i-- > 0;) {
+        if (i + 1 == layers.size() && loss.fusesSoftmax() && layers[i]->type() == "softmax")
+            continue;
+        grad = layers[i]->backward(grad);
+    }
+    Scalar worst = 0;
+    for (const auto &p : params) {
+        for (std::size_t i = 0; i < p.value->size(); i++) {
+            const Scalar saved = p.value->data()[i];
+            p.value->data()[i] = saved + step;
+            const Scalar plus = loss.value(forward(layers, input), target);
+            p.value->data()[i] = saved - step;
+            const Scalar minus = loss.value(forward(layers, input), target);
+            p.value->data()[i] = saved;
+            const Scalar numeric = (plus - minus) / (2 * step);
+            const Scalar a = p.grad->data()[i];
+            worst = std::max(worst, std::abs(a - numeric) /
+                                        std::max(1e-10, std::abs(a) + std::abs(numeric)));
+        }
+    }
+    return worst;
 }
 
 } // namespace gradient_check

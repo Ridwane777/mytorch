@@ -7,6 +7,7 @@
 #include "my_torch/Error.hpp"
 #include "my_torch/Layer.hpp"
 #include "my_torch/Loss.hpp"
+#include "my_torch/Losses.hpp"
 #include "my_torch/Matrix.hpp"
 #include "my_torch/Network.hpp"
 #include "my_torch/Optimizer.hpp"
