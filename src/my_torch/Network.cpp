@@ -100,6 +100,8 @@ History Network::fit(const Dataset &train, const Dataset *validation, Loss &loss
         throw Error("fit: batch size must be positive");
     if (_layers.empty())
         throw Error("fit: the network has no layer");
+    if (config.patience > 0 && !validation)
+        throw Error("fit: early stopping needs a validation set");
     const bool skipSoftmax = loss.fusesSoftmax();
     if (skipSoftmax && _layers.back()->type() != "softmax")
         throw Error("fit: " + loss.type() + " needs a final softmax layer");
@@ -110,6 +112,9 @@ History Network::fit(const Dataset &train, const Dataset *validation, Loss &loss
     const std::vector<Parameter> params = parameters();
     const std::size_t lastBackward = skipSoftmax ? _layers.size() - 1 : _layers.size();
     History history;
+    Scalar best = 0;
+    std::size_t sinceBest = 0;
+    std::vector<Matrix> bestWeights;
 
     for (std::size_t epoch = 0; epoch < config.epochs; epoch++) {
         if (scheduler)
@@ -118,6 +123,8 @@ History Network::fit(const Dataset &train, const Dataset *validation, Loss &loss
         if (config.shuffle)
             shuffle(order, rng);
         Scalar lossSum = 0;
+        Scalar penaltySum = 0;
+        std::size_t batches = 0;
         for (std::size_t begin = 0; begin < count; begin += config.batchSize) {
             const std::size_t end = std::min(begin + config.batchSize, count);
             const Matrix inputs = gatherRows(train.inputs, order, begin, end);
@@ -129,6 +136,9 @@ History Network::fit(const Dataset &train, const Dataset *validation, Loss &loss
             // The loss is a batch mean: weight it by the batch size so that a smaller last batch
             // does not count as much as a full one.
             lossSum += loss.value(prediction, targets) * static_cast<Scalar>(end - begin);
+            for (const auto &layer : _layers)
+                penaltySum += layer->penalty();
+            batches++;
             Matrix grad = loss.gradient(prediction, targets);
             for (std::size_t i = lastBackward; i-- > 0;)
                 grad = _layers[i]->backward(grad);
@@ -136,10 +146,25 @@ History Network::fit(const Dataset &train, const Dataset *validation, Loss &loss
         }
         EpochStats stats;
         stats.trainLoss = lossSum / static_cast<Scalar>(count);
+        stats.penalty = penaltySum / static_cast<Scalar>(batches);
         if (validation)
             stats.validationLoss = loss.value(predict(validation->inputs), validation->targets);
         history.push_back(stats);
+        if (config.patience == 0)
+            continue;
+        if (bestWeights.empty() || stats.validationLoss < best - config.minDelta) {
+            best = stats.validationLoss;
+            sinceBest = 0;
+            bestWeights.clear();
+            for (const Parameter &p : params)
+                bestWeights.push_back(*p.value);
+        } else if (++sinceBest >= config.patience) {
+            break;
+        }
     }
+    if (config.restoreBest && !bestWeights.empty())
+        for (std::size_t i = 0; i < params.size(); i++)
+            *params[i].value = bestWeights[i];
     return history;
 }
 

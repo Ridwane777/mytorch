@@ -28,6 +28,12 @@ class Layer {
     {
         return {};
     }
+    // Regularization term added to the training objective (L1/L2 on the weights, ADR-0010). The
+    // layer adds its derivative to its own gradients in backward; fit reports it per epoch.
+    virtual Scalar penalty() const
+    {
+        return 0;
+    }
     // Stable name written in the network file (#8), for example "dense" or "relu".
     virtual std::string type() const = 0;
 };
