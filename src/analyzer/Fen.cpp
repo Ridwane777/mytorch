@@ -13,8 +13,8 @@ namespace {
 using my_torch::Error;
 
 constexpr std::string_view pieces = "KQRBNPkqrbnp";
-constexpr std::array<std::string_view, 5> labelNames = {
-    "Nothing", "Check White", "Check Black", "Checkmate White", "Checkmate Black"};
+constexpr std::array<std::string_view, 6> labelNames = {
+    "Nothing", "Check White", "Check Black", "Checkmate White", "Checkmate Black", "Stalemate"};
 
 std::vector<std::string_view> split(std::string_view text, char separator)
 {

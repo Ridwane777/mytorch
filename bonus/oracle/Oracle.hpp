@@ -39,7 +39,7 @@ Position play(const Position &position, const Move &move);
 std::vector<Move> legalMoves(const Position &position);
 
 Verdict classify(const Position &position);
-// The 5 labels of the subject; none for Stalemate and Illegal.
+// The label of each verdict; none for Illegal.
 std::optional<analyzer::Label> toLabel(Verdict verdict);
 const char *verdictName(Verdict verdict);
 

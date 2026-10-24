@@ -41,4 +41,5 @@ Intel Core i7-1355U (13th generation, 12 threads, only one used), Linux, g++ 13.
 
 The 723,019 labels are correct according to the rules of the game. The dataset contains no
 stalemate, which confirms that a "stalemate" class (#24) cannot be learned from this data alone. We
-will have to generate positions and label them with the oracle.
+will have to generate positions and label them with the oracle; this is done in
+[stalemate.md](performance/stalemate.md).

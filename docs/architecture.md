@@ -10,7 +10,7 @@ behind each choice are in the [ADRs](adr/README.md); this page describes what ex
 | **`my_torch` library** | `include/my_torch/`, `src/my_torch/` → `build/libmy_torch.a` | A generic neural-network library: matrices, layers, losses, optimizers, training loop, metrics, network file. Knows nothing about chess |
 | **Analyzer** | `src/analyzer/` → `my_torch_analyzer` | Reads FEN positions, encodes them, trains or queries a network (`--train`, `--predict`) |
 | **Generator** | `src/generator/` → `my_torch_generator` | Writes untrained networks from configuration files |
-| **Bonus** | `bonus/` → `bonus/my_torch_oracle` (own Makefile) | A rule-based chess oracle, used to check data, never to answer for the network |
+| **Bonus** | `bonus/` → `bonus/my_torch_oracle`, `bonus/my_torch_positions` (own Makefile) | A rule-based chess oracle, used to check data and to generate labeled positions, never to answer for the network |
 
 ```mermaid
 flowchart LR
@@ -56,6 +56,7 @@ and the main code never includes `bonus/`.
 | --- | --- | --- |
 | `Generator` | `generator::run`: checks every configuration, then writes `<name>_1.nn` to `<name>_N.nn` | ADR-0013 |
 | `bonus/oracle/Oracle` | `isAttacked`, `legalMoves`, `play`, `classify` (check, checkmate, stalemate, illegal), `perft` | ADR-0006 |
+| `bonus/positions/Positions` | `generate`: sparse legal positions labeled by the oracle, a chosen share of them stalemates (`bonus/my_torch_positions`) | ADR-0015 |
 
 ## 3. Main classes
 
