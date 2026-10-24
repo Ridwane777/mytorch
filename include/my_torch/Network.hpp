@@ -24,12 +24,19 @@ struct TrainConfig {
     std::size_t batchSize = 32;
     std::uint64_t seed = 42;
     bool shuffle = true;
+    // Early stopping (ADR-0010), off when patience is 0. Training stops after `patience` epochs
+    // whose validation loss did not beat the best one by more than minDelta; with restoreBest,
+    // the weights of the best epoch are put back at the end. Needs a validation set.
+    std::size_t patience = 0;
+    Scalar minDelta = 0;
+    bool restoreBest = true;
 };
 
 // Measurements of one epoch; the detailed metrics (#11) will be added here.
 struct EpochStats {
-    Scalar trainLoss = 0;
-    Scalar validationLoss = 0;
+    Scalar trainLoss = 0;      // data loss only, comparable with validationLoss
+    Scalar validationLoss = 0; // data loss on the validation set, 0 without one
+    Scalar penalty = 0;        // sum of the layers' penalty(), averaged over the epoch's batches
 };
 
 using History = std::vector<EpochStats>;
