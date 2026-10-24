@@ -13,6 +13,14 @@
 
 namespace my_torch {
 
+// A loss, optimizer or scheduler described by its type and its settings, as written in the network
+// file: "adam lr=0.001 beta1=0.9" ↔ {"adam", {{"lr", "0.001"}, {"beta1", "0.9"}}}. The objects are
+// built from it by Factory.hpp (ADR-0012).
+struct ComponentSpec {
+    std::string type;
+    std::vector<std::pair<std::string, std::string>> params;
+};
+
 // Inputs and expected outputs, one row per example.
 struct Dataset {
     Matrix inputs;
@@ -46,6 +54,22 @@ struct EpochStats {
 
 using History = std::vector<EpochStats>;
 
+// Everything --train needs besides the layers.
+struct TrainingSpec {
+    ComponentSpec loss{"cross_entropy", {}};
+    ComponentSpec optimizer{"adam", {}};
+    ComponentSpec scheduler{"none", {}};
+    TrainConfig config;
+};
+
+// What the analyzer needs to use the network, stored in the network file with the layers.
+struct ModelInfo {
+    std::string encoding;            // name of the input encoding (#14), one word
+    std::size_t inputs = 0;          // width of an input row
+    std::vector<std::string> labels; // name of each output, in order
+    TrainingSpec training;
+};
+
 // Sequential network: layers apply in the order they were added. A graph architecture
 // (residual blocks, #31) will get its own ADR.
 class Network {
@@ -66,12 +90,18 @@ class Network {
     std::vector<Parameter> parameters();
     const std::vector<std::unique_ptr<Layer>> &layers() const noexcept;
 
-    // Format defined by the ADR of #8. Throw my_torch::Error if the file is unreadable.
+    ModelInfo &info() noexcept;
+    const ModelInfo &info() const noexcept;
+
+    // Versioned text file with a checksum (ADR-0012). Both check that the info and the layers are
+    // consistent (input width, layer widths, one output per label) and throw my_torch::Error
+    // otherwise; load also reports the line of a malformed or corrupted file.
     void save(const std::string &path) const;
     static Network load(const std::string &path);
 
   private:
     std::vector<std::unique_ptr<Layer>> _layers;
+    ModelInfo _info;
 };
 
 } // namespace my_torch

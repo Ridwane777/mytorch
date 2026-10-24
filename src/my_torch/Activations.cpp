@@ -115,4 +115,9 @@ std::string Softmax::type() const
     return "softmax";
 }
 
+void LeakyReLU::save(std::ostream &out) const
+{
+    out << "leaky_relu slope=" << _slope << '\n';
+}
+
 } // namespace my_torch

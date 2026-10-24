@@ -27,6 +27,7 @@ class LeakyReLU : public Layer {
     Matrix backward(const Matrix &gradOutput) override;
     std::string type() const override;
     Scalar slope() const noexcept;
+    void save(std::ostream &out) const override;
 
   private:
     Scalar _slope;
