@@ -1,6 +1,6 @@
 # ADR-0012: Network file format, versioned self-describing text with a checksum
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-10-24
 - **Deciders**: Ridwane777
 - **Issue**: #8

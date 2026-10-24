@@ -1,8 +1,8 @@
 # ADR-0008: Optimizers keep their own state; schedulers are stateless functions of the epoch
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-10-24
-- **Deciders**: Meric-BG (awaiting Ridwane777, whose `Network::fit` in #4 calls both)
+- **Deciders**: Meric-BG (author), Ridwane777 (accepted)
 - **Issue**: #5
 
 ## Context

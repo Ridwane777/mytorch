@@ -1,8 +1,8 @@
 # ADR-0005: Reading FEN, format validation and board representation
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-10-23
-- **Deciders**: Ridwane777 (awaiting Meric-BG)
+- **Deciders**: Ridwane777
 - **Issue**: #13 (PR #48)
 
 ## Context

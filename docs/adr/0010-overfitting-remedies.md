@@ -1,9 +1,8 @@
 # ADR-0010: Overfitting remedies, per-layer L1/L2, dropout layer and early stopping in fit
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-10-24
-- **Deciders**: Ridwane777 (awaiting Meric-BG, since `Layer.hpp`, `Dense.hpp` and `Network.hpp`
-  change)
+- **Deciders**: Ridwane777
 - **Issue**: #7
 
 ## Context

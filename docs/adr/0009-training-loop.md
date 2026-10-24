@@ -1,8 +1,8 @@
 # ADR-0009: Training loop, scheduler parameter and portable shuffling
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-10-24
-- **Deciders**: Ridwane777 (awaiting Meric-BG, since `include/my_torch/Network.hpp` changes)
+- **Deciders**: Ridwane777
 - **Issue**: #4
 
 ## Context

@@ -8,11 +8,11 @@ One file per decision, based on [TEMPLATE.md](TEMPLATE.md). An accepted ADR is n
 | [0002](0002-cpp-language.md) | C++20 as the project language | Accepted | 2026-10-21 |
 | [0003](0003-in-house-linear-algebra.md) | In-house linear algebra, in double, stored row by row | Accepted | 2026-10-21 |
 | [0004](0004-public-api.md) | Public API of the my_torch library | Accepted | 2026-10-21 |
-| [0005](0005-fen-parsing.md) | Reading FEN: format validation and board representation | Proposed | 2026-10-23 |
-| [0006](0006-oracle-without-castling.md) | Rule-based oracle: move generation by copy and without castling | Proposed | 2026-10-23 |
-| [0007](0007-softmax-cross-entropy-coupling.md) | Cross-entropy coupled to Softmax, Softmax gradient skipped in backpropagation | Proposed | 2026-10-24 |
-| [0008](0008-optimizers-and-schedulers.md) | Optimizers keep their own state; schedulers are stateless functions of the epoch | Proposed | 2026-10-24 |
-| [0009](0009-training-loop.md) | Training loop, scheduler parameter and portable shuffling | Proposed | 2026-10-24 |
-| [0010](0010-overfitting-remedies.md) | Overfitting remedies: per-layer L1/L2, dropout layer and early stopping in fit | Proposed | 2026-10-24 |
-| [0011](0011-classification-metrics.md) | Classification metrics in the library, conventions and export formats | Proposed | 2026-10-24 |
-| [0012](0012-network-file-format.md) | Network file format: versioned self-describing text with a checksum | Proposed | 2026-10-24 |
+| [0005](0005-fen-parsing.md) | Reading FEN: format validation and board representation | Accepted | 2026-10-23 |
+| [0006](0006-oracle-without-castling.md) | Rule-based oracle: move generation by copy and without castling | Accepted | 2026-10-23 |
+| [0007](0007-softmax-cross-entropy-coupling.md) | Cross-entropy coupled to Softmax, Softmax gradient skipped in backpropagation | Accepted | 2026-10-24 |
+| [0008](0008-optimizers-and-schedulers.md) | Optimizers keep their own state; schedulers are stateless functions of the epoch | Accepted | 2026-10-24 |
+| [0009](0009-training-loop.md) | Training loop, scheduler parameter and portable shuffling | Accepted | 2026-10-24 |
+| [0010](0010-overfitting-remedies.md) | Overfitting remedies: per-layer L1/L2, dropout layer and early stopping in fit | Accepted | 2026-10-24 |
+| [0011](0011-classification-metrics.md) | Classification metrics in the library, conventions and export formats | Accepted | 2026-10-24 |
+| [0012](0012-network-file-format.md) | Network file format: versioned self-describing text with a checksum | Accepted | 2026-10-24 |

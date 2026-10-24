@@ -3,17 +3,17 @@
 Entry point to follow the work **without reading the code**. Writing rules:
 [AGENTS.md](../AGENTS.md). Keep this table up to date with each document added.
 
-Status as of 2026-10-23:
+Status as of 2026-10-24:
 
 | Area | Document | Status |
 | --- | --- | --- |
-| Decisions | [adr/](adr/README.md): ADRs and index, [template](adr/TEMPLATE.md) | 12 ADRs: 0001 (Python, abandoned), 0002 (C++20, accepted), 0003 (linear algebra) and 0004 (API) accepted, 0005 (reading FENs), 0006 (oracle), 0007 (cross-entropy coupled with Softmax) 0008 (optimizers and schedulers) 0009 (training loop) 0010 (overfitting remedies) 0011 (metrics) and 0012 (network file) proposed |
+| Decisions | [adr/](adr/README.md): ADRs and index, [template](adr/TEMPLATE.md) | 12 ADRs: 0001 (Python) abandoned, 0002 to 0012 accepted |
 | Data | [reading-a-fen.md](reading-a-fen.md): useful chess rules, reading a dataset line field by field, label distribution | Written |
 | Data | [verification-dataset.md](verification-dataset.md): dataset labels checked by the oracle (100% agreement) | Written |
 | Architecture | `architecture.md`: `my_torch` library, analyzer, training and prediction flow | To write |
-| Performance | [performance/](performance/README.md): benchmarks, learning curves, scripts; [optimizers.md](performance/optimizers.md): optimizers and schedulers, measured over 5 seeds; [overfitting.md](performance/overfitting.md): L2, dropout and early stopping against overfitting; [serialization.md](performance/serialization.md): network file size and load time | Optimizers written, still to write for the real dataset |
+| Performance | [performance/](performance/README.md): [optimizers.md](performance/optimizers.md) (optimizers and schedulers), [overfitting.md](performance/overfitting.md) (L1, L2, dropout, early stopping), [serialization.md](performance/serialization.md) (network file size and load time) | Three measurements written on test problems; the chess network measurements come with #17 and #18 |
 | Legal | [legal/](legal/README.md): licenses, data, risks | To write |
-| Dependencies | [dependencies.md](dependencies.md) | Skeleton |
+| Dependencies | [dependencies.md](dependencies.md): compilers, test and plotting tools, with tested versions | Written; autograder versions still to check |
 | Costs | `business/costs.md`: measured and estimated | To write |
 | Commercial | [business/](business/README.md): business plan, SWOT, roadmap | To write |
 | Retrospective | [retrospective/](retrospective/README.md) | To fill in during the project |

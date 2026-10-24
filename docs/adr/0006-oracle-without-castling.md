@@ -1,8 +1,8 @@
 # ADR-0006: Rule-based oracle, move generation by copy and without castling
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-10-23
-- **Deciders**: Ridwane777 (awaiting Meric-BG)
+- **Deciders**: Ridwane777
 - **Issue**: #37
 
 ## Context
