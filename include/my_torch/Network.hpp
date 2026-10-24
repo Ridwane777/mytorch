@@ -98,8 +98,15 @@ class Network {
     // otherwise; load also reports the line of a malformed or corrupted file.
     void save(const std::string &path) const;
     static Network load(const std::string &path);
+    // Builds an untrained network from a configuration file (ADR-0013): the network file syntax
+    // without weights or checksum, with comments, optional sections and "init seed=…". Weights
+    // are drawn from seeds derived from that seed plus index, so each index gives a different
+    // network and the same index always gives the same one.
+    static Network fromConfig(const std::string &path, std::uint64_t index = 0);
 
   private:
+    static Network parse(const std::string &path, bool config, std::uint64_t index);
+
     std::vector<std::unique_ptr<Layer>> _layers;
     ModelInfo _info;
 };

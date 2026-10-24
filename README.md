@@ -10,8 +10,8 @@ Project in C++20 ([ADR-0002](docs/adr/0002-cpp-language.md)). Two deliverables:
 
 > Status (2026-10-24): the library is complete enough to train and save a network (dense layers,
 > activations, losses, optimizers and schedulers, mini-batch training, regularization, dropout,
-> early stopping, metrics, network file). The FEN parser and a rule-based oracle are done. Still
-> to do: input encoding, the analyzer and generator command lines, and the trained network. The
+> early stopping, metrics, network file). The generator, the FEN parser and a rule-based oracle
+> are done. Still to do: input encoding, the analyzer command line, and the trained network. The
 > technical choices are in [docs/adr/](docs/adr/README.md).
 
 ## Build and usage
@@ -22,7 +22,7 @@ Requirements: g++ (C++20) and make; Criterion for the tests.
 make                    # my_torch_analyzer and my_torch_generator
 ./my_torch_analyzer --predict my_torch_network_<name>.nn chessboards.txt
 ./my_torch_analyzer --train [--save NEW.nn] NETWORK.nn chessboards.txt
-./my_torch_generator config.conf 3
+./my_torch_generator configs/basic_network.conf 3   # writes basic_network_1.nn to _3.nn
 ```
 
 On error, the message goes to standard error and the program exits with code 84.
@@ -44,7 +44,7 @@ On error, the message goes to standard error and the program exits with code 84.
 | `src/generator/` | `my_torch_generator`: creates blank networks from a configuration |
 | `tests/` | Criterion tests, same subfolders as `src/` |
 | `my_torch_network_*.nn` | Pre-trained network evaluated by the autograder |
-| `configs/` | Network configurations (hyperparameters) |
+| `configs/` | Generator configurations ([format](docs/configuration.md)) |
 | `scripts/` | Training, benchmarks and graphs, to reproduce our results |
 | `bonus/` | Bonuses, with their own Makefile (required by the subject): the rule-based chess oracle |
 | `docs/` | Project file: decisions, performance, legal, business, retrospective. Map: [docs/README.md](docs/README.md) |
