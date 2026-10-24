@@ -9,7 +9,7 @@ using analyzer::square;
 namespace {
 
 constexpr const char *start = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
-// Position de test classique sans roque possible, avec prises en passant et promotions.
+// Classic test position with no castling possible, with en passant captures and promotions.
 constexpr const char *endgame = "8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - - 0 1";
 
 Verdict verdictOf(const char *fen)
@@ -35,14 +35,14 @@ Test(attacks, a_piece_in_between_blocks_the_rook)
 
 Test(attacks, knight_jumps_over_pieces)
 {
-    // Cavalier d6 : il attaque e8 par-dessus les pions d7 et e7.
+    // Knight on d6: it attacks e8 over the pawns on d7 and e7.
     cr_assert(inCheck(parseFen("4k3/2pppp2/3N4/8/8/8/8/4K3 b - - 0 1"), Color::Black));
     cr_assert(!inCheck(parseFen("4k3/2pppp2/4N3/8/8/8/8/4K3 b - - 0 1"), Color::Black));
 }
 
 Test(attacks, pawns_attack_forward_only)
 {
-    // Un pion blanc en d7 attaque e8 ; un pion blanc en d2 n'attaque pas e1, derrière lui.
+    // A white pawn on d7 attacks e8; a white pawn on d2 does not attack e1, behind it.
     cr_assert(inCheck(parseFen("4k3/3P4/8/8/8/8/8/4K3 b - - 0 1"), Color::Black));
     cr_assert(!inCheck(parseFen("8/8/8/8/8/8/3P4/4k2K b - - 0 1"), Color::Black));
     cr_assert(inCheck(parseFen("8/8/8/8/8/8/3p4/4K2k w - - 0 1"), Color::White));
@@ -52,35 +52,35 @@ Test(verdict, known_positions)
 {
     cr_assert(verdictOf(start) == Verdict::Nothing);
     cr_assert(verdictOf("8/8/R2k4/4r1p1/8/5K2/5P2/8 b - - 7 59") == Verdict::CheckWhite);
-    // Mat du berger.
+    // Scholar's mate.
     cr_assert(verdictOf("r1bqkb1r/pppp1Qpp/2n2n2/4p3/2B1P3/8/PPPP1PPP/RNB1K1NR b KQkq - 0 4") ==
               Verdict::CheckmateWhite);
-    // Mat du couloir : le roi est enfermé par ses propres pions.
+    // Back-rank checkmate: the king is boxed in by its own pawns.
     cr_assert(verdictOf("R5k1/5ppp/8/8/8/8/8/6K1 b - - 0 1") == Verdict::CheckmateWhite);
-    // Mat à l'étouffée par un cavalier.
+    // Smothered checkmate by a knight.
     cr_assert(verdictOf("6rk/5Npp/8/8/8/8/8/6K1 b - - 0 1") == Verdict::CheckmateWhite);
-    // Échec noir que le roi blanc peut fuir.
+    // Check by Black that the white king can escape.
     cr_assert(verdictOf("4r2k/8/8/8/8/8/R7/4K3 w - - 0 1") == Verdict::CheckBlack);
-    // Mat noir : dame protégée par le roi.
+    // Checkmate by Black: queen protected by the king.
     cr_assert(verdictOf("8/8/8/8/8/5k2/6q1/7K w - - 0 1") == Verdict::CheckmateBlack);
-    // Pat : le roi noir n'est pas attaqué mais n'a aucune case.
+    // Stalemate: the black king is not attacked but has no square.
     cr_assert(verdictOf("7k/5Q2/6K1/8/8/8/8/8 b - - 0 1") == Verdict::Stalemate);
-    // Les Blancs ont le trait alors que le roi noir est déjà en échec.
+    // White is the side to move while the black king is already in check.
     cr_assert(verdictOf("R3k3/8/8/8/8/8/8/4K3 w - - 0 1") == Verdict::Illegal);
 }
 
 Test(verdict, blocking_turns_a_mate_into_a_check)
 {
-    // Mat du couloir, mais la tour noire c2 peut s'interposer en c8.
+    // Back-rank checkmate, but the black rook on c2 can block on c8.
     cr_assert(verdictOf("R5k1/5ppp/8/8/8/8/2r5/6K1 b - - 0 1") == Verdict::CheckWhite);
-    // Le fou noir f7 peut s'interposer en e8.
+    // The black bishop on f7 can block on e8.
     cr_assert(verdictOf("R5k1/5bpp/8/8/8/8/8/6K1 b - - 0 1") == Verdict::CheckWhite);
 }
 
 Test(verdict, a_pinned_piece_cannot_block)
 {
-    // Même position, mais le fou blanc c4 cloue le fou f7 sur la diagonale du roi g8 : s'il va en
-    // e8, son roi est attaqué. Aucun coup ne sauve, c'est mat.
+    // Same position, but the white bishop on c4 pins the f7 bishop on the g8 king's diagonal: if it
+    // goes to e8, its king is attacked. No move saves it, it is checkmate.
     cr_assert(verdictOf("R5k1/5bpp/8/8/2B5/8/8/6K1 b - - 0 1") == Verdict::CheckmateWhite);
 }
 

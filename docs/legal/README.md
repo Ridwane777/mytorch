@@ -1,4 +1,4 @@
-# Volet légal
+# Legal
 
-À écrire : licence du projet, licences des dépendances, origine et licence des jeux de données
-d'échecs, analyse des risques. Ces documents ne remplacent pas l'avis d'un juriste.
+To write: project license, dependency licenses, origin and license of the chess datasets, risk
+analysis. These documents do not replace the advice of a lawyer.

@@ -1,5 +1,5 @@
-# Rétrospective globale
+# Overall retrospective
 
-Regard sur l'ensemble du projet : ce qu'on aurait pu faire mieux, ce qui aurait réduit les coûts,
-le temps ou les risques (solutions nommées, seuil où elles deviennent préférables, leur coût), ce
-qu'on garderait, et les actions suivantes. À alimenter au fil du projet.
+A look at the whole project: what we could have done better, what would have reduced costs, time
+or risks (named solutions, the threshold where they become preferable, their cost), what we would
+keep, and the next actions. To fill in as the project goes.

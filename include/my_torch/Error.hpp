@@ -4,7 +4,7 @@
 
 namespace my_torch {
 
-// Toute erreur de la bibliothèque. Les exécutables l'attrapent dans main et quittent avec 84.
+// Any library error. The executables catch it in main and exit with 84.
 class Error : public std::runtime_error {
   public:
     using std::runtime_error::runtime_error;

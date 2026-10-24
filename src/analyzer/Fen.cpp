@@ -30,7 +30,7 @@ std::vector<std::string_view> split(std::string_view text, char separator)
     }
 }
 
-// Découpe aux espaces et tabulations en ignorant les séparateurs répétés.
+// Splits on spaces and tabs, ignoring repeated separators.
 std::vector<std::string_view> words(std::string_view text)
 {
     std::vector<std::string_view> result;
@@ -68,7 +68,7 @@ void parseRank(std::string_view text, int rank, Position &position)
 {
     int squares = 0;
 
-    // Première passe : valider les caractères et compter les cases avant d'écrire quoi que ce soit.
+    // First pass: validate the characters and count the squares before writing anything.
     for (const char c : text) {
         if (!isEmptyCount(c) && pieces.find(c) == std::string_view::npos)
             throw Error("unknown piece '" + std::string(1, c) + "' on rank " +

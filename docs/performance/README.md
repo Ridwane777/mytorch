@@ -1,9 +1,9 @@
-# Performance et benchmarks
+# Performance and benchmarks
 
-Chaque mesure indique : méthode, machine, jeu de données, configuration (`configs/`), script de
-reproduction (`scripts/`), résultats **avec graphiques** (`data/`), seuils et limites.
+Each measurement states: method, machine, dataset, configuration (`configs/`), reproduction
+script (`scripts/`), results **with graphs** (`data/`), thresholds and limits.
 
-À écrire : précision par classe, matrice de confusion, courbes d'apprentissage (entraînement et
-validation), comparaison des configurations, temps d'entraînement et de prédiction.
+To write: per-class accuracy, confusion matrix, learning curves (training and validation),
+comparison of configurations, training and prediction time.
 
 Done: [optimizers.md](optimizers.md) (optimizers and learning-rate schedulers, issue #5).

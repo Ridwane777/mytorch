@@ -12,7 +12,7 @@ using namespace analyzer;
 namespace {
 
 constexpr const char *start = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
-// Ligne réelle de dataset/check/10_pieces.txt, détaillée dans docs/lire-une-fen.md.
+// Real line from dataset/check/10_pieces.txt, explained in docs/reading-a-fen.md.
 constexpr const char *guide = "8/8/R2k4/4r1p1/8/5K2/5P2/8 b - - 7 59 Check White";
 
 void rejects(const std::string &line)
@@ -99,23 +99,23 @@ Test(fen, accepts_windows_line_endings_and_extra_spaces)
 
 Test(fen, rejects_malformed_lines)
 {
-    rejects("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0");      // 5 champs
-    rejects("rnbqkbnr/pppppppp/8/8/8/8/RNBQKBNR w KQkq - 0 1");             // 7 rangées
-    rejects("rnbqkbnr/pppppppp/9/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");    // 9 cases
-    rejects("rnbqkbnr/ppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");     // 7 cases
-    rejects("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNRR w KQkq - 0 1");   // 9 pièces
-    rejects("rnbqkbnr/ppppXppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");    // pièce inconnue
-    rejects("rnbq1bnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");    // pas de roi noir
-    rejects("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBKKBNR w KQkq - 0 1");    // deux rois blancs
-    rejects("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR x KQkq - 0 1");    // trait
-    rejects("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KK - 0 1");      // roque en double
-    rejects("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w Z - 0 1");       // roque inconnu
-    rejects("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq e5 0 1");   // en passant, rangée
-    rejects("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq z3 0 1");   // en passant, colonne
-    rejects("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - -1 1");   // demi-coups < 0
-    rejects("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - abc 1");  // demi-coups
-    rejects("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 0");    // numéro de coup
-    rejects("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1x");   // suffixe
+    rejects("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0");      // 5 fields
+    rejects("rnbqkbnr/pppppppp/8/8/8/8/RNBQKBNR w KQkq - 0 1");             // 7 ranks
+    rejects("rnbqkbnr/pppppppp/9/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");    // 9 squares
+    rejects("rnbqkbnr/ppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");     // 7 squares
+    rejects("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNRR w KQkq - 0 1");   // 9 pieces
+    rejects("rnbqkbnr/ppppXppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");    // unknown piece
+    rejects("rnbq1bnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");    // no black king
+    rejects("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBKKBNR w KQkq - 0 1");    // two white kings
+    rejects("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR x KQkq - 0 1");    // side to move
+    rejects("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KK - 0 1");      // duplicate castling
+    rejects("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w Z - 0 1");       // unknown castling
+    rejects("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq e5 0 1");   // en passant, rank
+    rejects("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq z3 0 1");   // en passant, file
+    rejects("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - -1 1");   // halfmoves < 0
+    rejects("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - abc 1");  // halfmoves
+    rejects("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 0");    // move number
+    rejects("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1x");   // suffix
     rejects("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 Check Red");
     rejects("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 check white");
 }

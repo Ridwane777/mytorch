@@ -11,7 +11,7 @@ class Optimizer {
   public:
     virtual ~Optimizer() = default;
 
-    // Met à jour chaque paramètre à partir de son gradient.
+    // Updates every parameter from its gradient.
     virtual void step(const std::vector<Parameter> &parameters) = 0;
     virtual void setLearningRate(Scalar rate) = 0;
     virtual Scalar learningRate() const = 0;

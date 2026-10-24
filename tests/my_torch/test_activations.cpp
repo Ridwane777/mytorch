@@ -10,7 +10,7 @@ using gradient_check::tolerance;
 
 namespace {
 
-// Valeurs tenues loin de 0 : ReLU et Leaky ReLU n'y sont pas dérivables.
+// Values kept away from 0: ReLU and Leaky ReLU are not differentiable there.
 Matrix awayFromZero()
 {
     return gradient_check::random(4, 5, 11).map([](Scalar z) { return z + (z >= 0 ? 0.1 : -0.1); });

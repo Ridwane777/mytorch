@@ -11,17 +11,17 @@ build/
 *.gcno
 *.gcov
 
-# Scripts Python (graphiques, benchmarks)
+# Python scripts (graphs, benchmarks)
 .venv/
 __pycache__/
 
-# Jeux de données : trop lourds, montrés en soutenance (voir README)
+# Datasets: too large, shown during the defense (see README)
 dataset/
 dataset.zip
-# Sujet fourni par the school
+# Subject provided by the school
 my_torch-project.pdf
 
-# Réseaux intermédiaires ; seul my_torch_network_* est poussé
+# Intermediate networks; only my_torch_network_* is pushed
 *.nn
 !my_torch_network_*.nn
 

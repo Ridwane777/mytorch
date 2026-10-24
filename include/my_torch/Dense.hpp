@@ -7,16 +7,16 @@
 
 namespace my_torch {
 
-// Couche entièrement connectée : Z = X·W + b, avec W (entrées × neurones) et un biais par neurone,
-// b (1 × neurones), partagé par toutes les lignes du batch.
+// Fully connected layer: Z = X·W + b, with W (inputs × neurons) and one bias per neuron,
+// b (1 × neurons), shared by every row of the batch.
 class Dense : public Layer {
   public:
-    // Initialisation provisoire uniforme dans ±sqrt(1 / entrées) ; Xavier et He arrivent avec #6.
+    // Temporary uniform initialization in ±sqrt(1 / inputs); Xavier and He come with #6.
     Dense(std::size_t inputs, std::size_t outputs, std::uint32_t seed = 42);
 
     Matrix forward(const Matrix &input, bool training) override;
-    // dW += Xᵀ·G, db += somme des lignes de G, renvoie dX = G·Wᵀ. Les gradients s'accumulent :
-    // c'est à la boucle d'entraînement de les remettre à zéro avant chaque batch.
+    // dW += Xᵀ·G, db += sum of the rows of G, returns dX = G·Wᵀ. Gradients accumulate:
+    // the training loop must reset them to zero before each batch.
     Matrix backward(const Matrix &gradOutput) override;
     std::vector<Parameter> parameters() override;
     std::string type() const override;

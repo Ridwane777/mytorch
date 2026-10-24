@@ -1,24 +1,24 @@
 Closes #
 
-## Ce que ça change
+## What it changes
 
-<!-- Une ou deux phrases : ce qu'un relecteur doit comprendre avant de lire le code. -->
+<!-- One or two sentences: what a reviewer must understand before reading the code. -->
 
-## Décision concernée
+## Related decision
 
-<!-- L'ADR (docs/adr/) que cette PR applique ou remet en cause, ou « aucune ». -->
+<!-- The ADR (docs/adr/) that this PR applies or calls into question, or "none". -->
 
-## Comment le vérifier
+## How to check it
 
-<!-- La commande à lancer, ou ce qu'il faut regarder. -->
+<!-- The command to run, or what to look at. -->
 
-## Avant de demander une relecture
+## Before asking for a review
 
-- [ ] `make re` compile sans avertissement
-- [ ] `make tests_run` passe
-- [ ] `make debug` puis le cas testé : aucune erreur des sanitizers
-- [ ] `clang-format --dry-run --Werror` ne signale rien
-- [ ] la branche est à jour avec `main` (`git pull --rebase origin main`)
-- [ ] aucune bibliothèque de réseaux de neurones (PyTorch, TensorFlow…) n'est importée
-- [ ] si la PR fixe un choix structurant, l'ADR est écrit et ajouté à l'index
-- [ ] si la PR change un résultat mesuré, `docs/performance/` est à jour avec son script
+- [ ] `make re` builds without warnings
+- [ ] `make tests_run` passes
+- [ ] `make debug` then the tested case: no sanitizer errors
+- [ ] `clang-format --dry-run --Werror` reports nothing
+- [ ] the branch is up to date with `main` (`git pull --rebase origin main`)
+- [ ] no neural-network library (PyTorch, TensorFlow…) is imported
+- [ ] if the PR settles a structural choice, the ADR is written and added to the index
+- [ ] if the PR changes a measured result, `docs/performance/` is up to date with its script

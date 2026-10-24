@@ -1,29 +1,29 @@
-# Comment on travaille sur ce dépôt
+# How we work on this repository
 
-## La règle principale
+## The main rule
 
-**Personne ne pousse directement sur `main`.** On y entre par une Pull Request relue par l'autre
-membre du binôme. C'est depuis `main` que l'autograder évalue et qu'on fait la soutenance.
+**Nobody pushes directly to `main`.** Changes get in through a Pull Request reviewed by the other
+member of the pair. The autograder evaluates from `main`, and the defense is done from it.
 
-## Le cycle
+## The cycle
 
 ```bash
 git checkout main && git pull
-git checkout -b <type>/<sujet-court>      # ex. feat/fen-parser, docs/adr-encodage
+git checkout -b <type>/<short-topic>      # e.g. feat/fen-parser, docs/adr-encodage
 # ... commits ...
 git pull --rebase origin main
-git push -u origin <type>/<sujet-court>
+git push -u origin <type>/<short-topic>
 ```
 
-Types de branche et de commit : `feat`, `fix`, `docs`, `test`, `refactor`, `chore`, `perf`.
-Messages : `type(portée): description` (ex. `feat(my_torch): couche dense et rétropropagation`).
-Relier l'issue dans la PR (`Closes #12`).
+Branch and commit types: `feat`, `fix`, `docs`, `test`, `refactor`, `chore`, `perf`.
+Messages: `type(scope): description` (e.g. `feat(my_torch): dense layer and backpropagation`).
+Link the issue in the PR (`Closes #12`).
 
-## Relecture
+## Review
 
-Une approbation suffit, puis l'auteur fusionne. Branches courtes : une PR = une idée.
+One approval is enough, then the author merges. Short branches: one PR = one idea.
 
-## Avant de demander une relecture
+## Before asking for a review
 
 ```bash
 make re
@@ -31,11 +31,11 @@ make tests_run
 find include src tests -name '*.[ch]pp' | xargs clang-format --dry-run --Werror
 ```
 
-La CI (`.github/workflows/ci.yml`) lance les mêmes vérifications. Une PR rouge ne se fusionne pas.
+The CI (`.github/workflows/ci.yml`) runs the same checks. A red PR is not merged.
 
-## Décisions et documentation
+## Decisions and documentation
 
-Un choix structurant (encodage du plateau, architecture du réseau, fonction de coût, optimiseur,
-format de sauvegarde…) s'écrit dans `docs/adr/` dans la même PR. Un résultat d'entraînement cité
-dans la doc doit pouvoir être reproduit avec un script de `scripts/` et une config de `configs/`.
-Voir `AGENTS.md`.
+A structural choice (board encoding, network architecture, loss function, optimizer, save
+format…) is written in `docs/adr/` in the same PR. A training result cited in the docs must be
+reproducible with a script from `scripts/` and a config from `configs/`.
+See `AGENTS.md`.
