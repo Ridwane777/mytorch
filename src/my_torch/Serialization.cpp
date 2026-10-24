@@ -25,6 +25,7 @@
 #include "my_torch/Dense.hpp"
 #include "my_torch/Dropout.hpp"
 #include "my_torch/Error.hpp"
+#include "my_torch/Factory.hpp"
 #include "my_torch/Network.hpp"
 
 namespace my_torch {
@@ -91,35 +92,46 @@ void checkConsistency(const ModelInfo &info, const std::vector<std::unique_ptr<L
 }
 
 // Line-by-line reader that knows where it is, for error messages.
+// Line-by-line reader that knows where it is, for error messages.
 class Reader {
   public:
-    Reader(const std::string &path, std::vector<std::string> lines,
-           std::vector<std::size_t> offsets)
-        : _path(path), _lines(std::move(lines)), _offsets(std::move(offsets))
+    struct Line {
+        std::string text;
+        std::size_t offset; // byte where the line starts in the file
+        std::size_t number; // 1-based line number in the file
+    };
+
+    Reader(const std::string &path, std::vector<Line> lines)
+        : _path(path), _lines(std::move(lines))
     {
     }
 
     // Byte offset in the file where the line last returned starts.
     std::size_t offset() const noexcept
     {
-        return _index == 0 ? 0 : _offsets[_index - 1];
+        return _index == 0 ? 0 : _lines[_index - 1].offset;
     }
 
     // Next line, split into words.
     std::vector<std::string> words()
     {
-        std::istringstream in(next());
-        std::vector<std::string> out;
-        for (std::string w; in >> w;)
-            out.push_back(w);
-        return out;
+        return split(next());
     }
 
     std::string next()
     {
         if (_index >= _lines.size())
             fail("unexpected end of file");
-        return _lines[_index++];
+        return _lines[_index++].text;
+    }
+
+    // First word of the next line without consuming it ("" at the end).
+    std::string peek() const
+    {
+        if (_index >= _lines.size())
+            return "";
+        const auto w = split(_lines[_index].text);
+        return w.empty() ? "" : w[0];
     }
 
     // Line starting with keyword; returns the words after it.
@@ -152,9 +164,9 @@ class Reader {
         return value;
     }
 
-    std::size_t count(const std::string &text)
+    std::uint64_t count(const std::string &text)
     {
-        std::size_t value = 0;
+        std::uint64_t value = 0;
         const auto [end, error] = std::from_chars(text.data(), text.data() + text.size(), value);
         if (error != std::errc{} || end != text.data() + text.size())
             fail("'" + text + "' is not a non-negative integer");
@@ -168,13 +180,22 @@ class Reader {
 
     [[noreturn]] void fail(const std::string &message) const
     {
-        throw Error(_path + ":" + std::to_string(_index) + ": " + message);
+        const std::size_t line = _index == 0 ? 0 : _lines[_index - 1].number;
+        throw Error(_path + ":" + std::to_string(line) + ": " + message);
     }
 
   private:
+    static std::vector<std::string> split(const std::string &line)
+    {
+        std::istringstream in(line);
+        std::vector<std::string> out;
+        for (std::string w; in >> w;)
+            out.push_back(w);
+        return out;
+    }
+
     std::string _path;
-    std::vector<std::string> _lines;
-    std::vector<std::size_t> _offsets;
+    std::vector<Line> _lines;
     std::size_t _index = 0;
 };
 
@@ -218,7 +239,29 @@ std::map<std::string, std::string> layerSettings(Reader &reader, const std::vect
     return out;
 }
 
-std::unique_ptr<Layer> readDense(Reader &reader, const std::vector<std::string> &w)
+// SplitMix64: a fully specified mix, so derived seeds are the same on every toolchain.
+std::uint64_t mix(std::uint64_t x)
+{
+    x += 0x9E3779B97F4A7C15ULL;
+    x = (x ^ (x >> 30)) * 0xBF58476D1CE4E5B9ULL;
+    x = (x ^ (x >> 27)) * 0x94D049BB133111EBULL;
+    return x ^ (x >> 31);
+}
+
+// What a layer reader needs besides its line.
+struct Context {
+    bool config;        // a configuration file: no weights, weights drawn from seeds
+    std::uint64_t seed; // seed of this network (config only)
+    std::size_t layer;  // index of the layer being read
+
+    std::uint64_t layerSeed() const
+    {
+        return mix(mix(seed) ^ static_cast<std::uint64_t>(layer));
+    }
+};
+
+std::unique_ptr<Layer> readDense(Reader &reader, const std::vector<std::string> &w,
+                                 const Context &ctx)
 {
     if (w.size() < 3)
         reader.fail("dense: expected the input and output sizes");
@@ -226,13 +269,21 @@ std::unique_ptr<Layer> readDense(Reader &reader, const std::vector<std::string> 
     const std::size_t outputs = reader.count(w[2]);
     if (inputs == 0 || outputs == 0)
         reader.fail("dense: sizes must be positive");
-    auto settings = layerSettings(reader, w, 3, {"l1", "l2"});
+    auto settings = layerSettings(reader, w, 3,
+                                  ctx.config ? std::vector<std::string>{"l1", "l2", "init"}
+                                             : std::vector<std::string>{"l1", "l2"});
     Regularization reg;
     if (settings.count("l1"))
         reg.l1 = reader.number(settings["l1"]);
     if (settings.count("l2"))
         reg.l2 = reader.number(settings["l2"]);
-    auto dense = std::make_unique<Dense>(inputs, outputs, 0, reg);
+    // Only the provisional uniform initialization exists until #6; the key is reserved for it.
+    if (settings.count("init") && settings["init"] != "uniform")
+        reader.fail("dense: unknown init '" + settings["init"] + "' (available: uniform)");
+    auto dense = std::make_unique<Dense>(inputs, outputs,
+                                         static_cast<std::uint32_t>(ctx.layerSeed()), reg);
+    if (ctx.config)
+        return dense;
     for (std::size_t r = 0; r < inputs; r++) {
         const auto row = reader.numbers(outputs);
         for (std::size_t c = 0; c < outputs; c++)
@@ -244,38 +295,38 @@ std::unique_ptr<Layer> readDense(Reader &reader, const std::vector<std::string> 
     return dense;
 }
 
-template <typename T> std::unique_ptr<Layer> readPlain(Reader &reader,
-                                                       const std::vector<std::string> &w)
+template <typename T>
+std::unique_ptr<Layer> readPlain(Reader &reader, const std::vector<std::string> &w,
+                                 const Context &)
 {
     layerSettings(reader, w, 1, {});
     return std::make_unique<T>();
 }
 
-std::unique_ptr<Layer> readLeakyReLU(Reader &reader, const std::vector<std::string> &w)
+std::unique_ptr<Layer> readLeakyReLU(Reader &reader, const std::vector<std::string> &w,
+                                     const Context &)
 {
     auto settings = layerSettings(reader, w, 1, {"slope"});
     return std::make_unique<LeakyReLU>(settings.count("slope") ? reader.number(settings["slope"])
                                                                : 0.01);
 }
 
-std::unique_ptr<Layer> readDropout(Reader &reader, const std::vector<std::string> &w)
+std::unique_ptr<Layer> readDropout(Reader &reader, const std::vector<std::string> &w,
+                                   const Context &ctx)
 {
     auto settings = layerSettings(reader, w, 1, {"rate", "seed"});
     if (!settings.count("rate"))
         reader.fail("dropout: missing rate");
-    std::uint64_t seed = 42;
-    if (settings.count("seed")) {
-        const std::string &text = settings["seed"];
-        const auto [end, error] = std::from_chars(text.data(), text.data() + text.size(), seed);
-        if (error != std::errc{} || end != text.data() + text.size())
-            reader.fail("dropout: bad seed '" + text + "'");
-    }
+    // A configuration without a seed gives each generated network its own mask sequence.
+    const std::uint64_t seed = settings.count("seed") ? reader.count(settings["seed"])
+                               : ctx.config           ? ctx.layerSeed()
+                                                      : 42;
     return std::make_unique<Dropout>(reader.number(settings["rate"]), seed);
 }
 
 // One entry per layer type: adding a layer to the format is one line here plus its save().
-using LayerReader =
-    std::function<std::unique_ptr<Layer>(Reader &, const std::vector<std::string> &)>;
+using LayerReader = std::function<std::unique_ptr<Layer>(
+    Reader &, const std::vector<std::string> &, const Context &)>;
 const std::map<std::string, LayerReader> &layerReaders()
 {
     static const std::map<std::string, LayerReader> readers = {
@@ -297,10 +348,10 @@ void writeConfig(std::ostream &out, const TrainConfig &c)
         << " restore_best=" << c.restoreBest << '\n';
 }
 
-TrainConfig readConfig(Reader &reader)
+TrainConfig readTrainConfig(Reader &reader, const std::vector<std::string> &w)
 {
     TrainConfig c;
-    for (const auto &[key, value] : keyValues(reader, reader.expect("train"), 0)) {
+    for (const auto &[key, value] : keyValues(reader, w, 0)) {
         const auto flag = [&] {
             if (value != "0" && value != "1")
                 reader.fail("train: " + key + " must be 0 or 1");
@@ -324,6 +375,51 @@ TrainConfig readConfig(Reader &reader)
             reader.fail("train: unknown setting '" + key + "'");
     }
     return c;
+}
+
+std::string readFile(const std::string &path)
+{
+    std::ifstream in(path, std::ios::binary);
+    if (!in)
+        throw Error("cannot open '" + path + "'");
+    std::stringstream buffer;
+    buffer << in.rdbuf();
+    return buffer.str();
+}
+
+// Splits into lines with their offset and number. A configuration also drops blank lines and
+// comments (lines whose first non-blank character is '#').
+std::vector<Reader::Line> splitLines(const std::string &text, bool config)
+{
+    std::vector<Reader::Line> lines;
+    std::size_t number = 0;
+    for (std::size_t start = 0; start < text.size();) {
+        std::size_t end = text.find('\n', start);
+        if (end == std::string::npos)
+            end = text.size();
+        std::string line = text.substr(start, end - start);
+        if (!line.empty() && line.back() == '\r')
+            line.pop_back();
+        number++;
+        const std::size_t first = line.find_first_not_of(" \t");
+        if (!config || (first != std::string::npos && line[first] != '#'))
+            lines.push_back({line, start, number});
+        start = end + 1;
+    }
+    return lines;
+}
+
+// Builds the training objects once, so that an unknown loss, optimizer or scheduler is reported
+// when the file is read rather than when training starts.
+void checkTraining(const std::string &path, const TrainingSpec &training)
+{
+    try {
+        makeLoss(training.loss);
+        makeOptimizer(training.optimizer);
+        makeScheduler(training.scheduler);
+    } catch (const Error &error) {
+        throw Error(path + ": " + error.what());
+    }
 }
 
 } // namespace
@@ -365,40 +461,21 @@ void Network::save(const std::string &path) const
         throw Error("failed to write '" + path + "'");
 }
 
-Network Network::load(const std::string &path)
+Network Network::parse(const std::string &path, bool config, std::uint64_t index)
 {
-    std::ifstream in(path, std::ios::binary);
-    if (!in)
-        throw Error("cannot open '" + path + "'");
-    std::stringstream buffer;
-    buffer << in.rdbuf();
-    const std::string text = buffer.str();
-
-    // Split into lines, remembering where each starts: the checksum covers what precedes "end".
-    std::vector<std::string> lines;
-    std::vector<std::size_t> offsets;
-    for (std::size_t start = 0; start < text.size();) {
-        std::size_t end = text.find('\n', start);
-        if (end == std::string::npos)
-            end = text.size();
-        std::string line = text.substr(start, end - start);
-        if (!line.empty() && line.back() == '\r')
-            line.pop_back();
-        offsets.push_back(start);
-        lines.push_back(line);
-        start = end + 1;
-    }
-    Reader reader(path, lines, offsets);
-
-    const auto header = reader.words();
-    if (header.size() != 2 || header[0] != magic)
-        reader.fail("not a my_torch network file");
-    if (header[1] != std::to_string(formatVersion))
-        reader.fail("format version " + header[1] + " is not supported (this program reads " +
-                    std::to_string(formatVersion) + ")");
-
+    const std::string text = readFile(path);
+    Reader reader(path, splitLines(text, config));
     Network net;
     ModelInfo &info = net._info;
+
+    if (!config) {
+        const auto header = reader.words();
+        if (header.size() != 2 || header[0] != magic)
+            reader.fail("not a my_torch network file");
+        if (header[1] != std::to_string(formatVersion))
+            reader.fail("format version " + header[1] + " is not supported (this program reads " +
+                        std::to_string(formatVersion) + ")");
+    }
     const auto input = reader.expect("input");
     if (input.size() != 2)
         reader.fail("input: expected an encoding name and a width");
@@ -407,27 +484,66 @@ Network Network::load(const std::string &path)
     const auto labels = reader.expect("labels");
     if (labels.size() != 1)
         reader.fail("labels: expected a count");
-    const std::size_t labelCount = reader.count(labels[0]);
-    for (std::size_t i = 0; i < labelCount; i++)
+    const std::uint64_t labelCount = reader.count(labels[0]);
+    for (std::uint64_t i = 0; i < labelCount; i++)
         info.labels.push_back(reader.next());
-    info.training.loss = readSpec(reader, reader.expect("loss"));
-    info.training.optimizer = readSpec(reader, reader.expect("optimizer"));
-    info.training.scheduler = readSpec(reader, reader.expect("scheduler"));
-    info.training.config = readConfig(reader);
+
+    // A network file has the four sections in this order. A configuration may give them in any
+    // order or omit them (the defaults apply), and adds "init seed=…".
+    std::uint64_t initSeed = 1;
+    const auto readSection = [&](const std::string &keyword) {
+        auto w = reader.expect(keyword);
+        if (keyword == "train")
+            info.training.config = readTrainConfig(reader, w);
+        else if (keyword == "loss")
+            info.training.loss = readSpec(reader, w);
+        else if (keyword == "optimizer")
+            info.training.optimizer = readSpec(reader, w);
+        else
+            info.training.scheduler = readSpec(reader, w);
+    };
+    if (!config) {
+        for (const char *keyword : {"loss", "optimizer", "scheduler", "train"})
+            readSection(keyword);
+    } else {
+        std::vector<std::string> seen;
+        for (std::string keyword = reader.peek(); keyword != "layers"; keyword = reader.peek()) {
+            if (std::find(seen.begin(), seen.end(), keyword) != seen.end()) {
+                reader.words();
+                reader.fail("'" + keyword + "' given twice");
+            }
+            seen.push_back(keyword);
+            if (keyword == "init") {
+                for (const auto &[key, value] : keyValues(reader, reader.expect("init"), 0)) {
+                    if (key != "seed")
+                        reader.fail("init: unknown setting '" + key + "'");
+                    initSeed = reader.count(value);
+                }
+            } else if (keyword == "loss" || keyword == "optimizer" || keyword == "scheduler" ||
+                       keyword == "train") {
+                readSection(keyword);
+            } else {
+                reader.words();
+                reader.fail(keyword.empty() ? "expected 'layers'"
+                                            : "unknown keyword '" + keyword + "'");
+            }
+        }
+    }
 
     const auto layers = reader.expect("layers");
     if (layers.size() != 1)
         reader.fail("layers: expected a count");
-    const std::size_t layerCount = reader.count(layers[0]);
-    for (std::size_t i = 0; i < layerCount; i++) {
+    const std::uint64_t layerCount = reader.count(layers[0]);
+    for (std::uint64_t i = 0; i < layerCount; i++) {
         const auto w = reader.words();
         if (w.empty())
             reader.fail("expected a layer");
         const auto found = layerReaders().find(w[0]);
         if (found == layerReaders().end())
             reader.fail("unknown layer type '" + w[0] + "'");
+        const Context ctx{config, initSeed + index, static_cast<std::size_t>(i)};
         try {
-            net.add(found->second(reader, w));
+            net.add(found->second(reader, w, ctx));
         } catch (const Error &error) {
             const std::string message = error.what();
             if (message.rfind(path + ":", 0) == 0)
@@ -436,24 +552,42 @@ Network Network::load(const std::string &path)
         }
     }
 
-    const auto end = reader.words();
-    if (end.empty() || end[0] != "end")
-        reader.fail("expected 'end'");
-    const std::size_t endOffset = reader.offset();
-    const bool checked = end.size() == 2 && end[1].rfind("checksum=", 0) == 0;
-    if (!checked && end.size() != 1)
-        reader.fail("unexpected data after 'end'");
-    while (!reader.done())
-        if (!reader.next().empty())
+    if (config) {
+        if (!reader.done()) {
+            reader.words();
+            reader.fail("unexpected data after the layers");
+        }
+    } else {
+        const auto end = reader.words();
+        if (end.empty() || end[0] != "end")
+            reader.fail("expected 'end'");
+        const std::size_t endOffset = reader.offset();
+        const bool checked = end.size() == 2 && end[1].rfind("checksum=", 0) == 0;
+        if (!checked && end.size() != 1)
             reader.fail("unexpected data after 'end'");
-    if (checked && end[1].substr(9) != hex(fnv1a(text, endOffset)))
-        reader.fail("checksum mismatch: the file is corrupted");
+        while (!reader.done())
+            if (!reader.next().empty())
+                reader.fail("unexpected data after 'end'");
+        if (checked && end[1].substr(9) != hex(fnv1a(text, endOffset)))
+            reader.fail("checksum mismatch: the file is corrupted");
+    }
     try {
         checkConsistency(info, net._layers);
     } catch (const Error &error) {
         throw Error(path + ": " + error.what());
     }
+    checkTraining(path, info.training);
     return net;
+}
+
+Network Network::load(const std::string &path)
+{
+    return parse(path, false, 0);
+}
+
+Network Network::fromConfig(const std::string &path, std::uint64_t index)
+{
+    return parse(path, true, index);
 }
 
 } // namespace my_torch
