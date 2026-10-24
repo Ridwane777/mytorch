@@ -78,7 +78,7 @@ Test(fen, parses_en_passant_and_partial_castling)
 Test(fen, all_labels_round_trip)
 {
     for (Label label : {Label::Nothing, Label::CheckWhite, Label::CheckBlack, Label::CheckmateWhite,
-                        Label::CheckmateBlack})
+                        Label::CheckmateBlack, Label::Stalemate})
         cr_assert(parseLabel(labelName(label)) == label);
     cr_assert(labelName(Label::CheckmateBlack) == "Checkmate Black");
 }

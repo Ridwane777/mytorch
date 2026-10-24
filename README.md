@@ -48,7 +48,7 @@ On error, the message goes to standard error and the program exits with code 84.
 | `my_torch_network_*.nn` | Pre-trained network evaluated by the autograder |
 | `configs/` | Generator configurations ([format](docs/configuration.md)) |
 | `scripts/` | Training, benchmarks and graphs, to reproduce our results |
-| `bonus/` | Bonuses, with their own Makefile (required by the subject): the rule-based chess oracle |
+| `bonus/` | Bonuses, with their own Makefile (required by the subject): the rule-based chess oracle and the stalemate position generator |
 | `docs/` | Project file: decisions, performance, legal, business, retrospective. Map: [docs/README.md](docs/README.md) |
 
 The datasets (`dataset/`) are not pushed: they are too heavy. They are shown at the defense and

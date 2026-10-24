@@ -272,6 +272,8 @@ std::optional<analyzer::Label> toLabel(Verdict verdict)
         return Label::CheckmateWhite;
     case Verdict::CheckmateBlack:
         return Label::CheckmateBlack;
+    case Verdict::Stalemate:
+        return Label::Stalemate;
     default:
         return std::nullopt;
     }
@@ -280,8 +282,6 @@ std::optional<analyzer::Label> toLabel(Verdict verdict)
 const char *verdictName(Verdict verdict)
 {
     switch (verdict) {
-    case Verdict::Stalemate:
-        return "Stalemate";
     case Verdict::Illegal:
         return "Illegal";
     default:

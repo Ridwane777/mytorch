@@ -1,0 +1,2 @@
+drawn 3525325, legal 2412327, stalemates 2500
+training: 44.79 s, 285556 KB
