@@ -4,7 +4,7 @@
 
 namespace my_torch {
 
-Dropout::Dropout(Scalar rate, std::uint64_t seed) : _rate(rate), _rng(seed)
+Dropout::Dropout(Scalar rate, std::uint64_t seed) : _rate(rate), _seed(seed), _rng(seed)
 {
     if (!(rate >= 0 && rate < 1))
         throw Error("dropout: rate must be in [0, 1[");
@@ -42,6 +42,16 @@ std::string Dropout::type() const
 Scalar Dropout::rate() const noexcept
 {
     return _rate;
+}
+
+std::uint64_t Dropout::seed() const noexcept
+{
+    return _seed;
+}
+
+void Dropout::save(std::ostream &out) const
+{
+    out << "dropout rate=" << _rate << " seed=" << _seed << '\n';
 }
 
 } // namespace my_torch

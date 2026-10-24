@@ -1,5 +1,6 @@
 #pragma once
 
+#include <ostream>
 #include <string>
 #include <vector>
 
@@ -33,6 +34,12 @@ class Layer {
     virtual Scalar penalty() const
     {
         return 0;
+    }
+    // Writes the layer in the network file (ADR-0012): its line ("type key=value…") and, for layers
+    // with parameters, the numbers that follow. Parameter-free layers keep this default.
+    virtual void save(std::ostream &out) const
+    {
+        out << type() << '\n';
     }
     // Stable name written in the network file (#8), for example "dense" or "relu".
     virtual std::string type() const = 0;

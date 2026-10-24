@@ -56,6 +56,11 @@ Matrix &Dense::weights() noexcept
     return _weights;
 }
 
+const Matrix &Dense::weights() const noexcept
+{
+    return _weights;
+}
+
 Matrix &Dense::bias() noexcept
 {
     return _bias;
@@ -75,6 +80,17 @@ Scalar Dense::penalty() const
 const Regularization &Dense::regularization() const noexcept
 {
     return _regularization;
+}
+
+void Dense::save(std::ostream &out) const
+{
+    out << "dense " << _weights.rows() << ' ' << _weights.cols() << " l1=" << _regularization.l1
+        << " l2=" << _regularization.l2 << '\n';
+    for (std::size_t r = 0; r < _weights.rows(); r++)
+        for (std::size_t c = 0; c < _weights.cols(); c++)
+            out << _weights(r, c) << (c + 1 < _weights.cols() ? ' ' : '\n');
+    for (std::size_t c = 0; c < _bias.cols(); c++)
+        out << _bias(0, c) << (c + 1 < _bias.cols() ? ' ' : '\n');
 }
 
 } // namespace my_torch

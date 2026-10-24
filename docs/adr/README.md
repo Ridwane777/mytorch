@@ -15,3 +15,4 @@ One file per decision, based on [TEMPLATE.md](TEMPLATE.md). An accepted ADR is n
 | [0009](0009-training-loop.md) | Training loop, scheduler parameter and portable shuffling | Proposed | 2026-10-24 |
 | [0010](0010-overfitting-remedies.md) | Overfitting remedies: per-layer L1/L2, dropout layer and early stopping in fit | Proposed | 2026-10-24 |
 | [0011](0011-classification-metrics.md) | Classification metrics in the library, conventions and export formats | Proposed | 2026-10-24 |
+| [0012](0012-network-file-format.md) | Network file format: versioned self-describing text with a checksum | Proposed | 2026-10-24 |

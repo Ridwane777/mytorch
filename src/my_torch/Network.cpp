@@ -189,14 +189,4 @@ History Network::fit(const Dataset &train, const Dataset *validation, Loss &loss
     return history;
 }
 
-void Network::save(const std::string & /*path*/) const
-{
-    throw Error("save: not implemented yet (#8)");
-}
-
-Network Network::load(const std::string & /*path*/)
-{
-    throw Error("load: not implemented yet (#8)");
-}
-
 } // namespace my_torch

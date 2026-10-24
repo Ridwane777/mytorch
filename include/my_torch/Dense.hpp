@@ -30,9 +30,12 @@ class Dense : public Layer {
     std::string type() const override;
     // l1·Σ|w| + l2·Σw²; backward adds l1·sign(w) + 2·l2·w to dW.
     Scalar penalty() const override;
+    // "dense <inputs> <outputs> l1=… l2=…", then one line of weights per input, then the biases.
+    void save(std::ostream &out) const override;
     const Regularization &regularization() const noexcept;
 
     Matrix &weights() noexcept;
+    const Matrix &weights() const noexcept;
     Matrix &bias() noexcept;
 
   private:

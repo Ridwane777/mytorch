@@ -6,6 +6,7 @@
 #include "my_torch/Dense.hpp"
 #include "my_torch/Dropout.hpp"
 #include "my_torch/Error.hpp"
+#include "my_torch/Factory.hpp"
 #include "my_torch/Layer.hpp"
 #include "my_torch/Loss.hpp"
 #include "my_torch/Metrics.hpp"

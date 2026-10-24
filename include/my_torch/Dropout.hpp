@@ -19,9 +19,13 @@ class Dropout : public Layer {
     Matrix backward(const Matrix &gradOutput) override;
     std::string type() const override;
     Scalar rate() const noexcept;
+    std::uint64_t seed() const noexcept;
+    // "dropout rate=… seed=…": a reloaded layer restarts its mask sequence from the seed.
+    void save(std::ostream &out) const override;
 
   private:
     Scalar _rate;
+    std::uint64_t _seed;
     std::mt19937_64 _rng;
     Matrix _mask; // 0 or 1 / (1 - rate) per value; empty after a prediction forward
 };
