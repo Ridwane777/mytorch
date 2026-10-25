@@ -7,7 +7,7 @@ Status as of 2026-10-24:
 
 | Area | Document | Status |
 | --- | --- | --- |
-| Decisions | [adr/](adr/README.md): ADRs and index, [template](adr/TEMPLATE.md) | 15 ADRs: 0001 (Python) abandoned, 0002 to 0015 accepted |
+| Decisions | [adr/](adr/README.md): ADRs and index, [template](adr/TEMPLATE.md) | 16 ADRs: 0001 (Python) abandoned, 0002 to 0015 accepted, 0019 (symmetry augmentation) proposed |
 | Data | [reading-a-fen.md](reading-a-fen.md): useful chess rules, reading a dataset line field by field, label distribution | Written |
 | Data | [verification-dataset.md](verification-dataset.md): dataset labels checked by the oracle (100% agreement) | Written |
 | Usage | [usage.md](usage.md): generate, train and predict from the command line; [configuration.md](configuration.md): every key of a configuration file | Written |
