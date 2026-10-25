@@ -31,6 +31,15 @@ class OneHot768 : public Encoding {
     void encode(const Position &position, my_torch::Scalar *row) const override;
 };
 
+// OneHot768 plus the state of the game, 773 inputs: [0, 768) as OneHot768, [768] = 1 when White
+// is to move, [769..772] = 1 for each castling right still available, in the order K Q k q.
+class OneHot773 : public Encoding {
+  public:
+    std::string name() const override;
+    std::size_t width() const override;
+    void encode(const Position &position, my_torch::Scalar *row) const override;
+};
+
 // Throws my_torch::Error for an unknown name, listing the known ones.
 const Encoding &findEncoding(const std::string &name);
 
