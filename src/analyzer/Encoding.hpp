@@ -40,6 +40,16 @@ class OneHot773 : public Encoding {
     void encode(const Position &position, my_torch::Scalar *row) const override;
 };
 
+// Six planes of 64 squares, in the order P N B R Q K: +1 for a white piece, -1 for a black one, 0
+// for an empty square (a piece type shares its plane between the colours), then [384] = 1 when
+// White is to move. 385 inputs, no castling.
+class Signed385 : public Encoding {
+  public:
+    std::string name() const override;
+    std::size_t width() const override;
+    void encode(const Position &position, my_torch::Scalar *row) const override;
+};
+
 // Throws my_torch::Error for an unknown name, listing the known ones.
 const Encoding &findEncoding(const std::string &name);
 

@@ -44,6 +44,7 @@ const std::vector<std::unique_ptr<Encoding>> &encodings()
         std::vector<std::unique_ptr<Encoding>> list;
         list.push_back(std::make_unique<OneHot768>());
         list.push_back(std::make_unique<OneHot773>());
+        list.push_back(std::make_unique<Signed385>());
         return list;
     }();
     return all;
@@ -80,6 +81,25 @@ void OneHot773::encode(const Position &position, my_torch::Scalar *row) const
 {
     writePieces(position, row);
     writeGameState(position, row + 768);
+}
+
+std::string Signed385::name() const
+{
+    return "fen-signed-385";
+}
+
+std::size_t Signed385::width() const
+{
+    return 385;
+}
+
+void Signed385::encode(const Position &position, my_torch::Scalar *row) const
+{
+    forEachPiece(position, [row](std::size_t plane, std::size_t square) {
+        // pieceOrder lists the six white pieces first, then the same six in black.
+        row[(plane % 6) * 64 + square] = plane < 6 ? 1 : -1;
+    });
+    row[384] = position.sideToMove == Color::White ? 1 : 0;
 }
 
 const Encoding &findEncoding(const std::string &name)
