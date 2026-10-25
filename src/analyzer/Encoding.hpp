@@ -50,6 +50,19 @@ class Signed385 : public Encoding {
     void encode(const Position &position, my_torch::Scalar *row) const override;
 };
 
+// OneHot773 plus attack maps, 901 inputs: [0, 773) as OneHot773, [773..836] = 1 for each square
+// attacked by a White piece, [837..900] = 1 for each square attacked by a Black piece (square
+// index as in Position). A square is attacked when a piece could capture there, pins ignored; a
+// slider attacks up to and including the first piece in its way. This is feature extraction (it
+// hands the network some of the rules of the game), not a check verdict, and it is computed here
+// because the analyzer does not depend on the bonus oracle.
+class Attacks901 : public Encoding {
+  public:
+    std::string name() const override;
+    std::size_t width() const override;
+    void encode(const Position &position, my_torch::Scalar *row) const override;
+};
+
 // Throws my_torch::Error for an unknown name, listing the known ones.
 const Encoding &findEncoding(const std::string &name);
 

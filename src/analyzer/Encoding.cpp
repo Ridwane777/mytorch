@@ -1,5 +1,7 @@
 #include "Encoding.hpp"
 
+#include <array>
+#include <cctype>
 #include <memory>
 #include <string_view>
 
@@ -38,6 +40,78 @@ void writeGameState(const Position &position, my_torch::Scalar *row)
     row[4] = position.castling.blackQueenside ? 1 : 0;
 }
 
+// Squares attacked by a colour: those a piece of that colour could capture on, ignoring pins and
+// whether the king would be left in check. A slider attacks up to and including the first
+// occupied square on each ray, so the squares of defended pieces count as attacked. Square
+// index as in Position: row = square / 8 (0 = rank 8), column = square % 8 (0 = file a).
+std::array<bool, 64> attackedBy(const Position &position, Color color)
+{
+    constexpr int knightMoves[8][2] = {{-2, -1}, {-2, 1}, {-1, -2}, {-1, 2},
+                                       {1, -2},  {1, 2},  {2, -1},  {2, 1}};
+    constexpr int straight[4][2] = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+    constexpr int diagonal[4][2] = {{-1, -1}, {-1, 1}, {1, -1}, {1, 1}};
+    std::array<bool, 64> attacked{};
+
+    const auto mark = [&attacked](int row, int column) {
+        if (row >= 0 && row < 8 && column >= 0 && column < 8)
+            attacked[static_cast<std::size_t>(row * 8 + column)] = true;
+    };
+    const auto slide = [&](int row, int column, const int (&directions)[4][2]) {
+        for (const auto &direction : directions) {
+            int r = row + direction[0];
+            int c = column + direction[1];
+            while (r >= 0 && r < 8 && c >= 0 && c < 8) {
+                mark(r, c);
+                if (position.board[static_cast<std::size_t>(r * 8 + c)] != '.')
+                    break;
+                r += direction[0];
+                c += direction[1];
+            }
+        }
+    };
+
+    for (int square = 0; square < 64; square++) {
+        const char piece = position.board[static_cast<std::size_t>(square)];
+        if (piece == '.' ||
+            (std::isupper(static_cast<unsigned char>(piece)) != 0) != (color == Color::White))
+            continue;
+        const int row = square / 8;
+        const int column = square % 8;
+        switch (std::toupper(static_cast<unsigned char>(piece))) {
+        case 'P': {
+            // White moves towards row 0 (square - 8), Black towards row 7.
+            const int ahead = color == Color::White ? row - 1 : row + 1;
+            mark(ahead, column - 1);
+            mark(ahead, column + 1);
+            break;
+        }
+        case 'N':
+            for (const auto &move : knightMoves)
+                mark(row + move[0], column + move[1]);
+            break;
+        case 'B':
+            slide(row, column, diagonal);
+            break;
+        case 'R':
+            slide(row, column, straight);
+            break;
+        case 'Q':
+            slide(row, column, straight);
+            slide(row, column, diagonal);
+            break;
+        case 'K':
+            for (const auto &move : diagonal)
+                mark(row + move[0], column + move[1]);
+            for (const auto &move : straight)
+                mark(row + move[0], column + move[1]);
+            break;
+        default:
+            break;
+        }
+    }
+    return attacked;
+}
+
 const std::vector<std::unique_ptr<Encoding>> &encodings()
 {
     static const auto all = [] {
@@ -45,6 +119,7 @@ const std::vector<std::unique_ptr<Encoding>> &encodings()
         list.push_back(std::make_unique<OneHot768>());
         list.push_back(std::make_unique<OneHot773>());
         list.push_back(std::make_unique<Signed385>());
+        list.push_back(std::make_unique<Attacks901>());
         return list;
     }();
     return all;
@@ -100,6 +175,28 @@ void Signed385::encode(const Position &position, my_torch::Scalar *row) const
         row[(plane % 6) * 64 + square] = plane < 6 ? 1 : -1;
     });
     row[384] = position.sideToMove == Color::White ? 1 : 0;
+}
+
+std::string Attacks901::name() const
+{
+    return "fen-attacks-901";
+}
+
+std::size_t Attacks901::width() const
+{
+    return 901;
+}
+
+void Attacks901::encode(const Position &position, my_torch::Scalar *row) const
+{
+    writePieces(position, row);
+    writeGameState(position, row + 768);
+    const std::array<bool, 64> white = attackedBy(position, Color::White);
+    const std::array<bool, 64> black = attackedBy(position, Color::Black);
+    for (std::size_t square = 0; square < 64; square++) {
+        row[773 + square] = white[square] ? 1 : 0;
+        row[837 + square] = black[square] ? 1 : 0;
+    }
 }
 
 const Encoding &findEncoding(const std::string &name)
