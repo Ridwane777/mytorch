@@ -11,3 +11,6 @@ Done: [optimizers.md](optimizers.md) (optimizers and learning-rate schedulers, i
 [overfitting.md](overfitting.md) (L1, L2, elastic net, dropout and early stopping against overfitting, issue #7),
 [serialization.md](serialization.md) (network file size and save/load time, issue #8),
 [stalemate.md](stalemate.md) (stalemate bonus: generated positions and a six-class network, issue #24).
+
+Pending the real dataset: [imbalance.md](imbalance.md) (class imbalance: none, loss weighting,
+oversampling, undersampling, issue #16); method and script written, results to be measured.
