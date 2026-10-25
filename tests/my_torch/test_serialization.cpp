@@ -290,6 +290,16 @@ Test(serialization, checksum_catches_one_changed_weight_digit)
     cr_assert(message.find("checksum mismatch") != std::string::npos, "%s", message.c_str());
 }
 
+Test(serialization, init_key_is_refused_in_a_network_file)
+{
+    // `init` belongs to configurations: a network file stores its weights.
+    const std::string message =
+        loadError(handWritten("layers 1\ndense 2 1 init=he_normal\n2\n3\n1\n"));
+
+    cr_assert(message.find("dense: unexpected 'init=he_normal'") != std::string::npos, "%s",
+              message.c_str());
+}
+
 Test(serialization, rejects_bad_numbers)
 {
     for (const char *bad : {"abc", "nan", "inf", "1e999"}) {
