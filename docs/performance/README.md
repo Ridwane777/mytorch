@@ -11,3 +11,6 @@ Done: [optimizers.md](optimizers.md) (optimizers and learning-rate schedulers, i
 [overfitting.md](overfitting.md) (L1, L2, elastic net, dropout and early stopping against overfitting, issue #7),
 [serialization.md](serialization.md) (network file size and save/load time, issue #8),
 [stalemate.md](stalemate.md) (stalemate bonus: generated positions and a six-class network, issue #24).
+
+Method written, **not yet measured** (needs the real dataset):
+[augmentation.md](augmentation.md) (training with and without board-symmetry augmentation, issue #38).
