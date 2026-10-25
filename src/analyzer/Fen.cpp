@@ -220,6 +220,48 @@ std::vector<Sample> parseFile(const std::string &path, LabelPolicy policy)
     return samples;
 }
 
+std::string formatFen(const Position &position)
+{
+    std::string fen;
+
+    for (int row = 0; row < 8; row++) {
+        int empty = 0;
+        for (int file = 0; file < 8; file++) {
+            const char c = position.board[row * 8 + file];
+            if (c == '.') {
+                empty++;
+                continue;
+            }
+            if (empty > 0)
+                fen += static_cast<char>('0' + empty);
+            empty = 0;
+            fen += c;
+        }
+        if (empty > 0)
+            fen += static_cast<char>('0' + empty);
+        if (row < 7)
+            fen += '/';
+    }
+    fen += position.sideToMove == Color::White ? " w " : " b ";
+    const Castling &c = position.castling;
+    std::string rights;
+    rights += c.whiteKingside ? "K" : "";
+    rights += c.whiteQueenside ? "Q" : "";
+    rights += c.blackKingside ? "k" : "";
+    rights += c.blackQueenside ? "q" : "";
+    fen += rights.empty() ? "-" : rights;
+    fen += ' ';
+    if (position.enPassant) {
+        fen += static_cast<char>('a' + *position.enPassant % 8);
+        fen += static_cast<char>('0' + 8 - *position.enPassant / 8);
+    } else {
+        fen += '-';
+    }
+    fen += ' ' + std::to_string(position.halfmoveClock) + ' ' +
+           std::to_string(position.fullmoveNumber);
+    return fen;
+}
+
 Label parseLabel(std::string_view text)
 {
     for (std::size_t i = 0; i < labelNames.size(); i++)

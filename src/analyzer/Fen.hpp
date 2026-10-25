@@ -53,6 +53,10 @@ Sample parseLine(std::string_view line, LabelPolicy policy);
 // Skips empty lines; errors are prefixed with "file:line: ".
 std::vector<Sample> parseFile(const std::string &path, LabelPolicy policy);
 
+// The six FEN fields, '-' for no castling right and no en passant square: parseFen(formatFen(p))
+// gives p back.
+std::string formatFen(const Position &position);
+
 Label parseLabel(std::string_view text);
 std::string_view labelName(Label label);
 
