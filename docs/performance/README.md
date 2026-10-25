@@ -10,4 +10,5 @@ prediction time.
 Done: [optimizers.md](optimizers.md) (optimizers and learning-rate schedulers, issue #5),
 [overfitting.md](overfitting.md) (L1, L2, elastic net, dropout and early stopping against overfitting, issue #7),
 [serialization.md](serialization.md) (network file size and save/load time, issue #8),
-[stalemate.md](stalemate.md) (stalemate bonus: generated positions and a six-class network, issue #24).
+[stalemate.md](stalemate.md) (stalemate bonus: generated positions and a six-class network, issue #24),
+[initialisation.md](initialisation.md) (LeCun, Xavier, He and orthogonal weight initialisation against the default, issue #6).
