@@ -13,14 +13,31 @@ struct Regularization {
     Scalar l2 = 0;
 };
 
+// How the weights of a Dense layer are drawn (ADR-0020). With fan_in = inputs and
+// fan_out = outputs, the weights have zero mean and a variance of:
+//   Lecun*   1 / fan_in          Xavier*   2 / (fan_in + fan_out)          He*   2 / fan_in
+// *Uniform draws from U(±sqrt(3·variance)), *Normal from the untruncated N(0, variance).
+// Uniform is the original default, U(±sqrt(1 / fan_in)): variance 1 / (3·fan_in).
+// Orthogonal gives W orthonormal columns (inputs >= outputs) or rows (inputs < outputs), gain 1.
+enum class Init {
+    Uniform,
+    LecunUniform,
+    LecunNormal,
+    XavierUniform,
+    XavierNormal,
+    HeUniform,
+    HeNormal,
+    Orthogonal
+};
+
 // Fully connected layer: Z = X·W + b, with W (inputs × neurons) and one bias per neuron,
 // b (1 × neurons), shared by every row of the batch.
 class Dense : public Layer {
   public:
-    // Temporary uniform initialization in ±sqrt(1 / inputs); Xavier and He come with #6.
+    // Weights drawn from std::mt19937(seed) following `init`, biases at zero.
     // Throws my_torch::Error if a regularization coefficient is negative.
     Dense(std::size_t inputs, std::size_t outputs, std::uint32_t seed = 42,
-          Regularization regularization = {});
+          Regularization regularization = {}, Init init = Init::Uniform);
 
     Matrix forward(const Matrix &input, bool training) override;
     // dW += Xᵀ·G, db += sum of the rows of G, returns dX = G·Wᵀ. Gradients accumulate:

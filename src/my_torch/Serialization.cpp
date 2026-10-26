@@ -260,6 +260,35 @@ struct Context {
     }
 };
 
+// Names accepted by the `init` key of a dense layer in a configuration (ADR-0020).
+struct InitName {
+    const char *name;
+    Init init;
+};
+
+constexpr InitName initNames[] = {
+    {"uniform", Init::Uniform},
+    {"lecun_uniform", Init::LecunUniform},
+    {"lecun_normal", Init::LecunNormal},
+    {"xavier_uniform", Init::XavierUniform},
+    {"xavier_normal", Init::XavierNormal},
+    {"he_uniform", Init::HeUniform},
+    {"he_normal", Init::HeNormal},
+    {"orthogonal", Init::Orthogonal},
+};
+
+Init readInit(Reader &reader, const std::string &name)
+{
+    std::string available;
+
+    for (const InitName &entry : initNames) {
+        if (name == entry.name)
+            return entry.init;
+        available += (available.empty() ? "" : ", ") + std::string(entry.name);
+    }
+    reader.fail("dense: unknown init '" + name + "' (available: " + available + ")");
+}
+
 std::unique_ptr<Layer> readDense(Reader &reader, const std::vector<std::string> &w,
                                  const Context &ctx)
 {
@@ -277,11 +306,9 @@ std::unique_ptr<Layer> readDense(Reader &reader, const std::vector<std::string> 
         reg.l1 = reader.number(settings["l1"]);
     if (settings.count("l2"))
         reg.l2 = reader.number(settings["l2"]);
-    // Only the provisional uniform initialization exists until #6; the key is reserved for it.
-    if (settings.count("init") && settings["init"] != "uniform")
-        reader.fail("dense: unknown init '" + settings["init"] + "' (available: uniform)");
+    const Init init = settings.count("init") ? readInit(reader, settings["init"]) : Init::Uniform;
     auto dense = std::make_unique<Dense>(inputs, outputs,
-                                         static_cast<std::uint32_t>(ctx.layerSeed()), reg);
+                                         static_cast<std::uint32_t>(ctx.layerSeed()), reg, init);
     if (ctx.config)
         return dense;
     for (std::size_t r = 0; r < inputs; r++) {
