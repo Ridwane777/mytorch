@@ -17,10 +17,10 @@ nothing about unseen ones. Two properties of the data make a plain random cut un
 - The labels are not balanced (`Nothing` is the largest class by far, `Checkmate Black` the
   smallest), so a plain random split can leave a small class thin in the validation or test set.
 
-Whether the dataset really holds duplicates or contradictions is **not measured yet**: the real
-`dataset/` is not available where this was written. The decision below is therefore Proposed; the
-script prints these numbers (`docs/performance/dataset.md`, "pending measurement") and the pair
-confirms or changes the decision when they are known.
+Measured on the real dataset ([performance/dataset.md](../performance/dataset.md)): 7,460 lines
+(1.03 %) repeat a position, concentrated in `Checkmate` (about 2 % of its lines), and no position
+carries two labels. A random line split would therefore leak a small share of the test set, mostly in
+the rarest classes.
 
 ## Options considered
 
@@ -57,7 +57,6 @@ never committed.
 - ❌ The ratios are not exact for small strata (rounding to whole positions per label), and the
   split is over the five labels only: nothing is balanced inside a label (for example by number of
   pieces).
-- Follow-up: run `sh scripts/dataset_split.sh` on the real dataset, fill in
-  `docs/performance/dataset.md` and switch the status to Accepted (or supersede this ADR) once the
-  duplicate and contradiction counts are known; the training script (#17) and the scoring of #18
-  must use these files.
+- Follow-up: the counts are now known (7,460 duplicates, 0 contradictions), so the contradiction
+  exclusion removes nothing today; the pair decides whether to accept this ADR. The training script
+  (#17) and the scoring of #18 must use the files of `build/dataset_split/`.
