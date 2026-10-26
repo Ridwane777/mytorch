@@ -17,4 +17,5 @@ Done: [optimizers.md](optimizers.md) (optimizers and learning-rate schedulers, i
 [imbalance.md](imbalance.md) (class imbalance: none, loss weighting, oversampling, undersampling,
 issue #16),
 [augmentation.md](augmentation.md) (training with and without board-symmetry augmentation, issue #38),
-[training-memory.md](training-memory.md) (training memory, whole file encoded against batch by batch, issue #17).
+[training-memory.md](training-memory.md) (training memory, whole file encoded against batch by batch, issue #17),
+[eda.md](eda.md) (exploratory analysis: checking pieces, king squares, material, FEN fields, shortcuts).

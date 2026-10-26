@@ -1,0 +1,10 @@
+file,lines,nothing,check_white,check_black,checkmate_white,checkmate_black,mean_pieces
+check/10_pieces.txt,75198,0,38454,36744,0,0,6.93738
+check/20_pieces.txt,100000,0,53171,46829,0,0,14.6816
+check/many_pieces.txt,74102,0,43962,30140,0,0,22.2268
+checkmate/10_pieces.txt,45087,0,0,0,23144,21943,6.26369
+checkmate/20_pieces.txt,100000,0,0,0,53875,46125,14.7002
+checkmate/many_pieces.txt,28632,0,0,0,17276,11356,22.3983
+nothing/10_pieces.txt,100000,100000,0,0,0,0,6.51708
+nothing/20_pieces.txt,100000,100000,0,0,0,0,14.474
+nothing/many_pieces.txt,100000,100000,0,0,0,0,23.6139

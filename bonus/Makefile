@@ -10,16 +10,21 @@ ORACLE_SRC	=	oracle/Oracle.cpp ../src/analyzer/Fen.cpp
 POSITIONS	=	my_torch_positions
 POSITIONS_SRC	=	positions/Positions.cpp $(ORACLE_SRC)
 
+EDA		=	my_torch_eda
+
 TESTS		=	unit_tests
 TESTS_SRC	=	$(wildcard tests/*.cpp)
 
-all:	$(ORACLE) $(POSITIONS)
+all:	$(ORACLE) $(POSITIONS) $(EDA)
 
 $(ORACLE):	oracle/main.cpp $(ORACLE_SRC) oracle/Oracle.hpp ../src/analyzer/Fen.hpp
 	$(CXX) $(CXXFLAGS) $(RELEASE) -o $@ oracle/main.cpp $(ORACLE_SRC) $(LDFLAGS)
 
 $(POSITIONS):	positions/main.cpp $(POSITIONS_SRC) positions/Positions.hpp oracle/Oracle.hpp
 	$(CXX) $(CXXFLAGS) $(RELEASE) -o $@ positions/main.cpp $(POSITIONS_SRC) $(LDFLAGS)
+
+$(EDA):	eda/main.cpp $(ORACLE_SRC) oracle/Oracle.hpp
+	$(CXX) $(CXXFLAGS) $(RELEASE) -o $@ eda/main.cpp $(ORACLE_SRC) $(LDFLAGS)
 
 tests_run:
 	$(CXX) $(CXXFLAGS) -O2 -o $(TESTS) $(TESTS_SRC) $(POSITIONS_SRC) -lcriterion $(LDFLAGS)
@@ -29,7 +34,7 @@ clean:
 	rm -f *.gcda *.gcno
 
 fclean:	clean
-	rm -f $(ORACLE) $(POSITIONS) $(TESTS)
+	rm -f $(ORACLE) $(POSITIONS) $(EDA) $(TESTS)
 
 re:	fclean all
 

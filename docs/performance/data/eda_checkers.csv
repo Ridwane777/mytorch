@@ -1,0 +1,6 @@
+label,positions,pawn,knight,bishop,rook,queen,king,double_checks,no_attacker
+Nothing,300000,0,0,0,0,0,0,0,0
+Check White,135587,7032,21196,13321,38688,56073,0,723,0
+Check Black,113713,5998,17246,10749,33515,46754,0,549,0
+Checkmate White,94295,2809,5011,5052,26450,55464,0,491,0
+Checkmate Black,79424,2377,3755,4157,22961,46532,0,358,0

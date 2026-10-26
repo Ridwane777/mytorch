@@ -32,6 +32,9 @@ enum class Verdict {
 
 Color opponent(Color color);
 bool isAttacked(const Position &position, int square, Color by);
+// Squares of the pieces of colour `by` that attack `square` (two for a double check). Used by the
+// dataset analysis (docs/performance/eda.md) to tell which piece gives check.
+std::vector<int> attackers(const Position &position, int square, Color by);
 int findKing(const Position &position, Color color);
 bool inCheck(const Position &position, Color color);
 

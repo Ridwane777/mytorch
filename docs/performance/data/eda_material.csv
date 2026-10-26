@@ -1,0 +1,308 @@
+label,attacker_minus_defender,count
+Nothing,-43,1
+Nothing,-36,1
+Nothing,-29,1
+Nothing,-28,1
+Nothing,-27,2
+Nothing,-25,1
+Nothing,-23,3
+Nothing,-22,3
+Nothing,-21,3
+Nothing,-20,5
+Nothing,-19,12
+Nothing,-18,17
+Nothing,-17,14
+Nothing,-16,18
+Nothing,-15,26
+Nothing,-14,50
+Nothing,-13,48
+Nothing,-12,60
+Nothing,-11,90
+Nothing,-10,146
+Nothing,-9,207
+Nothing,-8,293
+Nothing,-7,318
+Nothing,-6,535
+Nothing,-5,875
+Nothing,-4,2021
+Nothing,-3,4081
+Nothing,-2,7668
+Nothing,-1,21612
+Nothing,0,84246
+Nothing,1,51936
+Nothing,2,38182
+Nothing,3,30812
+Nothing,4,17798
+Nothing,5,11528
+Nothing,6,7213
+Nothing,7,4563
+Nothing,8,4127
+Nothing,9,4390
+Nothing,10,2440
+Nothing,11,1464
+Nothing,12,1064
+Nothing,13,696
+Nothing,14,485
+Nothing,15,329
+Nothing,16,205
+Nothing,17,134
+Nothing,18,102
+Nothing,19,65
+Nothing,20,37
+Nothing,21,19
+Nothing,22,20
+Nothing,23,9
+Nothing,24,7
+Nothing,25,4
+Nothing,26,3
+Nothing,27,5
+Nothing,28,1
+Nothing,30,3
+Nothing,41,1
+Check White,-17,2
+Check White,-16,3
+Check White,-15,2
+Check White,-14,6
+Check White,-13,11
+Check White,-12,22
+Check White,-11,41
+Check White,-10,84
+Check White,-9,115
+Check White,-8,247
+Check White,-7,330
+Check White,-6,632
+Check White,-5,1123
+Check White,-4,2053
+Check White,-3,3261
+Check White,-2,6116
+Check White,-1,11884
+Check White,0,23349
+Check White,1,22927
+Check White,2,17713
+Check White,3,13189
+Check White,4,9072
+Check White,5,6290
+Check White,6,3976
+Check White,7,2663
+Check White,8,2512
+Check White,9,2635
+Check White,10,1550
+Check White,11,965
+Check White,12,766
+Check White,13,503
+Check White,14,412
+Check White,15,298
+Check White,16,187
+Check White,17,166
+Check White,18,182
+Check White,19,99
+Check White,20,67
+Check White,21,49
+Check White,22,27
+Check White,23,21
+Check White,24,14
+Check White,25,6
+Check White,26,2
+Check White,27,3
+Check White,28,6
+Check White,29,4
+Check White,36,1
+Check White,39,1
+Check Black,-18,2
+Check Black,-17,1
+Check Black,-16,6
+Check Black,-15,2
+Check Black,-14,4
+Check Black,-13,13
+Check Black,-12,37
+Check Black,-11,28
+Check Black,-10,75
+Check Black,-9,121
+Check Black,-8,175
+Check Black,-7,270
+Check Black,-6,540
+Check Black,-5,919
+Check Black,-4,1558
+Check Black,-3,2503
+Check Black,-2,4791
+Check Black,-1,10561
+Check Black,0,19259
+Check Black,1,18570
+Check Black,2,15057
+Check Black,3,10926
+Check Black,4,7698
+Check Black,5,5451
+Check Black,6,3351
+Check Black,7,2442
+Check Black,8,2155
+Check Black,9,2391
+Check Black,10,1390
+Check Black,11,885
+Check Black,12,660
+Check Black,13,484
+Check Black,14,365
+Check Black,15,279
+Check Black,16,168
+Check Black,17,159
+Check Black,18,159
+Check Black,19,85
+Check Black,20,56
+Check Black,21,51
+Check Black,22,26
+Check Black,23,13
+Check Black,24,7
+Check Black,25,5
+Check Black,27,4
+Check Black,28,3
+Check Black,29,1
+Check Black,30,3
+Check Black,32,1
+Check Black,37,2
+Check Black,45,1
+Checkmate White,-18,1
+Checkmate White,-16,1
+Checkmate White,-15,3
+Checkmate White,-14,11
+Checkmate White,-13,23
+Checkmate White,-12,29
+Checkmate White,-11,81
+Checkmate White,-10,146
+Checkmate White,-9,238
+Checkmate White,-8,397
+Checkmate White,-7,460
+Checkmate White,-6,672
+Checkmate White,-5,1116
+Checkmate White,-4,1674
+Checkmate White,-3,2285
+Checkmate White,-2,3535
+Checkmate White,-1,5296
+Checkmate White,0,8022
+Checkmate White,1,9174
+Checkmate White,2,7963
+Checkmate White,3,6264
+Checkmate White,4,5265
+Checkmate White,5,4627
+Checkmate White,6,3661
+Checkmate White,7,2930
+Checkmate White,8,2999
+Checkmate White,9,4157
+Checkmate White,10,2841
+Checkmate White,11,2362
+Checkmate White,12,2817
+Checkmate White,13,2286
+Checkmate White,14,2361
+Checkmate White,15,1992
+Checkmate White,16,1423
+Checkmate White,17,1372
+Checkmate White,18,1675
+Checkmate White,19,1230
+Checkmate White,20,716
+Checkmate White,21,721
+Checkmate White,22,462
+Checkmate White,23,294
+Checkmate White,24,198
+Checkmate White,25,143
+Checkmate White,26,73
+Checkmate White,27,76
+Checkmate White,28,50
+Checkmate White,29,32
+Checkmate White,30,40
+Checkmate White,31,14
+Checkmate White,32,17
+Checkmate White,33,9
+Checkmate White,34,5
+Checkmate White,35,5
+Checkmate White,36,9
+Checkmate White,37,7
+Checkmate White,38,2
+Checkmate White,39,7
+Checkmate White,40,3
+Checkmate White,41,2
+Checkmate White,42,2
+Checkmate White,43,1
+Checkmate White,44,1
+Checkmate White,45,2
+Checkmate White,46,1
+Checkmate White,47,1
+Checkmate White,48,3
+Checkmate White,50,1
+Checkmate White,51,1
+Checkmate White,54,1
+Checkmate White,55,1
+Checkmate White,57,1
+Checkmate White,59,1
+Checkmate White,62,2
+Checkmate White,63,1
+Checkmate White,71,1
+Checkmate Black,-18,1
+Checkmate Black,-17,2
+Checkmate Black,-16,4
+Checkmate Black,-15,9
+Checkmate Black,-14,10
+Checkmate Black,-13,21
+Checkmate Black,-12,33
+Checkmate Black,-11,62
+Checkmate Black,-10,90
+Checkmate Black,-9,186
+Checkmate Black,-8,244
+Checkmate Black,-7,314
+Checkmate Black,-6,478
+Checkmate Black,-5,779
+Checkmate Black,-4,1165
+Checkmate Black,-3,1640
+Checkmate Black,-2,2526
+Checkmate Black,-1,4116
+Checkmate Black,0,6557
+Checkmate Black,1,7372
+Checkmate Black,2,6515
+Checkmate Black,3,5498
+Checkmate Black,4,4534
+Checkmate Black,5,3952
+Checkmate Black,6,3187
+Checkmate Black,7,2548
+Checkmate Black,8,2663
+Checkmate Black,9,3733
+Checkmate Black,10,2549
+Checkmate Black,11,2095
+Checkmate Black,12,2564
+Checkmate Black,13,2047
+Checkmate Black,14,2232
+Checkmate Black,15,1838
+Checkmate Black,16,1322
+Checkmate Black,17,1282
+Checkmate Black,18,1514
+Checkmate Black,19,1105
+Checkmate Black,20,700
+Checkmate Black,21,640
+Checkmate Black,22,388
+Checkmate Black,23,258
+Checkmate Black,24,190
+Checkmate Black,25,101
+Checkmate Black,26,79
+Checkmate Black,27,79
+Checkmate Black,28,42
+Checkmate Black,29,32
+Checkmate Black,30,23
+Checkmate Black,31,14
+Checkmate Black,32,8
+Checkmate Black,33,9
+Checkmate Black,34,4
+Checkmate Black,35,8
+Checkmate Black,36,19
+Checkmate Black,37,3
+Checkmate Black,38,2
+Checkmate Black,39,3
+Checkmate Black,40,2
+Checkmate Black,41,8
+Checkmate Black,42,2
+Checkmate Black,44,2
+Checkmate Black,45,8
+Checkmate Black,46,2
+Checkmate Black,47,1
+Checkmate Black,48,2
+Checkmate Black,50,1
+Checkmate Black,53,1
+Checkmate Black,54,3
+Checkmate Black,62,1
+Checkmate Black,65,1
+Checkmate Black,68,1

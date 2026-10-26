@@ -1,0 +1,321 @@
+label,square,file,rank,count
+Nothing,0,a,8,1039
+Nothing,1,b,8,2130
+Nothing,2,c,8,2969
+Nothing,3,d,8,2277
+Nothing,4,e,8,7719
+Nothing,5,f,8,6663
+Nothing,6,g,8,41080
+Nothing,7,h,8,11266
+Nothing,8,a,7,1047
+Nothing,9,b,7,1641
+Nothing,10,c,7,2588
+Nothing,11,d,7,3655
+Nothing,12,e,7,5541
+Nothing,13,f,7,6178
+Nothing,14,g,7,10605
+Nothing,15,h,7,8173
+Nothing,16,a,6,834
+Nothing,17,b,6,1756
+Nothing,18,c,6,2413
+Nothing,19,d,6,3418
+Nothing,20,e,6,4034
+Nothing,21,f,6,4866
+Nothing,22,g,6,4238
+Nothing,23,h,6,3261
+Nothing,24,a,5,864
+Nothing,25,b,5,1611
+Nothing,26,c,5,2162
+Nothing,27,d,5,2623
+Nothing,28,e,5,3223
+Nothing,29,f,5,3231
+Nothing,30,g,5,2982
+Nothing,31,h,5,2003
+Nothing,32,a,4,771
+Nothing,33,b,4,1550
+Nothing,34,c,4,2094
+Nothing,35,d,4,2823
+Nothing,36,e,4,3154
+Nothing,37,f,4,3177
+Nothing,38,g,4,2938
+Nothing,39,h,4,1886
+Nothing,40,a,3,801
+Nothing,41,b,3,1659
+Nothing,42,c,3,2322
+Nothing,43,d,3,3323
+Nothing,44,e,3,4139
+Nothing,45,f,3,4477
+Nothing,46,g,3,4232
+Nothing,47,h,3,2921
+Nothing,48,a,2,1168
+Nothing,49,b,2,1716
+Nothing,50,c,2,2381
+Nothing,51,d,2,3248
+Nothing,52,e,2,4584
+Nothing,53,f,2,5291
+Nothing,54,g,2,8907
+Nothing,55,h,2,7536
+Nothing,56,a,1,1220
+Nothing,57,b,1,3606
+Nothing,58,c,1,3311
+Nothing,59,d,1,1782
+Nothing,60,e,1,5658
+Nothing,61,f,1,5055
+Nothing,62,g,1,34663
+Nothing,63,h,1,9517
+Check White,0,a,8,751
+Check White,1,b,8,1911
+Check White,2,c,8,2694
+Check White,3,d,8,2909
+Check White,4,e,8,6837
+Check White,5,f,8,7934
+Check White,6,g,8,22433
+Check White,7,h,8,9751
+Check White,8,a,7,803
+Check White,9,b,7,1309
+Check White,10,c,7,2320
+Check White,11,d,7,3635
+Check White,12,e,7,5820
+Check White,13,f,7,6905
+Check White,14,g,7,10587
+Check White,15,h,7,7684
+Check White,16,a,6,464
+Check White,17,b,6,994
+Check White,18,c,6,1428
+Check White,19,d,6,2189
+Check White,20,e,6,2761
+Check White,21,f,6,3557
+Check White,22,g,6,3772
+Check White,23,h,6,2995
+Check White,24,a,5,333
+Check White,25,b,5,623
+Check White,26,c,5,903
+Check White,27,d,5,1161
+Check White,28,e,5,1622
+Check White,29,f,5,1874
+Check White,30,g,5,1929
+Check White,31,h,5,1256
+Check White,32,a,4,234
+Check White,33,b,4,488
+Check White,34,c,4,613
+Check White,35,d,4,804
+Check White,36,e,4,883
+Check White,37,f,4,1047
+Check White,38,g,4,1088
+Check White,39,h,4,602
+Check White,40,a,3,200
+Check White,41,b,3,443
+Check White,42,c,3,418
+Check White,43,d,3,511
+Check White,44,e,3,586
+Check White,45,f,3,646
+Check White,46,g,3,635
+Check White,47,h,3,360
+Check White,48,a,2,196
+Check White,49,b,2,400
+Check White,50,c,2,327
+Check White,51,d,2,308
+Check White,52,e,2,335
+Check White,53,f,2,400
+Check White,54,g,2,426
+Check White,55,h,2,281
+Check White,56,a,1,113
+Check White,57,b,1,186
+Check White,58,c,1,132
+Check White,59,d,1,121
+Check White,60,e,1,160
+Check White,61,f,1,173
+Check White,62,g,1,208
+Check White,63,h,1,119
+Check Black,0,a,8,98
+Check Black,1,b,8,205
+Check Black,2,c,8,141
+Check Black,3,d,8,114
+Check Black,4,e,8,124
+Check Black,5,f,8,159
+Check Black,6,g,8,210
+Check Black,7,h,8,117
+Check Black,8,a,7,190
+Check Black,9,b,7,409
+Check Black,10,c,7,332
+Check Black,11,d,7,286
+Check Black,12,e,7,362
+Check Black,13,f,7,393
+Check Black,14,g,7,420
+Check Black,15,h,7,240
+Check Black,16,a,6,213
+Check Black,17,b,6,423
+Check Black,18,c,6,428
+Check Black,19,d,6,470
+Check Black,20,e,6,522
+Check Black,21,f,6,570
+Check Black,22,g,6,561
+Check Black,23,h,6,331
+Check Black,24,a,5,269
+Check Black,25,b,5,496
+Check Black,26,c,5,564
+Check Black,27,d,5,648
+Check Black,28,e,5,807
+Check Black,29,f,5,879
+Check Black,30,g,5,1011
+Check Black,31,h,5,574
+Check Black,32,a,4,323
+Check Black,33,b,4,650
+Check Black,34,c,4,853
+Check Black,35,d,4,1149
+Check Black,36,e,4,1565
+Check Black,37,f,4,1754
+Check Black,38,g,4,1843
+Check Black,39,h,4,1270
+Check Black,40,a,3,472
+Check Black,41,b,3,950
+Check Black,42,c,3,1246
+Check Black,43,d,3,2105
+Check Black,44,e,3,2725
+Check Black,45,f,3,3332
+Check Black,46,g,3,3488
+Check Black,47,h,3,2625
+Check Black,48,a,2,964
+Check Black,49,b,2,1336
+Check Black,50,c,2,2074
+Check Black,51,d,2,2974
+Check Black,52,e,2,4146
+Check Black,53,f,2,5409
+Check Black,54,g,2,7827
+Check Black,55,h,2,6859
+Check Black,56,a,1,1063
+Check Black,57,b,1,2624
+Check Black,58,c,1,2844
+Check Black,59,d,1,2061
+Check Black,60,e,1,4597
+Check Black,61,f,1,5562
+Check Black,62,g,1,16865
+Check Black,63,h,1,7592
+Checkmate White,0,a,8,1870
+Checkmate White,1,b,8,1709
+Checkmate White,2,c,8,2532
+Checkmate White,3,d,8,2826
+Checkmate White,4,e,8,4957
+Checkmate White,5,f,8,7333
+Checkmate White,6,g,8,12096
+Checkmate White,7,h,8,11877
+Checkmate White,8,a,7,992
+Checkmate White,9,b,7,283
+Checkmate White,10,c,7,560
+Checkmate White,11,d,7,921
+Checkmate White,12,e,7,1845
+Checkmate White,13,f,7,1835
+Checkmate White,14,g,7,2203
+Checkmate White,15,h,7,5693
+Checkmate White,16,a,6,1324
+Checkmate White,17,b,6,401
+Checkmate White,18,c,6,585
+Checkmate White,19,d,6,918
+Checkmate White,20,e,6,1212
+Checkmate White,21,f,6,1777
+Checkmate White,22,g,6,1499
+Checkmate White,23,h,6,4847
+Checkmate White,24,a,5,1054
+Checkmate White,25,b,5,229
+Checkmate White,26,c,5,411
+Checkmate White,27,d,5,426
+Checkmate White,28,e,5,768
+Checkmate White,29,f,5,1222
+Checkmate White,30,g,5,1181
+Checkmate White,31,h,5,3111
+Checkmate White,32,a,4,816
+Checkmate White,33,b,4,171
+Checkmate White,34,c,4,275
+Checkmate White,35,d,4,303
+Checkmate White,36,e,4,508
+Checkmate White,37,f,4,698
+Checkmate White,38,g,4,849
+Checkmate White,39,h,4,2077
+Checkmate White,40,a,3,588
+Checkmate White,41,b,3,69
+Checkmate White,42,c,3,97
+Checkmate White,43,d,3,108
+Checkmate White,44,e,3,180
+Checkmate White,45,f,3,229
+Checkmate White,46,g,3,219
+Checkmate White,47,h,3,927
+Checkmate White,48,a,2,557
+Checkmate White,49,b,2,31
+Checkmate White,50,c,2,66
+Checkmate White,51,d,2,86
+Checkmate White,52,e,2,108
+Checkmate White,53,f,2,85
+Checkmate White,54,g,2,37
+Checkmate White,55,h,2,542
+Checkmate White,56,a,1,832
+Checkmate White,57,b,1,421
+Checkmate White,58,c,1,399
+Checkmate White,59,d,1,403
+Checkmate White,60,e,1,448
+Checkmate White,61,f,1,456
+Checkmate White,62,g,1,431
+Checkmate White,63,h,1,782
+Checkmate Black,0,a,8,644
+Checkmate Black,1,b,8,402
+Checkmate Black,2,c,8,342
+Checkmate Black,3,d,8,332
+Checkmate Black,4,e,8,415
+Checkmate Black,5,f,8,425
+Checkmate Black,6,g,8,443
+Checkmate Black,7,h,8,825
+Checkmate Black,8,a,7,459
+Checkmate Black,9,b,7,50
+Checkmate Black,10,c,7,60
+Checkmate Black,11,d,7,75
+Checkmate Black,12,e,7,92
+Checkmate Black,13,f,7,59
+Checkmate Black,14,g,7,42
+Checkmate Black,15,h,7,534
+Checkmate Black,16,a,6,511
+Checkmate Black,17,b,6,58
+Checkmate Black,18,c,6,90
+Checkmate Black,19,d,6,113
+Checkmate Black,20,e,6,154
+Checkmate Black,21,f,6,230
+Checkmate Black,22,g,6,201
+Checkmate Black,23,h,6,911
+Checkmate Black,24,a,5,773
+Checkmate Black,25,b,5,174
+Checkmate Black,26,c,5,220
+Checkmate Black,27,d,5,213
+Checkmate Black,28,e,5,420
+Checkmate Black,29,f,5,560
+Checkmate Black,30,g,5,796
+Checkmate Black,31,h,5,1944
+Checkmate Black,32,a,4,969
+Checkmate Black,33,b,4,199
+Checkmate Black,34,c,4,359
+Checkmate Black,35,d,4,455
+Checkmate Black,36,e,4,741
+Checkmate Black,37,f,4,1073
+Checkmate Black,38,g,4,1109
+Checkmate Black,39,h,4,2910
+Checkmate Black,40,a,3,1207
+Checkmate Black,41,b,3,362
+Checkmate Black,42,c,3,465
+Checkmate Black,43,d,3,832
+Checkmate Black,44,e,3,1063
+Checkmate Black,45,f,3,1337
+Checkmate Black,46,g,3,1375
+Checkmate Black,47,h,3,4429
+Checkmate Black,48,a,2,980
+Checkmate Black,49,b,2,315
+Checkmate Black,50,c,2,494
+Checkmate Black,51,d,2,709
+Checkmate Black,52,e,2,1019
+Checkmate Black,53,f,2,1240
+Checkmate Black,54,g,2,1505
+Checkmate Black,55,h,2,4953
+Checkmate Black,56,a,1,1996
+Checkmate Black,57,b,1,2080
+Checkmate Black,58,c,1,2417
+Checkmate Black,59,d,1,2240
+Checkmate Black,60,e,1,3448
+Checkmate Black,61,f,1,5629
+Checkmate Black,62,g,1,9162
+Checkmate Black,63,h,1,9785
