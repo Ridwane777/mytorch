@@ -2,7 +2,7 @@
 
 - **Status**: Proposed
 - **Date**: 2026-10-25
-- **Deciders**: to be decided by the pair once the benchmark has run on the real dataset
+- **Deciders**: the pair (to decide; benchmark measured 2026-10-26)
 - **Issue**: #16
 
 ## Context
@@ -20,10 +20,7 @@ The training procedure itself already supports one remedy: `loss cross_entropy w
 scales the loss of each class (`CrossEntropy(labelSmoothing, classWeights)`, described in
 [configuration.md](../configuration.md) and saved with the network file). The other two usual
 remedies, oversampling and undersampling, change the training data, not the network. The decision
-has to be taken on measurements, per class, not on overall accuracy. **The benchmark described
-here has not been run on the real dataset yet** (`dataset/` is not available where this was
-written); the script was only exercised on a synthetic dataset to check that it works. No result is
-claimed below.
+has to be taken on measurements, per class, not on overall accuracy. The benchmark was run on the real dataset (results below).
 
 ## Options considered
 
@@ -36,10 +33,11 @@ claimed below.
 
 ## Decision
 
-**Proposed, not yet taken.** Run the four options on the same sample and the same network, and keep
-the one that gives the best macro F1 without sacrificing the rarest classes (`Checkmate`
-especially), the choice and the measured table to be written here by a new ADR or by moving this
-one to Accepted once the real dataset is available. The method decisions already fixed:
+**Proposed: keep the natural distribution (`none`), without resampling.** No option beats it on macro
+F1 in the benchmark (54.9 against 54.3 for weighting, 53.7 for oversampling, 52.3 for undersampling),
+and none gives a measurable gain on `Checkmate Black`. Weighting is the only credible alternative if
+the pair prefers more recall on `Check` at the price of `Nothing`. To be confirmed by the pair.
+The method decisions already fixed:
 
 - **No C++ change**: weighting uses the existing `weights=` key; resampling is done at the data
   level by `scripts/resample_imbalance.py`, which writes a resampled training file, so the
@@ -65,14 +63,18 @@ one to Accepted once the real dataset is available. The method decisions already
   colours, `Checkmate` = both colours), macro F1 and accuracy, on the test set, mean and spread
   over three initial weights.
 
-### Results (to be measured)
+### Results (2026-10-26)
+
+F1 on the test set, % (mean, min–max of 3 runs):
 
 | Option | F1 Nothing | F1 Check White | F1 Check Black | F1 Checkmate White | F1 Checkmate Black | Macro F1 | Accuracy |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| None | to be measured | to be measured | to be measured | to be measured | to be measured | to be measured | to be measured |
-| Loss weighting | to be measured | to be measured | to be measured | to be measured | to be measured | to be measured | to be measured |
-| Oversampling | to be measured | to be measured | to be measured | to be measured | to be measured | to be measured | to be measured |
-| Undersampling | to be measured | to be measured | to be measured | to be measured | to be measured | to be measured | to be measured |
+| None | 69.1 (68.5–69.8) | 43.8 (43.0–44.8) | 42.6 (41.0–44.4) | 59.4 (58.9–59.8) | 59.6 (57.2–61.4) | 54.9 (54.2–55.5) | 58.3 (57.7–58.9) |
+| Loss weighting | 62.2 (61.7–62.4) | 45.5 (45.0–46.4) | 44.1 (43.5–44.6) | 59.0 (58.1–59.9) | 60.5 (59.4–61.9) | 54.3 (53.8–54.5) | 54.8 (54.3–55.0) |
+| Oversampling | 67.6 (66.8–68.1) | 44.1 (42.1–45.8) | 38.6 (36.1–40.8) | 57.6 (56.6–58.1) | 60.6 (59.5–62.0) | 53.7 (53.0–54.3) | 57.0 (56.2–57.5) |
+| Undersampling | 61.0 (60.4–61.6) | 43.1 (41.4–44.6) | 40.3 (39.3–41.3) | 58.1 (56.6–60.0) | 59.1 (59.1–59.2) | 52.3 (51.7–52.6) | 53.5 (53.0–53.9) |
+
+Full table with cost, graphs and reading: [performance/imbalance.md](../performance/imbalance.md).
 
 Reproduce, with the dataset extracted at the root of the repository:
 
@@ -102,10 +104,8 @@ Method: [performance/imbalance.md](../performance/imbalance.md).
 - ❌ One sample of 20,000 training positions (the default of the script, memory-bound as noted in
   [stalemate.md](../performance/stalemate.md)) and three initial weights: no confidence interval;
   the ranking of close options could change with another seed (`SEED=…`).
-- ❌ The benchmark has not been run on the real dataset at the time of writing: until it is, this
-  ADR documents a method, not a result.
-- Follow-up: run `sh scripts/bench_imbalance.sh`, fill the table and the graphs, then set the
-  status to Accepted (or supersede with a new ADR); revisit if the 385-wide encoding of the
-  encoding benchmark is adopted (change `input` and the first dense layer of the four
-  configurations), or if early stopping is wanted (resample after the validation split, not
-  before).
+- ❌ The conclusion "do nothing" holds for this small network and sample: with the full training set
+  or another encoding, an imbalance remedy could matter more.
+- Follow-up: repeat on the final configuration of #17 (and with early stopping, resampling after
+  the validation split) before closing the question; revisit if the 385-wide or the 901-wide
+  encoding is adopted, and if the three-class variant of #38 changes the class counts.
