@@ -59,10 +59,28 @@ softmax
 
 | Layer | Settings (default) |
 | --- | --- |
-| `dense <inputs> <outputs>` | `l1` (0), `l2` (0): weight penalty; `init` (`uniform`): only the provisional uniform initialization exists until #6 |
+| `dense <inputs> <outputs>` | `l1` (0), `l2` (0): weight penalty; `init` (`uniform`): how the weights are drawn, see below |
 | `relu`, `sigmoid`, `tanh`, `softmax` | none |
 | `leaky_relu` | `slope` (0.01) |
 | `dropout` | `rate` (required, 0 ≤ rate < 1), `seed` (derived from the network seed when omitted) |
+
+#### Weight initialisation (`init=<name>`)
+
+`init` is chosen per `dense` layer and only exists in configurations: a network file stores the
+weights themselves ([ADR-0012](adr/0012-network-file-format.md)). With *fan_in* the number of inputs
+and *fan_out* the number of outputs of the layer, the weights have a zero mean and the variance
+below; biases start at zero. Design choices and measurements:
+[ADR-0020](adr/0020-weight-initialisation.md), [comparison](performance/initialisation.md).
+
+| `init` | Distribution | Variance | Meant for |
+| --- | --- | --- | --- |
+| `uniform` (default) | U(±√(1 / fan_in)) | 1 / (3·fan_in) | the original behaviour, kept so that existing configurations generate the same networks |
+| `lecun_uniform`, `lecun_normal` | U(±√(3·v)), N(0, v) | v = 1 / fan_in | `tanh`, `sigmoid` |
+| `xavier_uniform`, `xavier_normal` | U(±√(3·v)), N(0, v) | v = 2 / (fan_in + fan_out) | `tanh`, `sigmoid` |
+| `he_uniform`, `he_normal` | U(±√(3·v)), N(0, v) | v = 2 / fan_in | `relu`, `leaky_relu` |
+| `orthogonal` | orthonormal columns (fan_in ≥ fan_out) or rows (fan_in < fan_out), gain 1 | 1 / max(fan_in, fan_out) | deep stacks |
+
+The normal forms are not truncated. A name that is not in the table is an error that lists them.
 
 The first `dense` takes `<width>` inputs, each `dense` takes the outputs of the previous one, and
 the last one has one output per label; the generator refuses any other combination.

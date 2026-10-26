@@ -1,25 +1,121 @@
 #include "my_torch/Dense.hpp"
 
+#include <algorithm>
 #include <cmath>
 #include <random>
+#include <vector>
 
 #include "my_torch/Error.hpp"
 
 namespace my_torch {
 
+namespace {
+
+// A column is redrawn when its norm after projection is below this: it was (almost) dependent.
+constexpr Scalar degenerateNorm = 1e-12;
+
+// Fills W with an orthogonal matrix: a Gaussian a × b matrix (a = max, b = min of the two sizes)
+// whose columns are orthonormalised by modified Gram-Schmidt, transposed when inputs < outputs.
+void fillOrthogonal(Matrix &weights, std::mt19937 &rng)
+{
+    const std::size_t rows = weights.rows();
+    const std::size_t cols = weights.cols();
+    const std::size_t a = std::max(rows, cols);
+    const std::size_t b = std::min(rows, cols);
+    std::normal_distribution<Scalar> gauss(0, 1);
+    // q[j] is column j, of length a.
+    std::vector<std::vector<Scalar>> q(b, std::vector<Scalar>(a));
+
+    for (std::size_t j = 0; j < b; j++) {
+        for (;;) {
+            for (Scalar &v : q[j])
+                v = gauss(rng);
+            for (std::size_t k = 0; k < j; k++) {
+                Scalar dot = 0;
+                for (std::size_t i = 0; i < a; i++)
+                    dot += q[k][i] * q[j][i];
+                for (std::size_t i = 0; i < a; i++)
+                    q[j][i] -= dot * q[k][i];
+            }
+            Scalar norm = 0;
+            for (Scalar v : q[j])
+                norm += v * v;
+            norm = std::sqrt(norm);
+            if (norm < degenerateNorm)
+                continue;
+            for (Scalar &v : q[j])
+                v /= norm;
+            break;
+        }
+    }
+    for (std::size_t r = 0; r < rows; r++)
+        for (std::size_t c = 0; c < cols; c++)
+            weights(r, c) = rows >= cols ? q[c][r] : q[r][c];
+}
+
+// Distribution of one weight: N(0, spread²) when `normal`, else U(±spread).
+struct Law {
+    bool normal;
+    Scalar spread;
+};
+
+Law lawOf(Init init, Scalar fanIn, Scalar fanOut)
+{
+    const Scalar lecun = 1.0 / fanIn;
+    const Scalar xavier = 2.0 / (fanIn + fanOut);
+    const Scalar he = 2.0 / fanIn;
+
+    switch (init) {
+    case Init::LecunUniform:
+        return {false, std::sqrt(3 * lecun)};
+    case Init::LecunNormal:
+        return {true, std::sqrt(lecun)};
+    case Init::XavierUniform:
+        return {false, std::sqrt(3 * xavier)};
+    case Init::XavierNormal:
+        return {true, std::sqrt(xavier)};
+    case Init::HeUniform:
+        return {false, std::sqrt(3 * he)};
+    case Init::HeNormal:
+        return {true, std::sqrt(he)};
+    case Init::Uniform:
+    case Init::Orthogonal:
+        break;
+    }
+    // The original default, kept draw for draw: U(±sqrt(1 / fan_in)).
+    return {false, std::sqrt(lecun)};
+}
+
+void fillRandom(Matrix &weights, Init init, std::mt19937 &rng)
+{
+    if (init == Init::Orthogonal)
+        return fillOrthogonal(weights, rng);
+    const Law law =
+        lawOf(init, static_cast<Scalar>(weights.rows()), static_cast<Scalar>(weights.cols()));
+
+    if (law.normal) {
+        std::normal_distribution<Scalar> dist(0, law.spread);
+        for (std::size_t i = 0; i < weights.size(); i++)
+            weights.data()[i] = dist(rng);
+    } else {
+        std::uniform_real_distribution<Scalar> dist(-law.spread, law.spread);
+        for (std::size_t i = 0; i < weights.size(); i++)
+            weights.data()[i] = dist(rng);
+    }
+}
+
+} // namespace
+
 Dense::Dense(std::size_t inputs, std::size_t outputs, std::uint32_t seed,
-             Regularization regularization)
+             Regularization regularization, Init init)
     : _weights(inputs, outputs), _bias(1, outputs), _weightsGrad(inputs, outputs),
       _biasGrad(1, outputs), _regularization(regularization)
 {
     if (!(regularization.l1 >= 0) || !(regularization.l2 >= 0))
         throw Error("dense: regularization coefficients must be non-negative");
-    const Scalar limit = std::sqrt(1.0 / static_cast<Scalar>(inputs));
     std::mt19937 rng(seed);
-    std::uniform_real_distribution<Scalar> dist(-limit, limit);
 
-    for (std::size_t i = 0; i < _weights.size(); i++)
-        _weights.data()[i] = dist(rng);
+    fillRandom(_weights, init, rng);
 }
 
 Matrix Dense::forward(const Matrix &input, bool /*training*/)
