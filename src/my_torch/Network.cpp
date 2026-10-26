@@ -32,17 +32,6 @@ void shuffle(std::vector<std::size_t> &order, std::mt19937_64 &rng)
         std::swap(order[i - 1], order[uniformBelow(rng, i)]);
 }
 
-Matrix gatherRows(const Matrix &source, const std::vector<std::size_t> &order, std::size_t begin,
-                  std::size_t end)
-{
-    Matrix batch(end - begin, source.cols());
-
-    for (std::size_t r = begin; r < end; r++)
-        for (std::size_t c = 0; c < source.cols(); c++)
-            batch(r - begin, c) = source(order[r], c);
-    return batch;
-}
-
 // Rows whose predicted class matches the target's (ADR-0011).
 std::size_t countCorrect(const Matrix &prediction, const Matrix &targets)
 {
@@ -55,17 +44,57 @@ std::size_t countCorrect(const Matrix &prediction, const Matrix &targets)
     return correct;
 }
 
-void checkDataset(const Dataset &data, const char *name)
+void checkSource(const DataSource &data, const char *name)
 {
-    if (data.inputs.rows() == 0)
+    if (data.size() == 0)
         throw Error(std::string("fit: ") + name + " set is empty");
-    if (data.inputs.rows() != data.targets.rows())
-        throw Error(std::string("fit: ") + name + " set has " +
-                    std::to_string(data.inputs.rows()) + " inputs but " +
-                    std::to_string(data.targets.rows()) + " targets");
+    if (data.inputWidth() == 0 || data.targetWidth() == 0)
+        throw Error(std::string("fit: ") + name + " set has an empty input or target width");
+}
+
+// Batch of the given rows, built by the source into zeroed matrices.
+std::pair<Matrix, Matrix> batchOf(const DataSource &data, const std::vector<std::size_t> &rows)
+{
+    Matrix inputs(rows.size(), data.inputWidth());
+    Matrix targets(rows.size(), data.targetWidth());
+    data.fill(rows, inputs, targets);
+    return {std::move(inputs), std::move(targets)};
 }
 
 } // namespace
+
+MatrixSource::MatrixSource(const Dataset &data) : _data(data)
+{
+    if (data.inputs.rows() != data.targets.rows())
+        throw Error("fit: " + std::to_string(data.inputs.rows()) + " inputs but " +
+                    std::to_string(data.targets.rows()) + " targets");
+}
+
+std::size_t MatrixSource::size() const
+{
+    return _data.inputs.rows();
+}
+
+std::size_t MatrixSource::inputWidth() const
+{
+    return _data.inputs.cols();
+}
+
+std::size_t MatrixSource::targetWidth() const
+{
+    return _data.targets.cols();
+}
+
+void MatrixSource::fill(const std::vector<std::size_t> &rows, Matrix &inputs,
+                        Matrix &targets) const
+{
+    for (std::size_t r = 0; r < rows.size(); r++) {
+        for (std::size_t c = 0; c < inputs.cols(); c++)
+            inputs(r, c) = _data.inputs(rows[r], c);
+        for (std::size_t c = 0; c < targets.cols(); c++)
+            targets(r, c) = _data.targets(rows[r], c);
+    }
+}
 
 std::vector<std::size_t> permutation(std::size_t count, std::uint64_t seed)
 {
@@ -116,9 +145,23 @@ const std::vector<std::unique_ptr<Layer>> &Network::layers() const noexcept
 History Network::fit(const Dataset &train, const Dataset *validation, Loss &loss,
                      Optimizer &optimizer, const TrainConfig &config, const Scheduler *scheduler)
 {
-    checkDataset(train, "training");
-    if (validation)
-        checkDataset(*validation, "validation");
+    const MatrixSource trainSource(train);
+    if (!validation)
+        return fit(trainSource, nullptr, loss, optimizer, config, scheduler);
+    const MatrixSource validationSource(*validation);
+    return fit(trainSource, &validationSource, loss, optimizer, config, scheduler);
+}
+
+History Network::fit(const DataSource &train, const DataSource *validation, Loss &loss,
+                     Optimizer &optimizer, const TrainConfig &config, const Scheduler *scheduler)
+{
+    checkSource(train, "training");
+    if (validation) {
+        checkSource(*validation, "validation");
+        if (validation->inputWidth() != train.inputWidth() ||
+            validation->targetWidth() != train.targetWidth())
+            throw Error("fit: the validation set has other widths than the training set");
+    }
     if (config.batchSize == 0)
         throw Error("fit: batch size must be positive");
     if (_layers.empty())
@@ -129,7 +172,7 @@ History Network::fit(const Dataset &train, const Dataset *validation, Loss &loss
     if (skipSoftmax && _layers.back()->type() != "softmax")
         throw Error("fit: " + loss.type() + " needs a final softmax layer");
 
-    const std::size_t count = train.inputs.rows();
+    const std::size_t count = train.size();
     std::vector<std::size_t> order(count);
     std::mt19937_64 rng(config.seed);
     const std::vector<Parameter> params = parameters();
@@ -151,8 +194,9 @@ History Network::fit(const Dataset &train, const Dataset *validation, Loss &loss
         std::size_t correct = 0;
         for (std::size_t begin = 0; begin < count; begin += config.batchSize) {
             const std::size_t end = std::min(begin + config.batchSize, count);
-            const Matrix inputs = gatherRows(train.inputs, order, begin, end);
-            const Matrix targets = gatherRows(train.targets, order, begin, end);
+            const std::vector<std::size_t> rows(order.begin() + static_cast<std::ptrdiff_t>(begin),
+                                                order.begin() + static_cast<std::ptrdiff_t>(end));
+            const auto [inputs, targets] = batchOf(train, rows);
 
             for (const Parameter &p : params)
                 p.grad->fill(0);
@@ -174,11 +218,27 @@ History Network::fit(const Dataset &train, const Dataset *validation, Loss &loss
         stats.penalty = penaltySum / static_cast<Scalar>(batches);
         stats.trainAccuracy = static_cast<Scalar>(correct) / static_cast<Scalar>(count);
         if (validation) {
-            const Matrix predicted = predict(validation->inputs);
-            stats.validationLoss = loss.value(predicted, validation->targets);
-            stats.validationAccuracy =
-                static_cast<Scalar>(countCorrect(predicted, validation->targets)) /
-                static_cast<Scalar>(predicted.rows());
+            // In chunks. Up to EVALUATION_CHUNK examples this is the loss of the whole set at
+            // once; above, each chunk's mean loss is weighted by its size, as in training.
+            const std::size_t total = validation->size();
+            Scalar weightedSum = 0;
+            std::size_t right = 0;
+            for (std::size_t begin = 0; begin < total; begin += EVALUATION_CHUNK) {
+                const std::size_t end = std::min(begin + EVALUATION_CHUNK, total);
+                std::vector<std::size_t> rows(end - begin);
+                std::iota(rows.begin(), rows.end(), begin);
+                const auto [inputs, targets] = batchOf(*validation, rows);
+                const Matrix predicted = predict(inputs);
+                const Scalar chunkLoss = loss.value(predicted, targets);
+                weightedSum += total <= EVALUATION_CHUNK
+                                   ? chunkLoss
+                                   : chunkLoss * static_cast<Scalar>(end - begin);
+                right += countCorrect(predicted, targets);
+            }
+            stats.validationLoss = total <= EVALUATION_CHUNK
+                                       ? weightedSum
+                                       : weightedSum / static_cast<Scalar>(total);
+            stats.validationAccuracy = static_cast<Scalar>(right) / static_cast<Scalar>(total);
         }
         history.push_back(stats);
         if (config.patience == 0)

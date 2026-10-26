@@ -36,7 +36,7 @@ and the main code never includes `bonus/`.
 | `Loss`, `Losses` | The `Loss` interface (`value`, `gradient`, `fusesSoftmax`) and `MSE`, `MAE`, `Huber`, `BinaryCrossEntropy`, `CrossEntropy` | ADR-0007 |
 | `Optimizer`, `Optimizers` | The `Optimizer` interface (`step`, `setLearningRate`) and `SGD` (momentum, Nesterov), `Adam`, `AdamW`, `RMSProp`, `Adagrad` | ADR-0008 |
 | `Schedulers` | `ConstantRate`, `StepDecay`, `ExponentialDecay`, `CosineAnnealing`, `Warmup` | ADR-0008 |
-| `Network` | A sequence of layers: `add`, `forward`, `predict`, `fit`, `parameters`, `save`, `load`, `fromConfig`; `ModelInfo` (encoding, labels, training settings) | ADR-0004, ADR-0009 |
+| `Network` | A sequence of layers: `add`, `forward`, `predict`, `fit`, `parameters`, `save`, `load`, `fromConfig`; `ModelInfo` (encoding, labels, training settings); `DataSource` and `MatrixSource`, where `fit` takes its batches | ADR-0004, ADR-0009, ADR-0021 |
 | `Metrics` | Confusion matrix, accuracy, precision, recall, F1, log-loss, top-k, ROC AUC, calibration, CSV/JSON export | ADR-0011 |
 | `Factory` | `makeLoss`, `makeOptimizer`, `makeScheduler`: build the training objects from their description in a file | ADR-0012 |
 | `Serialization.cpp` | Reader and writer of network files and configuration files | ADR-0012, ADR-0013 |
@@ -46,7 +46,7 @@ and the main code never includes `bonus/`.
 | Module | Content | Decision |
 | --- | --- | --- |
 | `Fen` | `parseFen`, `parseLine`, `parseFile`: a FEN line into a `Position` (64 squares, side to move, castling, en passant, counters) and an optional `Label` | ADR-0005 |
-| `Encoding` | The `Encoding` interface, the table of encodings looked up by name, and `fen-onehot-768` | ADR-0014 |
+| `Encoding` | The `Encoding` interface, the table of encodings looked up by name (`fen-onehot-768`, `fen-onehot-773`, `fen-signed-385`, `fen-attacks-901`), and `PositionSource`, which encodes training positions batch by batch | ADR-0014, ADR-0016, ADR-0021 |
 | `Cli` | `analyzer::run`: argument parsing, `--predict`, `--train`, `--save` | ADR-0014 |
 | `main.cpp` | Calls `run`, turns any exception into a message on standard error and exit code 84 | ADR-0004 |
 
@@ -145,10 +145,10 @@ sequenceDiagram
     User->>Analyzer: --train [--save OUT] net.nn train.txt
     Analyzer->>Network: load(net.nn)
     Analyzer->>Fen: parseFile(train.txt, Required)
-    Analyzer->>Encoding: encode every position (encoding named in the file)
     Analyzer->>Analyzer: map expected outputs to labels, hold out the validation fraction
-    Analyzer->>Network: fit(train, validation, loss, optimizer, config, scheduler)
+    Analyzer->>Network: fit(training source, validation source, loss, optimizer, config, scheduler)
     loop each epoch, each batch
+        Network->>Encoding: source.fill(rows of the batch): encode only these positions
         Network->>Network: zero gradients, forward, loss, backward, optimizer step
     end
     Network-->>Analyzer: History (loss, accuracy per epoch)
@@ -156,7 +156,9 @@ sequenceDiagram
     Analyzer->>Network: save(OUT or net.nn)
 ```
 
-Inside `fit`, a batch goes forward through the layers, the loss gives the first gradient, and each
+`fit` takes its examples from a `DataSource` (ADR-0021): the analyzer's `PositionSource` keeps the
+parsed positions and encodes only the rows of each batch, so memory does not grow with the encoded
+width of the whole file. Inside `fit`, a batch goes forward through the layers, the loss gives the first gradient, and each
 layer's `backward` returns the gradient of the layer before it (the final Softmax is skipped when
 the loss fuses it, ADR-0007); the optimizer then updates every `Parameter`.
 

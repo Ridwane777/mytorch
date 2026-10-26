@@ -24,3 +24,4 @@ One file per decision, based on [TEMPLATE.md](TEMPLATE.md). An accepted ADR is n
 | [0018](0018-class-imbalance.md) | Class imbalance: none, loss weighting, oversampling and undersampling compared on per-class F1 | Accepted | 2026-10-25 |
 | [0019](0019-symmetry-augmentation.md) | Symmetry augmentation: offline tool and two label-preserving board symmetries | Accepted | 2026-10-25 |
 | [0020](0020-weight-initialisation.md) | Weight initialisation chosen per layer in the configuration, original default kept | Accepted | 2026-10-25 |
+| [0021](0021-training-data-source.md) | Training data as a batch source, positions encoded on demand | Accepted | 2026-10-26 |

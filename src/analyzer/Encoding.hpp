@@ -6,6 +6,7 @@
 
 #include "Fen.hpp"
 #include "my_torch/Matrix.hpp"
+#include "my_torch/Network.hpp"
 
 namespace analyzer {
 
@@ -69,5 +70,29 @@ const Encoding &findEncoding(const std::string &name);
 // Rows [begin, end) of samples, encoded.
 my_torch::Matrix encodeRows(const Encoding &encoding, const std::vector<Sample> &samples,
                             std::size_t begin, std::size_t end);
+
+// Training data for my_torch::Network::fit built on demand (ADR-0021): keeps the positions and
+// the class of each one, and encodes only the rows of the batch fit asks for. rows selects which
+// samples belong to this set (the training or the validation part).
+class PositionSource : public my_torch::DataSource {
+  public:
+    // Keeps references: samples, classes and encoding must outlive the source.
+    PositionSource(const std::vector<Sample> &samples, const std::vector<std::size_t> &classes,
+                   std::size_t classCount, const Encoding &encoding,
+                   std::vector<std::size_t> rows);
+
+    std::size_t size() const override;
+    std::size_t inputWidth() const override;
+    std::size_t targetWidth() const override;
+    void fill(const std::vector<std::size_t> &rows, my_torch::Matrix &inputs,
+              my_torch::Matrix &targets) const override;
+
+  private:
+    const std::vector<Sample> &_samples;
+    const std::vector<std::size_t> &_classes;
+    std::size_t _classCount;
+    const Encoding &_encoding;
+    std::vector<std::size_t> _rows;
+};
 
 } // namespace analyzer

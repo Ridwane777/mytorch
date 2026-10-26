@@ -16,4 +16,5 @@ Done: [optimizers.md](optimizers.md) (optimizers and learning-rate schedulers, i
 [dataset.md](dataset.md) (dataset statistics and dedupe-aware train/validation/test split, issue #12),
 [imbalance.md](imbalance.md) (class imbalance: none, loss weighting, oversampling, undersampling,
 issue #16),
-[augmentation.md](augmentation.md) (training with and without board-symmetry augmentation, issue #38).
+[augmentation.md](augmentation.md) (training with and without board-symmetry augmentation, issue #38),
+[training-memory.md](training-memory.md) (training memory, whole file encoded against batch by batch, issue #17).

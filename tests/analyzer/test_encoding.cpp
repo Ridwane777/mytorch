@@ -288,3 +288,29 @@ Test(encoding, encode_rows_stacks_the_encoded_samples)
     }
     cr_assert_eq(encodeRows(encoding, samples, 1, 2)(0, 768), 0);
 }
+
+Test(position_source, encodes_only_the_requested_rows)
+{
+    const std::vector<analyzer::Sample> samples = {
+        analyzer::parseLine("4k3/8/8/8/8/8/8/4K3 w - - 0 1 Nothing",
+                            analyzer::LabelPolicy::Required),
+        analyzer::parseLine("R3k3/8/8/8/8/8/8/4K3 b - - 0 1 Check White",
+                            analyzer::LabelPolicy::Required),
+        analyzer::parseLine("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 Nothing",
+                            analyzer::LabelPolicy::Required)};
+    const std::vector<std::size_t> classes = {0, 1, 0};
+    const std::string name = "fen-onehot-768";
+    const analyzer::Encoding &encoding = analyzer::findEncoding(name);
+    // This set holds samples 2 and 1, in that order.
+    const analyzer::PositionSource source(samples, classes, 2, encoding, {2, 1});
+
+    cr_assert_eq(source.size(), 2);
+    my_torch::Matrix inputs(1, source.inputWidth());
+    my_torch::Matrix targets(1, source.targetWidth());
+    source.fill({1}, inputs, targets); // row 1 of the set = sample 1
+    const my_torch::Matrix expected = analyzer::encodeRows(encoding, samples, 1, 2);
+    for (std::size_t c = 0; c < inputs.cols(); c++)
+        cr_assert_eq(inputs(0, c), expected(0, c));
+    cr_assert_eq(targets(0, 0), 0);
+    cr_assert_eq(targets(0, 1), 1);
+}
