@@ -3,11 +3,8 @@
 Analysis for issue #12: what does the dataset contain, and how is it cut into sets that never
 share a position? Related decision: [ADR-0017](../adr/0017-dataset-split.md) (Proposed).
 
-**Status: pending measurement.** The real `dataset/` (`dataset.zip`, given by the school, not pushed)
-was not available when this document was written. The scripts were run only on a small synthetic
-dataset to check their logic; no figure from that run appears here, and none of the files or charts
-below exists in the repository yet. Every result marked "pending measurement" is filled in by running
-`sh scripts/dataset_split.sh` on the real dataset.
+**Status: measured** on the real dataset (723,019 positions, `dataset.zip` given by the school, not pushed),
+2026-10-26.
 
 ## Method
 
@@ -40,42 +37,57 @@ below exists in the repository yet. Every result marked "pending measurement" is
   the script: `--seed`, `--train`, `--validation`, `--test`). The same dataset and seed give
   byte-identical files; compare the SHA-256 lines of `split_manifest.txt` to check two runs or two
   machines.
-- **Machine and duration**: pending measurement.
+- **Machine and duration**: Intel Core i5-12450H, 15 GB RAM, Linux 6.8, Python 3.12.3; the whole
+  command (statistics, split and charts) takes 12.6 s.
 
-## Figures stated in the issue
+## Results (2026-10-26)
 
-The distribution below is copied from issue #12; it matches the line counts of
-[reading-a-fen.md](../reading-a-fen.md) but was **not re-measured by these scripts**.
+The line counts match the figures stated in issue #12 (723,019 lines; 300,000 `Nothing`; 249,300
+`Check`; 173,719 `Checkmate`).
 
-| Item | Value | Source |
-| --- | --- | --- |
-| Total lines | 723,019 | stated in issue #12, not yet re-measured |
-| `Nothing` | 300,000 | stated in issue #12, not yet re-measured |
-| `Check` (White + Black) | 249,300 | stated in issue #12, not yet re-measured |
-| `Checkmate` (White + Black) | 173,719 | stated in issue #12, not yet re-measured |
+| Label | Lines | Kept after dedupe | Lost |
+| --- | --- | --- | --- |
+| Nothing | 300,000 | 297,564 | 2,436 (0.81 %) |
+| Check White | 135,587 | 134,993 | 594 (0.44 %) |
+| Check Black | 113,713 | 113,143 | 570 (0.50 %) |
+| Checkmate White | 94,295 | 92,333 | 1,962 (2.08 %) |
+| Checkmate Black | 79,424 | 77,526 | 1,898 (2.39 %) |
+| **Total** | **723,019** | **715,559** | **7,460 (1.03 %)** |
 
-## Results
+- **Duplicates**: 7,460 lines (1.03 %) repeat a position already present (same board, side, castling
+  and en passant, other clocks or another file). Duplicates are concentrated in `Checkmate`
+  (about 2 % of its lines against 0.4 % to 0.8 % elsewhere).
+- **Contradictions**: 0 positions carry two different labels; nothing is excluded for that reason
+  (`contradictions.txt` is empty).
+- **Split** (seed 42): train 572,446, validation 71,558, test 71,555 positions; per label the three
+  sets are within one position of 80 / 10 / 10 (`data/dataset_split.csv`, SHA-256 in
+  `split_manifest.txt`).
+- **Imbalance**: `Nothing` is 41.5 % of the lines and `Checkmate Black` 11.0 %, a ratio of 3.8 to 1.
+- **Side to move determines the colour of a check**: every `Check White` / `Checkmate White` line
+  has Black to move, and every `... Black` line has White to move (135,587 and 94,295 against the
+  label counts, 113,713 and 79,424 for White to move). A network that knows the side to move
+  therefore knows which of the two colours is possible; this is consistent with the gain of the
+  side-to-move inputs in [encodings.md](encodings.md).
+- **Pieces per board** (mean): `Nothing` 14.9, `Check` 14.6, `Checkmate` 13.8. The distribution is
+  irregular (peaks at 9 and 20 pieces for `Check`, a regular cycle for `Nothing`), which suggests
+  the files are made of different generators (`10_pieces`, `20_pieces`, `many_pieces`).
+  This is an observation on the charts, not a verified fact.
 
-All of the following is **pending measurement** (run `scripts/dataset_split.sh`).
+Raw data: [`data/dataset_labels.csv`](data/dataset_labels.csv),
+[`data/dataset_pieces.csv`](data/dataset_pieces.csv),
+[`data/dataset_duplicates.csv`](data/dataset_duplicates.csv),
+[`data/dataset_split.csv`](data/dataset_split.csv).
 
-| Result | File | Value |
-| --- | --- | --- |
-| Lines per label and colour | `data/dataset_labels.csv` | pending measurement |
-| Side to move per class; number of pieces per class and per piece type | `data/dataset_pieces.csv` | pending measurement |
-| Lines, unique keys, duplicate lines, contradictory keys | `data/dataset_duplicates.csv` | pending measurement |
-| Positions per set and label | `data/dataset_split.csv` | pending measurement |
-| Share of lines that are duplicates | derived from the line above | pending measurement |
-| Share of positions lost to contradictions | derived from the line above | pending measurement |
+![Lines per label and side to move](data/dataset_labels.png)
 
-Charts (these images do not exist yet: they are produced by the command above):
+![Pieces per class](data/dataset_pieces.png)
 
-- `data/dataset_labels.png`: lines per label, side to move per class;
-- `data/dataset_pieces.png`: pieces per board by class, mean count per piece type;
-- `data/dataset_split.png`: positions per label in each set.
+![Positions per set and label](data/dataset_split.png)
 
 ## Limits
 
-- Nothing above is measured on the real dataset yet; ADR-0017 stays Proposed until it is.
+- One seed (42) and one dataset were measured; the split is deterministic but another seed gives
+  other sets. ADR-0017 stays Proposed until the pair has decided.
 - Position equality is the key (board, side, castling, en passant). Two boards that are the same
   position written differently are not detected, and the same key may come from different games;
   that is intended.
@@ -85,7 +97,5 @@ Charts (these images do not exist yet: they are produced by the command above):
   labels, not the number of pieces inside a label.
 - The statistics count every line, duplicates included, so they describe the dataset as given, not
   the sets that will be trained on (those are counted in `dataset_split.csv`).
-- Logic checked on a synthetic dataset only (exact and clock-only duplicates, contradictions, a
-  malformed file): pairwise disjoint sets, no contradictory key in any set, about 80/10/10 per label,
-  same files for the same seed, other files for another seed. This is a test of the script, not a
-  measurement of the dataset.
+- The contradiction handling was only exercised on a small synthetic dataset, since the real one
+  has none.
