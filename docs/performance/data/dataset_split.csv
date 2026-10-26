@@ -1,0 +1,16 @@
+split,label,count
+train,Nothing,238051
+train,Check White,107994
+train,Check Black,90514
+train,Checkmate White,73866
+train,Checkmate Black,62021
+validation,Nothing,29757
+validation,Check White,13500
+validation,Check Black,11315
+validation,Checkmate White,9234
+validation,Checkmate Black,7752
+test,Nothing,29756
+test,Check White,13499
+test,Check Black,11314
+test,Checkmate White,9233
+test,Checkmate Black,7753
