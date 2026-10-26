@@ -1,6 +1,6 @@
 # ADR-0020: Weight initialisation chosen per layer in the configuration, original default kept
 
-- **Status**: Accepted
+- **Status**: Proposed
 - **Date**: 2026-10-25
 - **Deciders**: Meric-BG
 - **Issue**: #6
