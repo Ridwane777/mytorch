@@ -31,3 +31,16 @@ make                                              # builds my_torch_analyzer and
   standard error and the exit code is 84.
 
 Design choices: [ADR-0014](adr/0014-analyzer-command-line.md).
+
+## Reproducing the final network
+
+```bash
+sh scripts/train_final.sh configs/final_network.conf            # whole dataset, writes runs/final_network/
+FRACTION=0.01 sh scripts/train_final.sh configs/final_network.conf /tmp/try   # quick check on 1 %
+```
+
+The script splits the dataset, augments the training part only, appends the untouched validation
+part at the end of the training file (`validation_tail`), generates and trains the network, then
+scores it on the test part: `scores.txt` (precision, recall and F1 per class), `confusion.png`,
+`curve.png` and `run.txt` (commit, configuration checksum, machine, times, memory). Running it twice
+gives the same network byte for byte. Design choices: [ADR-0022](adr/0022-validation-tail-and-training-pipeline.md).

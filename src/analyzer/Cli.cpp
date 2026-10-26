@@ -2,6 +2,7 @@
 
 #include <iomanip>
 #include <iostream>
+#include <numeric>
 #include <optional>
 
 #include "Encoding.hpp"
@@ -118,20 +119,31 @@ int train(const Options &o)
         }
     }
 
-    // Hold out a seeded fraction for validation (ADR-0014).
-    const auto order = my_torch::permutation(samples.size(), spec.config.seed);
-    const auto held = static_cast<std::size_t>(spec.config.validation *
-                                               static_cast<my_torch::Scalar>(samples.size()));
+    // Validation: the last validation_tail lines in order (ADR-0022), or a seeded fraction drawn
+    // at random (ADR-0014).
+    const std::size_t tail = spec.config.validationTail;
+    std::vector<std::size_t> order(samples.size());
+    std::iota(order.begin(), order.end(), 0);
+    std::size_t held = tail;
+    if (tail == 0) {
+        order = my_torch::permutation(samples.size(), spec.config.seed);
+        held = static_cast<std::size_t>(spec.config.validation *
+                                        static_cast<my_torch::Scalar>(samples.size()));
+    }
     if (spec.config.patience > 0 && held == 0)
-        throw Error("early stopping (patience) needs a validation fraction holding at least one "
-                    "position");
+        throw Error("early stopping (patience) needs a validation set: set validation or "
+                    "validation_tail");
     if (held >= samples.size())
-        throw Error("the validation fraction leaves no position to train on");
-    const auto split = order.begin() + static_cast<std::ptrdiff_t>(held);
+        throw Error("the validation set leaves no position to train on");
+    // The validation rows are the first `held` of the shuffled order, or the last `tail` lines.
+    const auto split = tail ? order.end() - static_cast<std::ptrdiff_t>(held)
+                            : order.begin() + static_cast<std::ptrdiff_t>(held);
     const PositionSource validationSet(samples, classes, labels.size(), encoding,
-                                       {order.begin(), split});
+                                       tail ? std::vector<std::size_t>(split, order.end())
+                                            : std::vector<std::size_t>(order.begin(), split));
     const PositionSource trainSet(samples, classes, labels.size(), encoding,
-                                  {split, order.end()});
+                                  tail ? std::vector<std::size_t>(order.begin(), split)
+                                       : std::vector<std::size_t>(split, order.end()));
 
     const auto loss = my_torch::makeLoss(spec.loss);
     const auto optimizer = my_torch::makeOptimizer(spec.optimizer);

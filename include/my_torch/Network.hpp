@@ -76,6 +76,11 @@ struct TrainConfig {
     // Fraction of a single data file held out for validation by the analyzer's --train
     // (ADR-0014), in [0, 1[. fit itself takes the validation set as an argument.
     Scalar validation = 0;
+    // Alternative to validation (ADR-0022): the last validationTail lines of the file are the
+    // validation set, taken in order, never drawn at random. Lets a pipeline append an untouched
+    // validation set after an augmented training set without any leak. 0 = unused; giving both
+    // validation and validationTail is an error.
+    std::size_t validationTail = 0;
 };
 
 // The numbers 0..count-1 in an order shuffled by seed, with the same portable Fisher-Yates as

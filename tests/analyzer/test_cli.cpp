@@ -329,3 +329,42 @@ Test(encoding, one_hot_768_of_the_starting_position)
     cr_assert_eq(row[0 * 64 + 40], 0); // a3 is empty
     cr_assert_throw(analyzer::findEncoding("board-2d"), my_torch::Error);
 }
+
+Test(cli, validation_tail_lines_are_never_trained)
+{
+    // Two files with the same six training lines and two different last lines: with
+    // validation_tail=2 the trained networks must be byte-identical.
+    const std::string training = "train epochs=20 batch=3 seed=3 validation_tail=2\n";
+    const std::string netA = makeNetwork("tail_a", fiveLabels, training);
+    const std::string netB = makeNetwork("tail_b", fiveLabels, training);
+    const std::string fileA = path("tail_a.txt");
+    const std::string fileB = path("tail_b.txt");
+    write(fileA, chessFile(true) + boards[0] + " Nothing\n" + boards[1] + " Check White\n");
+    write(fileB, chessFile(true) + boards[2] + " Checkmate White\n" + boards[4] + " Check Black\n");
+    const Result a = runCli({"--train", netA, fileA});
+    const Result b = runCli({"--train", netB, fileB});
+    const bool same = read(netA) == read(netB);
+    cleanup();
+
+    cr_assert_eq(a.code, 0);
+    cr_assert_eq(b.code, 0);
+    cr_assert(a.out.find("validation accuracy") != std::string::npos, "%s", a.out.c_str());
+    cr_assert(same, "the last lines changed the training");
+}
+
+Test(cli, validation_tail_errors)
+{
+    const std::string tooLong =
+        makeNetwork("tail_long", fiveLabels, "train epochs=1 batch=6 seed=3 validation_tail=6\n");
+    const std::string chess = path("tail_err.txt");
+    write(chess, chessFile(true));
+    const int code = runCli({"--train", tooLong, chess}).code;
+    cleanup();
+    cr_assert_eq(code, 84); // the validation part leaves no training position
+
+    const std::string conf = path("both.conf");
+    write(conf, "input fen-onehot-768 768\nlabels 1\nNothing\n"
+                "train validation=0.1 validation_tail=5\nlayers 2\ndense 768 1\nsoftmax\n");
+    cr_assert_throw(my_torch::Network::fromConfig(conf), my_torch::Error);
+    std::remove(conf.c_str());
+}
