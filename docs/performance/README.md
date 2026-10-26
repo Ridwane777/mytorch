@@ -13,4 +13,6 @@ Done: [optimizers.md](optimizers.md) (optimizers and learning-rate schedulers, i
 [stalemate.md](stalemate.md) (stalemate bonus: generated positions and a six-class network, issue #24),
 [initialisation.md](initialisation.md) (LeCun, Xavier, He and orthogonal weight initialisation against the default, issue #6),
 [encodings.md](encodings.md) (input encodings of a FEN position, issue #14),
-[dataset.md](dataset.md) (dataset statistics and dedupe-aware train/validation/test split, issue #12).
+[dataset.md](dataset.md) (dataset statistics and dedupe-aware train/validation/test split, issue #12),
+[imbalance.md](imbalance.md) (class imbalance: none, loss weighting, oversampling, undersampling,
+issue #16).
