@@ -1,5 +1,6 @@
 #include <criterion/criterion.h>
 
+#include <cmath>
 #include <cstdio>
 #include <filesystem>
 #include <fstream>
@@ -218,6 +219,73 @@ Test(generator, configuration_errors_name_the_line)
         cr_assert(message.find(cases[i].what) != std::string::npos, "%s -> %s",
                   cases[i].what.c_str(), message.c_str());
     }
+}
+
+Test(generator, every_init_name_is_accepted_and_changes_the_weights)
+{
+    const std::vector<std::string> names = {"uniform",        "lecun_uniform", "lecun_normal",
+                                            "xavier_uniform", "xavier_normal", "he_uniform",
+                                            "he_normal",      "orthogonal"};
+    std::vector<std::string> texts;
+
+    for (std::size_t i = 0; i < names.size(); i++) {
+        const std::string base = "init" + std::to_string(i);
+        const std::string conf =
+            writeConfig(base, header + "layers 2\ndense 3 4 init=" + names[i] + "\ndense 4 2\n");
+
+        cr_assert_eq(exitCode({conf, "1"}), 0, "%s", names[i].c_str());
+        texts.push_back(readText(output(base, 1)));
+        cleanup(base);
+    }
+    for (std::size_t i = 0; i < texts.size(); i++)
+        for (std::size_t j = i + 1; j < texts.size(); j++)
+            cr_assert(texts[i] != texts[j], "%s and %s give the same network", names[i].c_str(),
+                      names[j].c_str());
+}
+
+Test(generator, no_init_key_is_init_uniform)
+{
+    const std::string plain = writeConfig("noinit", header + "layers 2\ndense 3 4\ndense 4 2\n");
+    const std::string named =
+        writeConfig("uniform", header + "layers 2\ndense 3 4 init=uniform\ndense 4 2\n");
+
+    cr_assert_eq(exitCode({plain, "1", named, "1"}), 0);
+    // The initialisation is not stored in the file: the same seeds give the same bytes.
+    cr_assert(readText(output("noinit", 1)) == readText(output("uniform", 1)));
+    cleanup("noinit");
+    cleanup("uniform");
+}
+
+Test(generator, he_normal_layer_has_the_he_variance)
+{
+    const std::string conf = writeConfig(
+        "he", "input raw 400\nlabels 2\nyes\nno\nlayers 2\ndense 400 300 init=he_normal\n"
+              "dense 300 2\n");
+    const my_torch::Network net = my_torch::Network::fromConfig(conf);
+    const auto &dense = dynamic_cast<const my_torch::Dense &>(*net.layers()[0]);
+    double square = 0;
+
+    cleanup("he");
+    for (std::size_t i = 0; i < dense.weights().size(); i++)
+        square += dense.weights().data()[i] * dense.weights().data()[i];
+    cr_assert_lt(std::abs(square / dense.weights().size() * 400 / 2 - 1), 0.05);
+}
+
+Test(generator, unknown_init_exits_84_with_the_line_and_the_names)
+{
+    const std::string conf =
+        writeConfig("badinit", header + "layers 2\ndense 3 4 init=xavier\ndense 4 2\n");
+    const std::string message = errorOf(conf);
+
+    cr_assert(message.find("badinit.conf:6:") != std::string::npos, "%s", message.c_str());
+    cr_assert(message.find("unknown init 'xavier'") != std::string::npos, "%s", message.c_str());
+    for (const char *known : {"uniform", "lecun_uniform", "lecun_normal", "xavier_uniform",
+                              "xavier_normal", "he_uniform", "he_normal", "orthogonal"})
+        cr_assert(message.find(known) != std::string::npos, "%s missing: %s", known,
+                  message.c_str());
+    cr_assert_eq(exitCode({conf, "1"}), generator::EXIT_ERROR);
+    cr_assert(!fs::exists(output("badinit", 1)));
+    cleanup("badinit");
 }
 
 Test(generator, example_configuration_of_the_repository_is_valid)
