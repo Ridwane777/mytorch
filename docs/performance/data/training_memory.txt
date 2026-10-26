@@ -1,0 +1,2 @@
+trained networks identical before/after (100000 positions): yes
+epoch 1/1  loss 0.5742  accuracy 0.7444  validation loss 0.4089  validation accuracy 0.8251

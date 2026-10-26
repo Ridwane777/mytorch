@@ -220,4 +220,37 @@ my_torch::Matrix encodeRows(const Encoding &encoding, const std::vector<Sample> 
     return rows;
 }
 
+PositionSource::PositionSource(const std::vector<Sample> &samples,
+                               const std::vector<std::size_t> &classes, std::size_t classCount,
+                               const Encoding &encoding, std::vector<std::size_t> rows)
+    : _samples(samples), _classes(classes), _classCount(classCount), _encoding(encoding),
+      _rows(std::move(rows))
+{
+}
+
+std::size_t PositionSource::size() const
+{
+    return _rows.size();
+}
+
+std::size_t PositionSource::inputWidth() const
+{
+    return _encoding.width();
+}
+
+std::size_t PositionSource::targetWidth() const
+{
+    return _classCount;
+}
+
+void PositionSource::fill(const std::vector<std::size_t> &rows, my_torch::Matrix &inputs,
+                          my_torch::Matrix &targets) const
+{
+    for (std::size_t r = 0; r < rows.size(); r++) {
+        const std::size_t sample = _rows[rows[r]];
+        _encoding.encode(_samples[sample].position, inputs.data() + r * inputs.cols());
+        targets(r, _classes[sample]) = 1;
+    }
+}
+
 } // namespace analyzer

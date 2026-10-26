@@ -97,20 +97,6 @@ int predict(const Options &o)
     return 0;
 }
 
-my_torch::Dataset subset(const my_torch::Matrix &inputs, const my_torch::Matrix &targets,
-                         const std::vector<std::size_t> &rows)
-{
-    my_torch::Dataset d{my_torch::Matrix(rows.size(), inputs.cols()),
-                        my_torch::Matrix(rows.size(), targets.cols())};
-    for (std::size_t r = 0; r < rows.size(); r++) {
-        for (std::size_t c = 0; c < inputs.cols(); c++)
-            d.inputs(r, c) = inputs(rows[r], c);
-        for (std::size_t c = 0; c < targets.cols(); c++)
-            d.targets(r, c) = targets(rows[r], c);
-    }
-    return d;
-}
-
 int train(const Options &o)
 {
     my_torch::Network net = my_torch::Network::load(o.network);
@@ -121,11 +107,11 @@ int train(const Options &o)
     if (samples.empty())
         throw Error(o.chessboards + ": no chessboard to train on");
 
-    const my_torch::Matrix inputs = encodeRows(encoding, samples, 0, samples.size());
-    my_torch::Matrix targets(samples.size(), labels.size());
+    // The class of each position; positions are encoded batch by batch during training.
+    std::vector<std::size_t> classes(samples.size());
     for (std::size_t r = 0; r < samples.size(); r++) {
         try {
-            targets(r, labelIndex(std::string(labelName(*samples[r].label)), labels)) = 1;
+            classes[r] = labelIndex(std::string(labelName(*samples[r].label)), labels);
         } catch (const Error &error) {
             throw Error(o.chessboards + ": position " + std::to_string(r + 1) + ": " +
                         error.what());
@@ -141,10 +127,11 @@ int train(const Options &o)
                     "position");
     if (held >= samples.size())
         throw Error("the validation fraction leaves no position to train on");
-    const std::vector<std::size_t> validationRows(order.begin(), order.begin() + held);
-    const std::vector<std::size_t> trainRows(order.begin() + held, order.end());
-    const my_torch::Dataset trainSet = subset(inputs, targets, trainRows);
-    const my_torch::Dataset validationSet = subset(inputs, targets, validationRows);
+    const auto split = order.begin() + static_cast<std::ptrdiff_t>(held);
+    const PositionSource validationSet(samples, classes, labels.size(), encoding,
+                                       {order.begin(), split});
+    const PositionSource trainSet(samples, classes, labels.size(), encoding,
+                                  {split, order.end()});
 
     const auto loss = my_torch::makeLoss(spec.loss);
     const auto optimizer = my_torch::makeOptimizer(spec.optimizer);

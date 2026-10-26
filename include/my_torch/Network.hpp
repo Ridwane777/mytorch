@@ -27,6 +27,41 @@ struct Dataset {
     Matrix targets;
 };
 
+// Where fit takes its examples (ADR-0021). fit asks for one batch at a time, so a source can build
+// its rows on demand (the analyzer encodes chess positions batch by batch) instead of holding every
+// example as a matrix in memory.
+class DataSource {
+  public:
+    virtual ~DataSource() = default;
+
+    virtual std::size_t size() const = 0;
+    virtual std::size_t inputWidth() const = 0;
+    virtual std::size_t targetWidth() const = 0;
+    // Writes example rows[i] into row i of inputs and targets, which fit has sized to
+    // rows.size() × inputWidth() and rows.size() × targetWidth() and filled with zeros.
+    virtual void fill(const std::vector<std::size_t> &rows, Matrix &inputs,
+                      Matrix &targets) const = 0;
+};
+
+// A Dataset seen as a DataSource: rows are copied from the matrices.
+class MatrixSource : public DataSource {
+  public:
+    // Keeps a reference: data must outlive the source. Throws my_torch::Error if the inputs and
+    // targets have different row counts.
+    explicit MatrixSource(const Dataset &data);
+
+    std::size_t size() const override;
+    std::size_t inputWidth() const override;
+    std::size_t targetWidth() const override;
+    void fill(const std::vector<std::size_t> &rows, Matrix &inputs, Matrix &targets) const override;
+
+  private:
+    const Dataset &_data;
+};
+
+// Validation is evaluated this many examples at a time, so it never needs one big matrix.
+constexpr std::size_t EVALUATION_CHUNK = 4096;
+
 struct TrainConfig {
     std::size_t epochs = 10;
     std::size_t batchSize = 32;
@@ -90,6 +125,10 @@ class Network {
     // seed, then for each batch zero the gradients, forward, loss, backward, optimizer step. When
     // loss.fusesSoftmax(), the last layer must be a Softmax and its backward is skipped (ADR-0007).
     // Throws my_torch::Error on empty or mismatched data, a zero batch size or a missing Softmax.
+    History fit(const DataSource &train, const DataSource *validation, Loss &loss,
+                Optimizer &optimizer, const TrainConfig &config,
+                const Scheduler *scheduler = nullptr);
+    // Same, on matrices held in memory (wrapped in MatrixSource).
     History fit(const Dataset &train, const Dataset *validation, Loss &loss,
                 Optimizer &optimizer, const TrainConfig &config,
                 const Scheduler *scheduler = nullptr);
