@@ -15,4 +15,5 @@ Done: [optimizers.md](optimizers.md) (optimizers and learning-rate schedulers, i
 [encodings.md](encodings.md) (input encodings of a FEN position, issue #14),
 [dataset.md](dataset.md) (dataset statistics and dedupe-aware train/validation/test split, issue #12),
 [imbalance.md](imbalance.md) (class imbalance: none, loss weighting, oversampling, undersampling,
-issue #16).
+issue #16),
+[augmentation.md](augmentation.md) (training with and without board-symmetry augmentation, issue #38).

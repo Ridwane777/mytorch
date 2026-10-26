@@ -150,3 +150,33 @@ Test(fen, parse_file_rejects_missing_file)
 {
     cr_assert_throw(parseFile("does_not_exist.txt", LabelPolicy::Optional), my_torch::Error);
 }
+
+Test(fen, formats_the_starting_position)
+{
+    const std::string fen = formatFen(parseFen(start));
+
+    cr_assert_str_eq(fen.c_str(), start);
+}
+
+Test(fen, formats_castling_and_en_passant)
+{
+    const char *fens[] = {
+        "rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq e6 0 2",
+        "r3k2r/8/8/8/3pP3/8/8/R3K2R b Kq e3 12 40",
+        "4k3/8/8/8/8/8/8/4K2R w K - 0 1",
+        "8/8/R2k4/4r1p1/8/5K2/5P2/8 b - - 7 59",
+    };
+
+    for (const char *fen : fens) {
+        const std::string text = formatFen(parseFen(fen));
+
+        cr_assert_str_eq(text.c_str(), fen);
+    }
+}
+
+Test(fen, format_writes_a_dash_without_castling)
+{
+    const std::string fen = formatFen(parseFen("4k3/8/8/8/8/8/8/4K3 b - - 3 17"));
+
+    cr_assert_str_eq(fen.c_str(), "4k3/8/8/8/8/8/8/4K3 b - - 3 17");
+}

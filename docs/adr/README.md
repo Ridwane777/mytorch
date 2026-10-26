@@ -22,4 +22,5 @@ One file per decision, based on [TEMPLATE.md](TEMPLATE.md). An accepted ADR is n
 | [0016](0016-input-encoding.md) | Input encoding of a position | Accepted | 2026-10-26 |
 | [0017](0017-dataset-split.md) | Dataset split: dedupe-aware stratified split by position key | Accepted | 2026-10-25 |
 | [0018](0018-class-imbalance.md) | Class imbalance: none, loss weighting, oversampling and undersampling compared on per-class F1 | Accepted | 2026-10-25 |
+| [0019](0019-symmetry-augmentation.md) | Symmetry augmentation: offline tool and two label-preserving board symmetries | Accepted | 2026-10-25 |
 | [0020](0020-weight-initialisation.md) | Weight initialisation chosen per layer in the configuration, original default kept | Accepted | 2026-10-25 |

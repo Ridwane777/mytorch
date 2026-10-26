@@ -1,0 +1,6 @@
+dataset: dataset, seed 42
+train: 20000 positions
+train_augmented: 80000 positions
+test: 5000 positions
+distinct test positions found in train: 11
+distinct test positions found in train_augmented: 23
