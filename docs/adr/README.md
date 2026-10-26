@@ -19,4 +19,4 @@ One file per decision, based on [TEMPLATE.md](TEMPLATE.md). An accepted ADR is n
 | [0013](0013-configuration-format.md) | Generator configuration in the network file syntax, seeded and checked before writing | Accepted | 2026-10-24 |
 | [0014](0014-analyzer-command-line.md) | Analyzer command line, encoding table, label matching and validation hold-out | Accepted | 2026-10-24 |
 | [0015](0015-stalemate-positions.md) | Stalemate bonus: generated sparse positions with generated negatives | Accepted | 2026-10-24 |
-| [0017](0017-dataset-split.md) | Dataset split: dedupe-aware stratified split by position key | Proposed | 2026-10-25 |
+| [0017](0017-dataset-split.md) | Dataset split: dedupe-aware stratified split by position key | Accepted | 2026-10-25 |

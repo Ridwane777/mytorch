@@ -1,8 +1,8 @@
 # ADR-0017: Dataset split: dedupe-aware stratified split by position key
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-10-25
-- **Deciders**: The pair (issue #12)
+- **Deciders**: Meric-BG (author), Ridwane777 (accepted)
 - **Issue**: #12
 
 ## Context
@@ -48,9 +48,11 @@ never committed.
 - ✅ The test score is not inflated by copies of training positions, and every label has about the
   same share in each set.
 - ✅ Reproducible: the same dataset, seed and ratios give byte-identical files (checked on a
-  synthetic dataset; the manifest holds the SHA-256 of each file to compare two machines).
+  synthetic dataset, then on the real dataset on a second machine, where every committed CSV came
+  out identical; the manifest holds the SHA-256 of each file to compare two machines).
 - ❌ The contradictory positions are lost to training: if there are many, the network loses data
-  and the real dataset's label noise is hidden from the test.
+  and the real dataset's label noise is hidden from the test. Measured on the real dataset: 0
+  contradictory keys, so nothing is lost today.
 - ❌ The guarantee depends on the key definition: two boards that are the same position written
   differently (for example an en passant square that is set but not capturable) count as different,
   so a leak of that kind is not detected.
