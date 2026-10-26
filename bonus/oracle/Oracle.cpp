@@ -195,6 +195,41 @@ bool isAttacked(const Position &p, int sq, Color by)
            slidingAttack(p, file, rank, diagonal, pieceOf('B', by), pieceOf('Q', by));
 }
 
+std::vector<int> attackers(const Position &p, int sq, Color by)
+{
+    const int file = fileOf(sq);
+    const int rank = rankOf(sq);
+    const int pawnRank = by == Color::White ? rank - 1 : rank + 1;
+    std::vector<int> found;
+    const auto addIf = [&](int f, int r, char piece) {
+        if (onBoard(f, r) && at(p, f, r) == piece)
+            found.push_back(square(f, r));
+    };
+
+    for (const int df : {-1, 1})
+        addIf(file + df, pawnRank, pieceOf('P', by));
+    for (const Step s : knightSteps)
+        addIf(file + s.file, rank + s.rank, pieceOf('N', by));
+    for (const Step s : kingSteps)
+        addIf(file + s.file, rank + s.rank, pieceOf('K', by));
+    // Sliding pieces: the first piece met in each direction, if it moves along that direction.
+    const auto slide = [&](const auto &steps, char line, char queen) {
+        for (const Step s : steps)
+            for (int f = file + s.file, r = rank + s.rank; onBoard(f, r);
+                 f += s.file, r += s.rank) {
+                const char piece = at(p, f, r);
+                if (isEmpty(piece))
+                    continue;
+                if (piece == line || piece == queen)
+                    found.push_back(square(f, r));
+                break;
+            }
+    };
+    slide(straight, pieceOf('R', by), pieceOf('Q', by));
+    slide(diagonal, pieceOf('B', by), pieceOf('Q', by));
+    return found;
+}
+
 int findKing(const Position &p, Color color)
 {
     for (int sq = 0; sq < 64; sq++)

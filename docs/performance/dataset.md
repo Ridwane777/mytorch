@@ -1,7 +1,7 @@
 # Dataset analysis and train/validation/test split
 
 Analysis for issue #12: what does the dataset contain, and how is it cut into sets that never
-share a position? Related decision: [ADR-0017](../adr/0017-dataset-split.md) (Proposed).
+share a position? Related decision: [ADR-0017](../adr/0017-dataset-split.md).
 
 **Status: measured** on the real dataset (723,019 positions, `dataset.zip` given by the school, not pushed),
 2026-10-26.
@@ -71,7 +71,7 @@ The line counts match the figures stated in issue #12 (723,019 lines; 300,000 `N
 - **Pieces per board** (mean): `Nothing` 14.9, `Check` 14.6, `Checkmate` 13.8. The distribution is
   irregular (peaks at 9 and 20 pieces for `Check`, a regular cycle for `Nothing`), which suggests
   the files are made of different generators (`10_pieces`, `20_pieces`, `many_pieces`).
-  This is an observation on the charts, not a verified fact.
+  Verified since in [eda.md](eda.md): about 6.5, 14.6 and 23 pieces on average per file group.
 
 Raw data: [`data/dataset_labels.csv`](data/dataset_labels.csv),
 [`data/dataset_pieces.csv`](data/dataset_pieces.csv),
@@ -87,7 +87,7 @@ Raw data: [`data/dataset_labels.csv`](data/dataset_labels.csv),
 ## Limits
 
 - One seed (42) and one dataset were measured; the split is deterministic but another seed gives
-  other sets. ADR-0017 stays Proposed until the pair has decided.
+  other sets (ADR-0017, accepted).
 - Position equality is the key (board, side, castling, en passant). Two boards that are the same
   position written differently are not detected, and the same key may come from different games;
   that is intended.

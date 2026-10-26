@@ -132,3 +132,20 @@ Test(labels, verdicts_convert_to_subject_labels)
     cr_assert(toLabel(Verdict::Stalemate) == analyzer::Label::Stalemate);
     cr_assert(!toLabel(Verdict::Illegal).has_value());
 }
+
+Test(attacks, attackers_lists_every_attacking_piece)
+{
+    // The rook of the guide example is the only attacker of the black king on d6.
+    Position p = parseFen("8/8/R2k4/4r1p1/8/5K2/5P2/8 b - - 7 59");
+    auto a = attackers(p, square(3, 6), Color::White);
+    cr_assert_eq(a.size(), 1);
+    cr_assert_eq(a[0], square(0, 6));
+    // Double check: knight f6 and rook e1 both attack the black king on e8.
+    p = parseFen("4k3/8/5N2/8/8/8/8/4R1K1 b - - 0 1");
+    a = attackers(p, square(4, 8), Color::White);
+    cr_assert_eq(a.size(), 2);
+    // A blocked rook does not attack; isAttacked and attackers always agree.
+    p = parseFen("4k3/4p3/8/8/8/8/8/4R1K1 b - - 0 1");
+    cr_assert(attackers(p, square(4, 8), Color::White).empty());
+    cr_assert(!isAttacked(p, square(4, 8), Color::White));
+}

@@ -1,0 +1,6 @@
+label,positions,share_with_castling_rights,share_with_en_passant,mean_halfmove,mean_fullmove
+Nothing,300000,0.03748,0.00052,3.4873,43.5406
+Check White,135587,0.0366333,0.000140131,4.15967,43.2435
+Check Black,113713,0.0291875,0.000298998,4.60595,46.2157
+Checkmate White,94295,0.0267883,0,3.93448,44.3513
+Checkmate Black,79424,0.0204094,0,4.19264,46.9013
