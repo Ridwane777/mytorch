@@ -1,8 +1,8 @@
 # ADR-0016: Input encoding of a position
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-10-26
-- **Deciders**: Meric-BG (author), Ridwane777 (to decide)
+- **Deciders**: Meric-BG (author), Ridwane777 (accepted)
 
 ## Context
 ADR-0014 gave the analyzer a table of named encodings and a first one, `fen-onehot-768`. Issue #14
@@ -19,8 +19,9 @@ network, same 20,000 training and 5,000 test positions, three runs per encoding.
 | `fen-attacks-901` | Best: 67.2 % accuracy, macro F1 0.651 | Needs attack computation, 1.5× the time of 768, heuristic without pins |
 
 ## Decision
-Proposed: use `fen-attacks-901` for the final network (#17), and keep the other three in the table
-for comparison and as fallbacks. To be confirmed by the pair.
+Use `fen-attacks-901` for the final network (#17), and keep the other three in the table for
+comparison and as fallbacks. `configs/basic_network.conf` keeps `fen-onehot-768` as the baseline
+example; the final network gets its own configuration in #17.
 
 ## Consequences
 - ✅ +10 points of accuracy over the baseline, with the three runs of each encoding separated.

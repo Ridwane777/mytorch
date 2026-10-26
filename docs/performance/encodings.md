@@ -19,6 +19,10 @@ small network learns? Related decision: [ADR-0016](../adr/0016-input-encoding.md
   (`init seed` 1, 2, 3). The tables give the median and the range (min–max) of the three.
 - **Machine**: Intel Core i5-12450H, 15 GB RAM, Linux 6.8, g++ 13.3.0, matplotlib 3.11.0, Python 3.12.3.
   The machine was shared with other work, which probably explains the time spread.
+- **Second machine check** (2026-10-26, Intel Core i7-1355U, g++ 15.2.0): a rerun of the script gave
+  the same epochs, accuracy, macro F1 and per-class recall in all 12 runs, and byte-identical
+  training logs. Only the times differ (62 to 98 s instead of 50 to 138 s): quality figures are
+  reproducible, times depend on the machine.
 - **Reproduce**: `sh scripts/bench_encodings.sh` (dataset extracted in `dataset/`). Raw data:
   [`data/encodings_runs.csv`](data/encodings_runs.csv), training logs in `data/encodings_logs/`.
 
