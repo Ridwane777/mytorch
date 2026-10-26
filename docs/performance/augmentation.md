@@ -3,9 +3,8 @@
 Measurement for issue #38: does training on the mirror and the colour-swapped flip of every
 position help? Related decision: [ADR-0019](../adr/0019-symmetry-augmentation.md) (Proposed).
 
-**Results: not yet measured.** The real dataset was not available when the method was written. The
-pipeline was run end to end on generated positions only, to check that it works; nothing from that
-run is reported here. This document is completed when the command below has run on the dataset.
+**Status: measured** on the real dataset, 2026-10-26 (Intel Core i5-12450H, 15 GB RAM, Linux 6.8,
+g++ 13.3.0, matplotlib 3.11.0, Python 3.12.3).
 
 ## Method
 
@@ -63,9 +62,38 @@ sh bonus/scripts/check_symmetries.sh 2000      # 2,000 generated positions, or a
 It builds the tool and the oracle, augments, and exits non-zero unless the oracle reports
 `disagree: 0` on every original, mirrored and flipped position.
 
-## Results
+## Results (2026-10-26)
 
-Not yet measured.
+Median of 3 networks per arm (min–max), 5,000 test positions never trained on:
+
+| Arm | Training positions | Accuracy | Recall Nothing | Recall Check White | Recall Check Black | Recall Checkmate White | Recall Checkmate Black |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| base | 20,000 | 59.0 % (58.9–60.1) | 75.5 % (74.8–75.9) | 46.3 % (44.2–48.6) | 32.0 % (30.2–32.1) | 62.3 % (59.7–64.4) | 59.9 % (59.3–64.5) |
+| augmented | 80,000 | 67.1 % (66.5–67.6) | 75.6 % (75.2–77.5) | 56.7 % (55.4–57.9) | 50.3 % (48.9–51.5) | 71.3 % (70.2–72.1) | 72.6 % (71.2–73.9) |
+
+| Arm | Training time | Peak memory |
+| --- | --- | --- |
+| base | 113 s | 253 MB |
+| augmented | 467 s | 967 MB |
+
+![Accuracy and recall per class](data/augmentation.png)
+
+- **Accuracy rises by 8 points** (59.0 to 67.1 %), and the ranges of the two arms do not overlap.
+- **The weak classes gain the most**: `Check Black` +18 points (32.0 to 50.3 %), `Checkmate Black`
+  +12.7 (59.9 to 72.6 %), `Check White` +10.4, `Checkmate White` +9. `Nothing` does not change.
+- **The price is 4.1 times the time and 3.8 times the memory**, which is what four times the
+  positions costs.
+- The augmented arm makes four times more updates for the same 20 epochs, so this result does not
+  separate "more distinct positions" from "more training steps" (ADR-0019). It does show that
+  feeding the symmetric copies is worth their cost under this protocol.
+- **Leak check** (`data/augmentation_split.txt`): 11 distinct test positions also appear in
+  `train.txt` and 23 in `train_augmented.txt`, out of 5,000. The 11 come from the dataset's own
+  duplicates (1.03 % of its lines, see [dataset.md](dataset.md)); 12 more come from symmetric copies.
+  This is under 0.5 % of the test set and cannot explain an 8-point gain, but it is not the expected
+  `0`.
+
+Raw data: [`data/augmentation_runs.csv`](data/augmentation_runs.csv), logs in
+`data/augmentation_logs/`.
 
 ## Limits
 
