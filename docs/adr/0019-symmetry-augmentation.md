@@ -25,8 +25,9 @@ Together they give four positions per input. Three questions: where the symmetri
 reach the training, and how to know they are right. The constraints: the analyzer and the generator
 only include `include/my_torch/` and the network file format (ADR-0012) is a contract between the
 two work packages (AGENTS.md); `--train` already holds out a seeded validation fraction from its
-input (ADR-0014); the real dataset is not on the machine that wrote this ADR, so **no gain is
-measured yet**.
+input (ADR-0014); the gain was measured on the real dataset on 2026-10-26
+([performance/augmentation.md](../performance/augmentation.md)): accuracy 59.0 % to 67.1 %, recall of
+`Check Black` 32.0 % to 50.3 % and of `Checkmate Black` 59.9 % to 72.6 %.
 
 ## Options considered
 
@@ -77,11 +78,10 @@ both partners.
 - ❌ With a fixed number of epochs the augmented arm makes four times more updates than the base
   arm: a gain measured this way mixes "more distinct positions" and "more steps". The benchmark
   cannot separate them.
-- ❌ **The gain is not measured.** The real dataset was absent when this was written; the benchmark
-  has only been run end to end on generated positions to check the pipeline (no result kept). The
-  status stays Proposed until `docs/performance/augmentation.md` holds a measurement on the real
-  dataset.
-- Follow-up: run `DATASET=dataset TRAIN=20000 TEST=5000 SEED=42 sh scripts/bench_augmentation.sh
-  docs/performance/data`; if the gain is real and `--train` is the only way to use it, write the ADR
-  for option B with both partners; if it is not, mark this ADR Abandoned and keep the tool as an
-  experiment.
+- ❌ The gain is measured on 20,000 positions, one seed and one encoding, and it mixes more distinct
+  positions with more updates; it costs 4.1 times the time and 3.8 times the memory. Test leakage
+  through duplicates and symmetric copies is 23 of 5,000 test positions, not 0.
+- Follow-up: the gain is real under this protocol, so the decision for the pair is whether `--train`
+  needs the in-process option B or the offline file is enough; compare with the three-class
+  canonical variant (side to move always White) before choosing, and repeat with the final
+  encoding of #17. Mark this ADR Abandoned only if a later measurement removes the gain.
