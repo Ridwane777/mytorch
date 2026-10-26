@@ -1,8 +1,8 @@
 # ADR-0018: Class imbalance, four options compared on per-class F1 before choosing
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-10-25
-- **Deciders**: the pair (to decide; benchmark measured 2026-10-26)
+- **Deciders**: Meric-BG (author), Ridwane777 (accepted)
 - **Issue**: #16
 
 ## Context
@@ -33,10 +33,11 @@ has to be taken on measurements, per class, not on overall accuracy. The benchma
 
 ## Decision
 
-**Proposed: keep the natural distribution (`none`), without resampling.** No option beats it on macro
+**Keep the natural distribution (`none`), without resampling.** No option beats it on macro
 F1 in the benchmark (54.9 against 54.3 for weighting, 53.7 for oversampling, 52.3 for undersampling),
 and none gives a measurable gain on `Checkmate Black`. Weighting is the only credible alternative if
-the pair prefers more recall on `Check` at the price of `Nothing`. To be confirmed by the pair.
+more recall on `Check` is ever preferred at the price of `Nothing`; it is checked again on the final
+configuration of #17.
 The method decisions already fixed:
 
 - **No C++ change**: weighting uses the existing `weights=` key; resampling is done at the data

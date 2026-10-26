@@ -37,6 +37,8 @@ class? Related decision: [ADR-0018](../adr/0018-class-imbalance.md) (Proposed).
    and the individual runs.
 
 - **Machine**: Intel Core i5-12450H, 15 GB RAM, Linux 6.8, g++ 13.3.0, matplotlib 3.11.0, Python 3.12.3.
+- **Second machine check** (2026-10-26, Intel Core i7-1355U, g++ 15.2.0): a rerun of the script gave
+  the same scores in all 12 runs and byte-identical resampling logs; only the times differ.
 - **Dependencies**: Python 3 with matplotlib for the graphs; `/usr/bin/time`.
 - **Environment variables** of the script: `DATASET` (default `dataset`), `TRAIN` (20000), `TEST`
   (5000), `SEED` (1: the draw and the resampling), `EPOCHS` (default: the 20 of the
@@ -113,3 +115,5 @@ Raw data: [`data/imbalance_runs.csv`](data/imbalance_runs.csv).
 - Resampling is done by the script, not by the network file: a network trained on a resampled file
   is reproduced only with `scripts/bench_imbalance.sh` (or `resample_imbalance.py`).
 - One-hot 768 encoding, the one the analyzer knows; another encoding changes the numbers.
+- Only F1 is reported per class: precision and recall (ADR-0011) and a confusion matrix are not, so
+  F1 does not show whether a remedy trades precision for recall on the rare classes.
