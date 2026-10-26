@@ -1,8 +1,8 @@
 # ADR-0020: Weight initialisation chosen per layer in the configuration, original default kept
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-10-25
-- **Deciders**: Meric-BG
+- **Deciders**: Meric-BG (author), Ridwane777 (accepted)
 - **Issue**: #6
 
 ## Context
@@ -94,8 +94,12 @@ orthonormal rows otherwise, with a gain of 1. Biases stay at zero. Everything dr
   type and constructor parameter need both partners' review. Existing calls compile unchanged.
 - ❌ `std::normal_distribution` and `std::uniform_real_distribution` are implementation-defined: the
   normal forms and `orthogonal`, and in principle `uniform` too, can give other weights with
-  another standard library. The byte-identity of the default was checked with g++ 13.3.0 / libstdc++
-  only. A network file is not affected, since it stores its weights.
+  another standard library. The byte-identity of the default was checked with libstdc++ only (g++
+  13.3.0, and g++ 15.2.0 on a second machine, where the benchmark files came out byte-identical). A
+  network file is not affected, since it stores its weights. ADR-0009 had passed this fix to #6; it
+  is deliberately left out: portable draws change every initial weight, so every committed
+  measurement (optimizers, overfitting, stalemate, encodings, class imbalance, initialisation) would
+  have to be run again. It is deferred to a follow-up issue, to do before the final network (#17).
 - ❌ The untruncated normal forms give a few weights beyond 3 standard deviations; and modified
   Gram-Schmidt would lose orthogonality on ill-conditioned input, which a random matrix is not.
 - ❌ A network file does not say which initialisation produced it.
