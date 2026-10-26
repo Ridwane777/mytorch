@@ -46,6 +46,7 @@ Network everyLayer()
     info.training.config.patience = 2;
     info.training.config.minDelta = 0.001;
     info.training.config.restoreBest = false;
+    info.training.config.validationTail = 17;
     return net;
 }
 
@@ -147,7 +148,7 @@ Test(serialization, round_trip_keeps_settings_and_model_info)
               b.training.scheduler.params == a.training.scheduler.params);
     const TrainConfig &c = b.training.config;
     cr_assert(c.epochs == 7 && c.batchSize == 3 && c.seed == 99 && !c.shuffle &&
-              c.patience == 2 && c.minDelta == 0.001 && !c.restoreBest);
+              c.patience == 2 && c.minDelta == 0.001 && !c.restoreBest && c.validationTail == 17);
 }
 
 Test(serialization, saving_a_loaded_network_gives_the_same_file)

@@ -7,6 +7,7 @@
 //   optimizer <type> key=value…
 //   scheduler <type> key=value…
 //   train epochs=… batch=… seed=… shuffle=… patience=… min_delta=… restore_best=… validation=…
+//         validation_tail=…
 //   layers <count>            then each layer as written by Layer::save
 //   end checksum=<16 hex digits>
 //
@@ -372,7 +373,8 @@ void writeConfig(std::ostream &out, const TrainConfig &c)
 {
     out << "train epochs=" << c.epochs << " batch=" << c.batchSize << " seed=" << c.seed
         << " shuffle=" << c.shuffle << " patience=" << c.patience << " min_delta=" << c.minDelta
-        << " restore_best=" << c.restoreBest << " validation=" << c.validation << '\n';
+        << " restore_best=" << c.restoreBest << " validation=" << c.validation
+        << " validation_tail=" << c.validationTail << '\n';
 }
 
 TrainConfig readTrainConfig(Reader &reader, const std::vector<std::string> &w)
@@ -402,10 +404,14 @@ TrainConfig readTrainConfig(Reader &reader, const std::vector<std::string> &w)
             c.validation = reader.number(value);
             if (!(c.validation >= 0 && c.validation < 1))
                 reader.fail("train: validation must be in [0, 1[");
+        } else if (key == "validation_tail") {
+            c.validationTail = reader.count(value);
         }
         else
             reader.fail("train: unknown setting '" + key + "'");
     }
+    if (c.validation > 0 && c.validationTail > 0)
+        reader.fail("train: give validation or validation_tail, not both");
     return c;
 }
 

@@ -34,3 +34,6 @@ my_torch-project.pdf
 /bonus/unit_tests
 
 /bonus/my_torch_positions
+
+# Training runs (scripts/train_final.sh): large, reproducible
+/runs/
