@@ -20,6 +20,8 @@
 # (default 42, the draw), RUNS (default 3, networks per arm), CONFIG (default
 # configs/augmentation.conf).
 set -eu
+# sort and comm must agree on one byte order whatever the user's locale.
+export LC_ALL=C
 
 cd "$(dirname "$0")/.."
 ROOT="$(pwd)"

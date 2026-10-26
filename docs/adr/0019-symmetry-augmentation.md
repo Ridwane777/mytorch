@@ -1,8 +1,8 @@
 # ADR-0019: Symmetry augmentation, offline tool and two label-preserving board symmetries
 
-- **Status**: Proposed
+- **Status**: Accepted
 - **Date**: 2026-10-25
-- **Deciders**: Meric-BG (proposal), to be confirmed by the pair
+- **Deciders**: Meric-BG (author), Ridwane777 (accepted)
 - **Issue**: #38
 
 ## Context
@@ -40,7 +40,7 @@ input (ADR-0014); the gain was measured on the real dataset on 2026-10-26
 
 ## Decision
 
-Option A, proposed. `src/analyzer/Symmetry.{hpp,cpp}` implements `mirrorFiles`, `flipColors`,
+Option A. `src/analyzer/Symmetry.{hpp,cpp}` implements `mirrorFiles`, `flipColors`,
 `flipLabel` and `augment` (order per input: original, mirror, flip, mirror + flip), tested against
 hand-written expected FENs. `scripts/augment.cpp` (`augment [--mirror | --flip | --all] IN OUT`,
 errors on stderr, exit 84) exposes it; `src/analyzer/Fen.cpp` gains `formatFen` to write positions
@@ -81,7 +81,7 @@ both partners.
 - ❌ The gain is measured on 20,000 positions, one seed and one encoding, and it mixes more distinct
   positions with more updates; it costs 4.1 times the time and 3.8 times the memory. Test leakage
   through duplicates and symmetric copies is 23 of 5,000 test positions, not 0.
-- Follow-up: the gain is real under this protocol, so the decision for the pair is whether `--train`
-  needs the in-process option B or the offline file is enough; compare with the three-class
+- Follow-up: the gain is real under this protocol; the offline file (option A) is what is used, and
+  the in-process option B gets its own ADR only if the validation leak becomes a problem; compare with the three-class
   canonical variant (side to move always White) before choosing, and repeat with the final
   encoding of #17. Mark this ADR Abandoned only if a later measurement removes the gain.

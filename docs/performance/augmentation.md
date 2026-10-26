@@ -1,7 +1,7 @@
 # Symmetry augmentation: with and without
 
 Measurement for issue #38: does training on the mirror and the colour-swapped flip of every
-position help? Related decision: [ADR-0019](../adr/0019-symmetry-augmentation.md) (Proposed).
+position help? Related decision: [ADR-0019](../adr/0019-symmetry-augmentation.md).
 
 **Status: measured** on the real dataset, 2026-10-26 (Intel Core i5-12450H, 15 GB RAM, Linux 6.8,
 g++ 13.3.0, matplotlib 3.11.0, Python 3.12.3).
