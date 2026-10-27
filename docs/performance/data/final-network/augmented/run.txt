@@ -1,0 +1,11 @@
+date: 2026-10-27T12:58:41Z
+commit: b6b5404
+configuration: configs/final_network.conf, sha256 f12f4a6d0a656df79c8cf03cf4eb6210c966c4f7b8a520077a3a2b4fecfbb31c
+machine: 13th Gen Intel(R) Core(TM) i7-1355U, 14 GB RAM, Linux 7.0.0-38-generic
+compiler: g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0
+split seed: 42, fraction: 1, augmentation: 1, scored on: test
+training lines: 2289784, validation lines: 71558, test lines: 71555
+epochs run: 14
+training: 6285.07 s, peak 430 MB
+prediction of the test split: 2.81 s, peak 148 MB
+total: 6304 s

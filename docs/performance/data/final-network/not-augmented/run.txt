@@ -1,0 +1,11 @@
+date: 2026-10-27T12:24:54Z
+commit: b6b5404
+configuration: configs/final_network.conf, sha256 f12f4a6d0a656df79c8cf03cf4eb6210c966c4f7b8a520077a3a2b4fecfbb31c
+machine: AMD EPYC Processor (with IBPB), 23 GB RAM, Linux 6.8.0-147-generic
+compiler: g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0
+split seed: 42, fraction: 1, augmentation: 0, scored on: test
+training lines: 572446, validation lines: 71558, test lines: 71555
+epochs run: 9
+training: 4109.33 s, peak 221 MB
+prediction of the test split: 7.83 s, peak 148 MB
+total: 4202 s
