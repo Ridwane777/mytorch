@@ -1,5 +1,5 @@
 #!/bin/sh
-# Compares four ways of handling class imbalance on the real dataset (docs/performance/imbalance.md,
+# Compares four ways of handling class imbalance on the real dataset (docs/performance/04-imbalance.md,
 # ADR-0018): none, loss weighting, oversampling and undersampling of the minority classes.
 #   1. TRAIN + TEST positions drawn at random from the dataset with a fixed seed (Python's
 #      random.sample): the last TEST form the test set, kept in its natural distribution and never

@@ -12,7 +12,7 @@ local `dataset/` folder, never pushed ([licenses.md](../legal/licenses.md)).
 | Step | What it shows | What to say |
 | --- | --- | --- |
 | 1. Build | `make`, then the bonus tools | C++20 only, no dependency in the executables (ADR-0002, `docs/dependencies.md`) |
-| 2. Pushed network | `--predict my_torch_network_final.nn` on ten famous positions (start, Italian game, Fool's mate, Scholar's mate, back-rank mates, smothered mate, checks of both colours): **10 right out of 10** | One answer per line, in file order; 96.2 % on the 71,555 test positions, and its weakness is check against checkmate ([final-network.md](../performance/final-network.md)) |
+| 2. Pushed network | `--predict my_torch_network_final.nn` on ten famous positions (start, Italian game, Fool's mate, Scholar's mate, back-rank mates, smothered mate, checks of both colours): **10 right out of 10** | One answer per line, in file order; 96.2 % on the 71,555 test positions, and its weakness is check against checkmate ([10-final-network.md](../performance/10-final-network.md)) |
 | 3. Oracle | `bonus/my_torch_oracle` agrees with the 10 expected labels | The oracle is a rule-based checker used to verify data, never to answer for the network (ADR-0006) |
 | 4. Generator | A blank network from `configs/basic_network.conf` | The configuration format (ADR-0013, `docs/configuration.md`) |
 | 5. Training | 3,000 generated positions, early stopping after 9 epochs, then the network answers "Nothing" to every demo position | **On purpose**: 76 % of these positions are "Nothing", so a small network trained on little data learns the majority class. This is why the final network uses the whole dataset with augmentation (ADR-0019) |

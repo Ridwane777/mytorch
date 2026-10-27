@@ -49,7 +49,7 @@ network use? Related decision: [ADR-0023](../adr/0023-final-architecture.md).
 (Left graph: blue = default initialisation, green = `he_uniform`.)
 
 - **The default initialisation beats `he_uniform` for all four architectures**, by 0.5 to 1 point of
-  macro F1. Meric's spiral benchmark found the same with ReLU ([initialisation.md](initialisation.md)).
+  macro F1. Meric's spiral benchmark found the same with ReLU ([06-initialisation.md](06-initialisation.md)).
 - **More capacity helps, with diminishing returns**: +1.3 points from 128 to 256, +0.4 from 256 to
   256 → 128, +0.4 from 256 → 128 to 512 → 256 for 2.2 times the parameters.
 - **Every network overfits at 10 % of the data**: for 256 → 128, training accuracy reaches 95.7 %

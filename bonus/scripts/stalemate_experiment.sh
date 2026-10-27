@@ -1,6 +1,6 @@
 #!/bin/sh
 # Stalemate bonus experiment (#24): can a network learn the Stalemate class from generated
-# positions? Reproduces docs/performance/stalemate.md.
+# positions? Reproduces docs/performance/14-stalemate.md.
 #   1. 5,000 generated positions (2,500 stalemates, 2,500 other sparse positions, oracle labels);
 #   2. 20,000 dataset positions drawn with a fixed seed;
 #   3. shuffled together, 80 % to train, 20 % to test (never trained on);

@@ -1,4 +1,4 @@
-// Shows overfitting and what each remedy of #7 does against it (docs/performance/overfitting.md).
+// Shows overfitting and what each remedy of #7 does against it (docs/performance/08-overfitting.md).
 // Two interleaved spirals with few noisy training points and a network much larger than needed:
 // it can memorize the training set. Three sets per seed: train (80 points), validation (500 points,
 // used to pick the regularization strength and the early-stopping epoch) and test (500 points,

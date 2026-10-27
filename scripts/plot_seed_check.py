@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Second-seed check of the trial runs (docs/performance/trials.md): gathers the five seeds of the
+"""Second-seed check of the trial runs (docs/performance/09-trials.md): gathers the five seeds of the
 two best configurations (seed 1 from trials.csv, seeds 2-5 from trials-seeds/trials.csv), writes
 seed_check.csv (mean, standard deviation, min, max) and seed_check.png.
 

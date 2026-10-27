@@ -13,7 +13,7 @@ The subject asks for faster learning and escaping local minima. ADR-0004 fixed t
 interface (`step(parameters)`, `setLearningRate`); two questions were left open: where an
 optimizer keeps its memory, and how a schedule is expressed.
 
-Measured on two interleaved spirals ([optimizers.md](../performance/optimizers.md), 5 seeds, 400
+Measured on two interleaved spirals ([07-optimizers.md](../performance/07-optimizers.md), 5 seeds, 400
 epochs, best of 9 learning rates): Adam reaches a median training loss of 0.0048 (99.5 % accuracy),
 SGD with momentum 0.0113 (98.5 %) but only at one rate out of nine, and plain SGD stays near 0.23
 (57 %). Between a rate that works and one that diverges there is a factor 3 for Adam.

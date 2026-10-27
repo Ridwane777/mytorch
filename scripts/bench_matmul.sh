@@ -1,5 +1,5 @@
 #!/bin/sh
-# Measures the blocked, threaded matrix product (docs/performance/matmul.md, ADR-0024):
+# Measures the blocked, threaded matrix product (docs/performance/12-matmul.md, ADR-0024):
 #   1. scripts/bench_matmul.cpp: speed of the three products of a 901 -> 256 layer, plain loop
 #      against blocked on 1 to all threads;
 #   2. one training run of the final network (configs/final_network.conf, 2 epochs, no early

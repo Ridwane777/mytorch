@@ -7,7 +7,7 @@
    needs their written agreement.
 3. **No warranty.** The programs and the pre-trained network are provided as is. The network is
    right on 96.2 % of the positions it has never seen and wrong on the rest, mostly between check
-   and checkmate ([final-network.md](../performance/final-network.md)). Do not use its answers
+   and checkmate ([10-final-network.md](../performance/10-final-network.md)). Do not use its answers
    where a mistake matters, for instance to arbitrate a game.
 4. **Data.** The user is responsible for the files given to the programs, and must have the right to
    use them. The programs do not send them anywhere ([privacy-policy.md](privacy-policy.md)).

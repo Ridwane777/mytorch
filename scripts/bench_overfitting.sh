@@ -1,5 +1,5 @@
 #!/bin/sh
-# Reproduces the overfitting comparison (docs/performance/overfitting.md).
+# Reproduces the overfitting comparison (docs/performance/08-overfitting.md).
 # Builds the benchmark against src/my_torch, runs it, then draws the graphs (matplotlib).
 set -eu
 

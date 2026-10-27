@@ -70,7 +70,7 @@ softmax
 weights themselves ([ADR-0012](adr/0012-network-file-format.md)). With *fan_in* the number of inputs
 and *fan_out* the number of outputs of the layer, the weights have a zero mean and the variance
 below; biases start at zero. Design choices and measurements:
-[ADR-0020](adr/0020-weight-initialisation.md), [comparison](performance/initialisation.md).
+[ADR-0020](adr/0020-weight-initialisation.md), [comparison](performance/06-initialisation.md).
 
 | `init` | Distribution | Variance | Meant for |
 | --- | --- | --- | --- |
