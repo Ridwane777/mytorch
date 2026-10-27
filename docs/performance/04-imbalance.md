@@ -32,7 +32,7 @@ class? Related decision: [ADR-0018](../adr/0018-class-imbalance.md) (Proposed).
    (wall time, peak memory).
 6. **Scoring** (`scripts/score_imbalance.py`) on the test set: F1 of each of the five labels, F1 of
    the three families (`Nothing`, `Check` = both colours, `Checkmate` = both colours), macro F1
-   over the five labels, accuracy. A class never predicted gets an F1 of 0.
+   over the five labels, accuracy. A class never predicted gets an F1 of 0. The metrics are computed by `scripts/score.cpp`, which calls `my_torch::report` (ADR-0026, since 2026-10-27; the formulas are unchanged).
 7. **Graphs** (`scripts/plot_imbalance.py`): mean of the three runs with the minimum-maximum range
    and the individual runs.
 

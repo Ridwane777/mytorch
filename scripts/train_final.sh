@@ -8,8 +8,8 @@
 #      at the end; the configuration's validation_tail is set to their count (ADR-0022);
 #   6. generates the network from CONFIG, trains it, timed;
 #   7. predicts the test split (or, with EVAL=validation, the validation split, so that trial runs
-#      choose without ever looking at the test split) and scores it with
-#      scripts/evaluate_predictions.py;
+#      choose without ever looking at the test split), scores it with scripts/score.cpp (the
+#      library's metrics, ADR-0026) and draws the graphs with scripts/plot_run.py;
 #   8. writes run.txt: commit, configuration checksum, machine, compiler, sizes, times, memory.
 # Usage: sh scripts/train_final.sh CONFIG [RUN_DIRECTORY (default runs/<config name>)]
 # Environment: DATASET (default dataset), FRACTION (default 1), AUGMENT (default 1),
@@ -46,6 +46,9 @@ start=$(date +%s)
 [ "$BUILD" = 0 ] || make -s my_torch_analyzer my_torch_generator
 g++ -std=c++20 -O2 -Wall -Wextra -Werror -Iinclude -Isrc/analyzer scripts/augment.cpp \
     src/analyzer/Fen.cpp src/analyzer/Symmetry.cpp -o "$RUN/augment"
+[ "$BUILD" = 0 ] || make -s build/libmy_torch.a
+g++ -std=c++20 -O2 -pthread -Wall -Wextra -Werror -Iinclude scripts/score.cpp build/libmy_torch.a \
+    -o "$RUN/score"
 
 # 2-3. Split, then keep a fraction of each part.
 OUT="$RUN/split" SEED="$SEED" DATASET="$DATASET" sh scripts/dataset_split.sh "$RUN/split_stats" \
@@ -77,8 +80,8 @@ cut -d' ' -f1-6 "$RUN/$EVAL.txt" > "$RUN/${EVAL}_boards.txt"
 /usr/bin/time -f "%e %M" -o "$RUN/predict_time.txt" \
     ./my_torch_analyzer --predict "$RUN/network.nn" "$RUN/${EVAL}_boards.txt" \
     > "$RUN/predictions.txt"
-python3 scripts/evaluate_predictions.py "$RUN/$EVAL.txt" "$RUN/predictions.txt" \
-    "$RUN/training.log" "$RUN"
+"$RUN/score" "$RUN/network.nn" "$RUN/$EVAL.txt" "$RUN/predictions.txt" "$RUN"
+python3 scripts/plot_run.py "$RUN/training.log" "$RUN"
 
 # 8. Run card.
 read -r train_seconds train_kb < "$RUN/train_time.txt"

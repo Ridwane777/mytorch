@@ -46,6 +46,8 @@ WORK="$(mktemp -d)"
 trap 'rm -rf "$WORK"' EXIT
 
 make -s
+g++ -std=c++20 -O2 -pthread -Wall -Wextra -Werror -Iinclude scripts/score.cpp build/libmy_torch.a \
+    -o "$WORK/score"
 g++ -std=c++20 -O2 -Wall -Wextra -Werror -Iinclude -Isrc/analyzer scripts/augment.cpp \
     src/analyzer/Fen.cpp src/analyzer/Symmetry.cpp -o "$WORK/augment"
 mkdir -p "$OUT/augmentation_logs"
@@ -107,8 +109,10 @@ for arm in base augmented; do
             > "$OUT/augmentation_logs/${arm}_$run.log"
         ./my_torch_analyzer --predict "$WORK/$arm/${name}_$run.nn" "$WORK/test_boards.txt" \
             > "$WORK/predictions.txt"
+        "$WORK/score" "$WORK/$arm/${name}_$run.nn" "$WORK/test.txt" "$WORK/predictions.txt" \
+            "$WORK"
         python3 scripts/score_augmentation.py "$OUT/augmentation_runs.csv" "$arm" "$positions" \
-            "$run" "$WORK/test.txt" "$WORK/predictions.txt" "$WORK/time.txt"
+            "$run" "$WORK/report.json" "$WORK/time.txt"
         run=$((run + 1))
     done
 done

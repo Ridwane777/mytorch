@@ -18,7 +18,7 @@ Measurement for issue #24: the dataset contains no stalemate, so can a network l
    cross-entropy, Adam 0.001, batches of 64, up to 30 epochs with early stopping (patience 5),
    baseline encoding `fen-onehot-768`.
 5. **Scoring** (`bonus/scripts/score_predictions.py`): precision and recall per class on the test
-   set, overall and separately for dataset and generated positions.
+   set, overall and separately for dataset and generated positions. The metrics are computed by `scripts/score.cpp`, which calls `my_torch::report` (ADR-0026, since 2026-10-27; the formulas are unchanged).
 
 - **Machine**: Intel Core i7-1355U, 14 GB RAM, Linux 7.0, g++ 15.2.0 `-O2`.
 - **Reproduce**: `sh bonus/scripts/stalemate_experiment.sh` (72 s in total, measured). Two runs gave the

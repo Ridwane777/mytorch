@@ -44,6 +44,8 @@ WORK="$(mktemp -d)"
 trap 'rm -rf "$WORK"' EXIT
 
 make -s
+g++ -std=c++20 -O2 -pthread -Wall -Wextra -Werror -Iinclude scripts/score.cpp build/libmy_torch.a \
+    -o "$WORK/score"
 mkdir -p "$OUT/imbalance_logs"
 OUT="$(cd "$OUT" && pwd)"
 rm -f "$OUT/imbalance_runs.csv" "$OUT"/imbalance_logs/*.log
@@ -99,8 +101,10 @@ for option in $OPTIONS; do
             > "$OUT/imbalance_logs/${option}_$run.log"
         ./my_torch_analyzer --predict "$WORK/${option}_$run.nn" "$WORK/test_boards.txt" \
             > "$WORK/predictions.txt"
+        "$WORK/score" "$WORK/${option}_$run.nn" "$WORK/test_labeled.txt" "$WORK/predictions.txt" \
+            "$WORK" --families
         python3 scripts/score_imbalance.py "$OUT/imbalance_runs.csv" "$option" "$run" \
-            "$train_size" "$WORK/test_labeled.txt" "$WORK/predictions.txt" "$WORK/time.txt"
+            "$train_size" "$WORK/report.json" "$WORK/families.json" "$WORK/time.txt"
         run=$((run + 1))
     done
 done

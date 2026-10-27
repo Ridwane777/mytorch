@@ -29,3 +29,4 @@ One file per decision, based on [TEMPLATE.md](TEMPLATE.md). An accepted ADR is n
 | [0023](0023-final-architecture.md) | Final network architecture, 901 → 256 → 128 → 5 with the default initialisation | Accepted | 2026-10-27 |
 | [0024](0024-parallel-blocked-matmul.md) | Parallel and blocked matrix product, bit-identical results | Proposed | 2026-10-27 |
 | [0025](0025-project-license.md) | No license, all rights reserved | Proposed | 2026-10-27 |
+| [0026](0026-scores-from-the-library.md) | Published scores computed by the library | Proposed | 2026-10-27 |

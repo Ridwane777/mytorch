@@ -324,3 +324,79 @@ Test(metrics, fit_records_train_and_validation_accuracy)
     cr_assert_float_eq(h.back().validationAccuracy, 1, 1e-12);
     cr_assert_float_eq(h.back().validationAccuracy, report(net.predict(x), t).accuracy, 1e-12);
 }
+
+// Class indices of the same cells, as a predictions file would give them back.
+static void indicesOf(const std::vector<Cell> &cells, std::vector<std::size_t> &expected,
+                      std::vector<std::size_t> &predicted)
+{
+    for (const Cell &c : cells)
+        for (std::size_t i = 0; i < c.count; i++) {
+            expected.push_back(c.expected);
+            predicted.push_back(c.predicted);
+        }
+}
+
+Test(metrics, confusion_from_indices_equals_confusion_from_probabilities)
+{
+    const std::vector<Cell> cells = {{0, 0, 5}, {0, 2, 1}, {1, 1, 3}, {2, 0, 2}, {2, 2, 4}};
+    const Data d = fromCells(cells, 3);
+    std::vector<std::size_t> expected, predicted;
+    indicesOf(cells, expected, predicted);
+
+    cr_assert(confusion(expected, predicted, 3).counts == confusion(d.probabilities, d.targets).counts);
+}
+
+Test(metrics, report_from_confusion_equals_report_from_probabilities)
+{
+    // Class 3 is never predicted and class 4 never occurs: both give 0, not a division by zero.
+    const std::vector<Cell> cells = {{0, 0, 7}, {0, 1, 2}, {1, 1, 4}, {1, 2, 1}, {2, 2, 3},
+                                     {3, 0, 2}, {3, 2, 1}, {0, 4, 1}};
+    const Data d = fromCells(cells, 5);
+    std::vector<std::size_t> expected, predicted;
+    indicesOf(cells, expected, predicted);
+    const ClassificationReport a = report(d.probabilities, d.targets);
+    const ClassificationReport b = report(confusion(expected, predicted, 5));
+
+    // Same code path, so the numbers are equal bit for bit, not only close.
+    cr_assert_eq(a.accuracy, b.accuracy);
+    cr_assert_eq(a.macroF1, b.macroF1);
+    cr_assert_eq(a.weightedF1, b.weightedF1);
+    for (std::size_t c = 0; c < 5; c++) {
+        cr_assert_eq(a.perClass[c].precision, b.perClass[c].precision);
+        cr_assert_eq(a.perClass[c].recall, b.perClass[c].recall);
+        cr_assert_eq(a.perClass[c].f1, b.perClass[c].f1);
+        cr_assert_eq(a.perClass[c].support, b.perClass[c].support);
+    }
+    cr_assert_eq(b.perClass[3].precision, 0);
+    cr_assert_eq(b.perClass[4].recall, 0);
+    cr_assert_eq(b.logLoss, 0);
+}
+
+Test(metrics, merge_into_families)
+{
+    // Classes: Nothing, Check White, Check Black, Checkmate White, Checkmate Black.
+    ConfusionMatrix m{{{10, 1, 0, 0, 0},
+                       {0, 8, 0, 2, 0},
+                       {1, 0, 7, 0, 3},
+                       {0, 1, 0, 6, 0},
+                       {0, 0, 2, 0, 5}}};
+    const ConfusionMatrix families = merge(m, {0, 1, 1, 2, 2}, 3);
+
+    cr_assert(families.counts == (std::vector<std::vector<std::size_t>>{{10, 1, 0}, {1, 15, 5},
+                                                                        {0, 3, 11}}));
+    cr_assert_eq(families.total(), m.total());
+}
+
+Test(metrics, label_based_errors)
+{
+    cr_assert_throw(confusion(std::vector<std::size_t>{0, 1}, std::vector<std::size_t>{0}, 2),
+                    Error);
+    cr_assert_throw(confusion(std::vector<std::size_t>{}, std::vector<std::size_t>{}, 2), Error);
+    cr_assert_throw(confusion(std::vector<std::size_t>{0, 2}, std::vector<std::size_t>{0, 1}, 2),
+                    Error);
+    const ConfusionMatrix m{{{1, 0}, {0, 1}}};
+    cr_assert_throw(merge(m, {0}, 1), Error);
+    cr_assert_throw(merge(m, {0, 2}, 2), Error);
+    cr_assert_throw(report(ConfusionMatrix{}), Error);
+    cr_assert_throw(report(ConfusionMatrix{{{0, 0}, {0, 0}}}), Error);
+}

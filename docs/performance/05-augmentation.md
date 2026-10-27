@@ -27,7 +27,7 @@ g++ 13.3.0, matplotlib 3.11.0, Python 3.12.3).
    steps".
 4. **Scoring** (`scripts/score_augmentation.py`): accuracy and recall of the five classes on
    `test.txt` (predicted by `my_torch_analyzer --predict` on the boards only), training time and peak
-   memory, one row per network in `augmentation_runs.csv`.
+   memory, one row per network in `augmentation_runs.csv`. The metrics are computed by `scripts/score.cpp`, which calls `my_torch::report` (ADR-0026, since 2026-10-27; the formulas are unchanged).
 5. **Graph** (`scripts/plot_augmentation.py`): grouped bars, median of the runs with the individual
    runs as dots.
 

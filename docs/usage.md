@@ -41,7 +41,7 @@ FRACTION=0.01 sh scripts/train_final.sh configs/final_network.conf /tmp/try   # 
 
 The script splits the dataset, augments the training part only, appends the untouched validation
 part at the end of the training file (`validation_tail`), generates and trains the network, then
-scores it on the test part: `scores.txt` (precision, recall and F1 per class), `confusion.png`,
+scores it on the test part with the library's metrics (`scripts/score.cpp`, ADR-0026): `scores.txt` (precision, recall and F1 per class), `confusion.png`,
 `curve.png` and `run.txt` (commit, configuration checksum, machine, times, memory). Running it twice
 gives the same network byte for byte. `EVAL=validation` scores the validation split instead of the
 test split (for trial runs, so that choices never look at the test split); `BUILD=0` skips the build
