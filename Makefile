@@ -1,5 +1,6 @@
 CXX		?=	g++
-CXXFLAGS	+=	-std=c++20 -Wall -Wextra -Werror -Iinclude -MMD -MP
+CXXFLAGS	+=	-std=c++20 -Wall -Wextra -Werror -Iinclude -MMD -MP -pthread
+LDFLAGS		+=	-pthread
 RELEASE		=	-O2
 BUILD		=	build
 

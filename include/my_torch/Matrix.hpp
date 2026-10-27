@@ -27,8 +27,15 @@ class Matrix {
     const Scalar *data() const noexcept;
 
     Matrix transpose() const;
-    // Matrix product; throws my_torch::Error if the dimensions do not match.
+    // Matrix product; throws my_torch::Error if the dimensions do not match. Blocked for the cache
+    // and spread over the threads of Parallel.hpp (ADR-0024); every output element is summed in
+    // the same order as the plain triple loop, so the result is the same to the bit whatever the
+    // number of threads.
     Matrix matmul(const Matrix &other) const;
+    // thisᵀ · other and this · otherᵀ without building the transpose, with the same results to the
+    // bit as transpose().matmul(other) and matmul(other.transpose()).
+    Matrix transposeMatmul(const Matrix &other) const;
+    Matrix matmulTranspose(const Matrix &other) const;
 
     // Element-wise operations; throw my_torch::Error if the shapes differ.
     Matrix &operator+=(const Matrix &other);

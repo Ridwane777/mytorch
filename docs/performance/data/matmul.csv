@@ -1,0 +1,19 @@
+product,version,threads,seconds,gflops
+forward X·W,plain loop,1,0.0249542,1.18313
+forward X·W,blocked,1,0.00530508,5.56523
+forward X·W,blocked,2,0.00279952,10.5461
+forward X·W,blocked,4,0.00263457,11.2064
+forward X·W,blocked,8,0.00143214,20.6152
+forward X·W,blocked,12,0.0010971,26.911
+weight gradient Xᵀ·G,plain loop,1,0.0250383,1.17915
+weight gradient Xᵀ·G,blocked,1,0.0056166,5.25655
+weight gradient Xᵀ·G,blocked,2,0.00298597,9.88755
+weight gradient Xᵀ·G,blocked,4,0.00272217,10.8457
+weight gradient Xᵀ·G,blocked,8,0.00152506,19.3593
+weight gradient Xᵀ·G,blocked,12,0.0010819,27.2889
+input gradient G·Wᵀ,plain loop,1,0.0244447,1.20779
+input gradient G·Wᵀ,blocked,1,0.00595185,4.96047
+input gradient G·Wᵀ,blocked,2,0.00308969,9.55565
+input gradient G·Wᵀ,blocked,4,0.00416661,7.08585
+input gradient G·Wᵀ,blocked,8,0.00213244,13.8452
+input gradient G·Wᵀ,blocked,12,0.0017432,16.9366

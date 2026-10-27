@@ -65,6 +65,7 @@ Built outside the repository against `build/libmy_torch.a` only, it printed (202
 | Losses | `MSE`, `MAE`, `Huber`, `BinaryCrossEntropy`, `CrossEntropy` (label smoothing, class weights) | ADR-0007 |
 | Optimizers and schedules | `SGD`, `Adam`, `AdamW`, `RMSProp`, `Adagrad`; constant, step, exponential, cosine, warm-up | ADR-0008 |
 | Training | `Network::fit` with mini-batches, seeded shuffling, validation, early stopping | ADR-0009, ADR-0010 |
+| Speed | Matrix products blocked and split over all hardware threads, results identical for any thread count; set `MY_TORCH_THREADS=1` or call `setThreadCount(1)` to stay on one thread | ADR-0024 |
 | Data that does not fit in memory | Implement `DataSource` (`size`, `inputWidth`, `targetWidth`, `fill`) and pass it to `fit`: only one batch is built at a time | ADR-0021 |
 | Evaluation | `report` (accuracy, precision, recall, F1, confusion matrix), `rocAuc`, `calibration`, CSV/JSON export | ADR-0011 |
 | Saving | `Network::save`, `Network::load`, `Network::fromConfig` (versioned text file with a checksum) | ADR-0012, ADR-0013 |

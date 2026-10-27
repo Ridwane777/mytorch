@@ -126,7 +126,7 @@ Matrix Dense::forward(const Matrix &input, bool /*training*/)
 
 Matrix Dense::backward(const Matrix &gradOutput)
 {
-    _weightsGrad += _input.transpose().matmul(gradOutput);
+    _weightsGrad += _input.transposeMatmul(gradOutput);
     _biasGrad += gradOutput.sumRows();
     if (_regularization.l1 > 0 || _regularization.l2 > 0)
         for (std::size_t i = 0; i < _weights.size(); i++) {
@@ -134,7 +134,7 @@ Matrix Dense::backward(const Matrix &gradOutput)
             const Scalar sign = w > 0 ? 1.0 : (w < 0 ? -1.0 : 0.0);
             _weightsGrad.data()[i] += _regularization.l1 * sign + 2 * _regularization.l2 * w;
         }
-    return gradOutput.matmul(_weights.transpose());
+    return gradOutput.matmulTranspose(_weights);
 }
 
 std::vector<Parameter> Dense::parameters()

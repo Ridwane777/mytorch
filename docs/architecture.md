@@ -30,7 +30,8 @@ and the main code never includes `bonus/`.
 
 | Module | Content | Decision |
 | --- | --- | --- |
-| `Matrix` | Dense row-major matrix of `double` (`Scalar`): product, transpose, element-wise operations, bias broadcast, row sums | ADR-0003 |
+| `Matrix` | Dense row-major matrix of `double` (`Scalar`): blocked, threaded product (also `transposeMatmul`, `matmulTranspose`), transpose, element-wise operations, bias broadcast, row sums | ADR-0003, ADR-0024 |
+| `Parallel` | Persistent thread pool: `parallelFor`, `threadCount`, `setThreadCount` (default: hardware threads or `MY_TORCH_THREADS`) | ADR-0024 |
 | `Error` | `my_torch::Error`, the only exception type thrown by the project | ADR-0004 |
 | `Layer`, `Dense`, `Activations`, `Dropout` | The `Layer` interface (`forward`, `backward`, `parameters`, `penalty`, `save`, `type`) and its layers: `Dense` (with L1/L2), `ReLU`, `LeakyReLU`, `Sigmoid`, `Tanh`, `Softmax`, `Dropout` | ADR-0004, ADR-0010 |
 | `Loss`, `Losses` | The `Loss` interface (`value`, `gradient`, `fusesSoftmax`) and `MSE`, `MAE`, `Huber`, `BinaryCrossEntropy`, `CrossEntropy` | ADR-0007 |

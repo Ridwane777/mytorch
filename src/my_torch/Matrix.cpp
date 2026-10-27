@@ -4,6 +4,7 @@
 #include <string>
 
 #include "my_torch/Error.hpp"
+#include "my_torch/Parallel.hpp"
 
 namespace my_torch {
 
@@ -72,20 +73,95 @@ Matrix Matrix::transpose() const
     return result;
 }
 
-// Naive version, i-k-j order to walk the rows through contiguous memory.
-// Optimization (blocking, SIMD) is the subject of #33.
+// Below this many multiply-adds a product stays on one thread: splitting it costs more than it saves.
+constexpr std::size_t parallelThreshold = std::size_t{1} << 16;
+// Block sizes: a block of B (kBlock × jBlock doubles, 128 KiB) stays in the L2 cache while every
+// row of A uses it.
+constexpr std::size_t kBlock = 64;
+constexpr std::size_t jBlock = 256;
+
+namespace {
+
+// result(i, j) += Σ_k A(i, k) · B(k, j), rows [rowBegin, rowEnd), with A(i, k) read at
+// a[i * aRow + k * aCol] and B row-major. For each element the products are added in increasing k,
+// as in the plain i-k-j loop: blocking over k and j does not change that order.
+void productRows(const Scalar *a, std::size_t aRow, std::size_t aCol, const Scalar *b,
+                 Scalar *result, std::size_t inner, std::size_t cols, std::size_t rowBegin,
+                 std::size_t rowEnd)
+{
+    for (std::size_t j0 = 0; j0 < cols; j0 += jBlock) {
+        const std::size_t j1 = std::min(j0 + jBlock, cols);
+        for (std::size_t k0 = 0; k0 < inner; k0 += kBlock) {
+            const std::size_t k1 = std::min(k0 + kBlock, inner);
+            for (std::size_t i = rowBegin; i < rowEnd; i++) {
+                Scalar *out = result + i * cols;
+                for (std::size_t k = k0; k < k1; k++) {
+                    const Scalar value = a[i * aRow + k * aCol];
+                    const Scalar *row = b + k * cols;
+                    for (std::size_t j = j0; j < j1; j++)
+                        out[j] += value * row[j];
+                }
+            }
+        }
+    }
+}
+
+void forRows(std::size_t rows, std::size_t work,
+             const std::function<void(std::size_t, std::size_t)> &body)
+{
+    if (work < parallelThreshold)
+        body(0, rows);
+    else
+        parallelFor(rows, body);
+}
+
+} // namespace
+
 Matrix Matrix::matmul(const Matrix &other) const
 {
     if (_cols != other._rows)
         throw Error("matmul: " + shape(*this) + " by " + shape(other));
     Matrix result(_rows, other._cols);
 
-    for (std::size_t i = 0; i < _rows; i++)
-        for (std::size_t k = 0; k < _cols; k++) {
-            const Scalar a = (*this)(i, k);
-            for (std::size_t j = 0; j < other._cols; j++)
-                result(i, j) += a * other(k, j);
+    forRows(_rows, _rows * _cols * other._cols, [&](std::size_t begin, std::size_t end) {
+        productRows(data(), _cols, 1, other.data(), result.data(), _cols, other._cols, begin, end);
+    });
+    return result;
+}
+
+Matrix Matrix::transposeMatmul(const Matrix &other) const
+{
+    if (_rows != other._rows)
+        throw Error("transposeMatmul: " + shape(*this) + " by " + shape(other));
+    Matrix result(_cols, other._cols);
+
+    // Row i of the result reads column i of this: A(i, k) = this(k, i).
+    forRows(_cols, _rows * _cols * other._cols, [&](std::size_t begin, std::size_t end) {
+        productRows(data(), 1, _cols, other.data(), result.data(), _rows, other._cols, begin, end);
+    });
+    return result;
+}
+
+Matrix Matrix::matmulTranspose(const Matrix &other) const
+{
+    if (_cols != other._cols)
+        throw Error("matmulTranspose: " + shape(*this) + " by " + shape(other));
+    Matrix result(_rows, other._rows);
+
+    // result(i, j) is the dot product of row i of this and row j of other, both contiguous; the
+    // products are added in increasing k from 0, as matmul(other.transpose()) does.
+    forRows(_rows, _rows * _cols * other._rows, [&](std::size_t begin, std::size_t end) {
+        for (std::size_t i = begin; i < end; i++) {
+            const Scalar *left = data() + i * _cols;
+            for (std::size_t j = 0; j < other._rows; j++) {
+                const Scalar *right = other.data() + j * _cols;
+                Scalar sum = 0;
+                for (std::size_t k = 0; k < _cols; k++)
+                    sum += left[k] * right[k];
+                result(i, j) = sum;
+            }
         }
+    });
     return result;
 }
 
