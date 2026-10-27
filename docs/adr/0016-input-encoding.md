@@ -7,7 +7,7 @@
 ## Context
 ADR-0014 gave the analyzer a table of named encodings and a first one, `fen-onehot-768`. Issue #14
 adds three variants so that the choice of the input of the final network (#17) rests on a
-measurement. The comparison is in [performance/encodings.md](../performance/encodings.md): same
+measurement. The comparison is in [performance/03-encodings.md](../performance/03-encodings.md): same
 network, same 20,000 training and 5,000 test positions, three runs per encoding.
 
 ## Options considered

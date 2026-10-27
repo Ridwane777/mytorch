@@ -30,7 +30,7 @@ multiply-adds) stay on the calling thread. The thread count is the hardware coun
 `MY_TORCH_THREADS` or `setThreadCount`.
 
 ## Consequences
-- ✅ Measured on the laptop (docs/performance/matmul.md): products 4.2 to 4.7× faster on one
+- ✅ Measured on the laptop (docs/performance/12-matmul.md): products 4.2 to 4.7× faster on one
   thread, up to 23× with 12 threads; final network training 2.4× faster from 1 to 12 threads, and
   62.4 s → 18.4 s on the 1 % pipeline against the previous code.
 - ✅ Networks byte-identical for 1, 2, 4, 8 and 12 threads and identical to the code before this

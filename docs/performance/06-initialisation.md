@@ -7,7 +7,7 @@ names are listed in [configuration.md](../configuration.md#weight-initialisation
 ## Method
 
 - **Problem**: two interleaved spirals (200 points, 2 classes, Gaussian noise with standard
-  deviation 0.05), the same generator as the [optimizer benchmark](optimizers.md). **This is a
+  deviation 0.05), the same generator as the [optimizer benchmark](07-optimizers.md). **This is a
   synthetic test problem, not the chess dataset**: nothing here predicts what the FEN positions
   will give.
 - **Network**: 2 → 64 → 64 → 64 → 1 (four `Dense` layers, so three hidden layers), sigmoid output,

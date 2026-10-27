@@ -1,4 +1,4 @@
-// Speed of the matrix products of the final network (docs/performance/matmul.md, ADR-0024): the
+// Speed of the matrix products of the final network (docs/performance/12-matmul.md, ADR-0024): the
 // plain triple loop used before ADR-0024, then the blocked product on 1 to N threads, for the
 // three products of a Dense 901 -> 256 layer on a batch of 64. Median of 7 timings, each repeating
 // the product for at least 0.2 s. Writes matmul.csv to the given directory.

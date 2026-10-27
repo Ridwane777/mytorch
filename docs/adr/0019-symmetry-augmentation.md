@@ -26,7 +26,7 @@ reach the training, and how to know they are right. The constraints: the analyze
 only include `include/my_torch/` and the network file format (ADR-0012) is a contract between the
 two work packages (AGENTS.md); `--train` already holds out a seeded validation fraction from its
 input (ADR-0014); the gain was measured on the real dataset on 2026-10-26
-([performance/augmentation.md](../performance/augmentation.md)): accuracy 59.0 % to 67.1 %, recall of
+([performance/05-augmentation.md](../performance/05-augmentation.md)): accuracy 59.0 % to 67.1 %, recall of
 `Check Black` 32.0 % to 50.3 % and of `Checkmate Black` 59.9 % to 72.6 %.
 
 ## Options considered
@@ -62,7 +62,7 @@ both partners.
   axis passes a "twice is the identity" test but not these) and by the oracle on 2,000 generated
   positions, 8,000 after augmentation (2,400 of them stalemates): `disagree: 0`
   (`sh bonus/scripts/check_symmetries.sh 2000`).
-- ✅ Reproducible: seeded draw, a command line in `docs/performance/augmentation.md`.
+- ✅ Reproducible: seeded draw, a command line in `docs/performance/05-augmentation.md`.
 - ❌ **Validation leak when `--train` holds out its own fraction.** An offline file puts the mirror
   and the flip of a position next to it; `--train` then draws its validation positions at random
   from the file, so most twins of a validation position land in the training part and the early

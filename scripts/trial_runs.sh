@@ -1,5 +1,5 @@
 #!/bin/sh
-# Trial runs of #17 (step 3, docs/performance/trials.md): trains every configuration of
+# Trial runs of #17 (step 3, docs/performance/09-trials.md): trains every configuration of
 # configs/trials/ on a FRACTION of the dataset with scripts/train_final.sh, PARALLEL at a time,
 # scores each network on the validation split (EVAL=validation: the test split is never used to
 # choose), then gathers the results in trials.csv and trials.png.

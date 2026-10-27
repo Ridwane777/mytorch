@@ -1,6 +1,6 @@
 #!/bin/sh
 # Measures the memory of my_torch_analyzer --train before and after training from a data source
-# (docs/performance/training-memory.md, ADR-0021).
+# (docs/performance/11-training-memory.md, ADR-0021).
 #   1. The "before" analyzer is built from BEFORE (default d2aae89, the last main commit that
 #      encoded the whole training file at once), the "after" one from the working tree.
 #   2. Same network file, same sample of SAMPLE dataset positions, one epoch each: peak memory,

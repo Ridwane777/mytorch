@@ -1,5 +1,5 @@
 #!/bin/sh
-# Dataset statistics and train/validation/test split (docs/performance/dataset.md, ADR-0017).
+# Dataset statistics and train/validation/test split (docs/performance/01-dataset.md, ADR-0017).
 #   1. scripts/dataset_split.py reads the dataset, writes the statistics CSV files and a
 #      dedupe-aware split stratified by label (fixed seed) to build/dataset_split/;
 #   2. scripts/plot_dataset.py draws the charts from the CSV files.

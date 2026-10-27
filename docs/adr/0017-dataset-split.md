@@ -17,7 +17,7 @@ nothing about unseen ones. Two properties of the data make a plain random cut un
 - The labels are not balanced (`Nothing` is the largest class by far, `Checkmate Black` the
   smallest), so a plain random split can leave a small class thin in the validation or test set.
 
-Measured on the real dataset ([performance/dataset.md](../performance/dataset.md)): 7,460 lines
+Measured on the real dataset ([performance/01-dataset.md](../performance/01-dataset.md)): 7,460 lines
 (1.03 %) repeat a position, concentrated in `Checkmate` (about 2 % of its lines), and no position
 carries two labels. A random line split would therefore leak a small share of the test set, mostly in
 the rarest classes.

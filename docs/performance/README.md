@@ -3,22 +3,29 @@
 Each measurement states: method, machine, dataset, configuration (`configs/`), reproduction
 script (`scripts/`), results **with graphs** (`data/`), thresholds and limits.
 
-To write once the chess network is trained (#17, #18): per-class metrics and confusion matrix (tools
-from #11), learning curves on the real dataset, comparison of configurations, training and
-prediction time.
+Numbered in reading order: the data, then the training choices, then the final network, then the
+performance of the code itself.
 
-Done: [optimizers.md](optimizers.md) (optimizers and learning-rate schedulers, issue #5),
-[overfitting.md](overfitting.md) (L1, L2, elastic net, dropout and early stopping against overfitting, issue #7),
-[serialization.md](serialization.md) (network file size and save/load time, issue #8),
-[stalemate.md](stalemate.md) (stalemate bonus: generated positions and a six-class network, issue #24),
-[initialisation.md](initialisation.md) (LeCun, Xavier, He and orthogonal weight initialisation against the default, issue #6),
-[encodings.md](encodings.md) (input encodings of a FEN position, issue #14),
-[dataset.md](dataset.md) (dataset statistics and dedupe-aware train/validation/test split, issue #12),
-[imbalance.md](imbalance.md) (class imbalance: none, loss weighting, oversampling, undersampling,
-issue #16),
-[augmentation.md](augmentation.md) (training with and without board-symmetry augmentation, issue #38),
-[training-memory.md](training-memory.md) (training memory, whole file encoded against batch by batch, issue #17),
-[matmul.md](matmul.md) (blocked, threaded matrix product, issues #25 and #33),
-[eda.md](eda.md) (exploratory analysis: checking pieces, king squares, material, FEN fields, shortcuts),
-[trials.md](trials.md) (architecture and initialisation of the final network, five seeds per finalist, issue #17),
-[final-network.md](final-network.md) (the pushed network on the test split, with and without augmentation, issue #17).
+| # | Document | Question | Issue |
+| --- | --- | --- | --- |
+| **Data** | | | |
+| 01 | [01-dataset.md](01-dataset.md) | What is in the dataset, and how is it split into train, validation and test without sharing a position? | #12 |
+| 02 | [02-eda.md](02-eda.md) | Exploratory analysis: checking pieces, king squares, material, FEN fields, shortcuts | #12 (complement) |
+| 03 | [03-encodings.md](03-encodings.md) | Which input encoding of a FEN position learns best? | #14 |
+| 04 | [04-imbalance.md](04-imbalance.md) | Class imbalance: none, loss weighting, oversampling or undersampling? | #16 |
+| 05 | [05-augmentation.md](05-augmentation.md) | Does board-symmetry augmentation help? | #38 |
+| **Training** | | | |
+| 06 | [06-initialisation.md](06-initialisation.md) | LeCun, Xavier, He and orthogonal initialisation against the default | #6 |
+| 07 | [07-optimizers.md](07-optimizers.md) | Which optimizer and learning-rate scheduler? | #5 |
+| 08 | [08-overfitting.md](08-overfitting.md) | L1, L2, elastic net, dropout and early stopping against overfitting | #7 |
+| 09 | [09-trials.md](09-trials.md) | Architecture and initialisation of the final network, five seeds per finalist | #17 |
+| **Final network** | | | |
+| 10 | [10-final-network.md](10-final-network.md) | How good is the pushed network on the test split, with and without augmentation? | #17 |
+| **Code performance** | | | |
+| 11 | [11-training-memory.md](11-training-memory.md) | Training memory: whole file encoded against batch by batch | #17 |
+| 12 | [12-matmul.md](12-matmul.md) | Blocked, threaded matrix product: speed and identical results | #25, #33 |
+| 13 | [13-serialization.md](13-serialization.md) | Network file size and save/load time | #8 |
+| **Bonus** | | | |
+| 14 | [14-stalemate.md](14-stalemate.md) | Stalemate: generated positions and a six-class network | #24 |
+
+Still open: the remaining benchmarks of #18.

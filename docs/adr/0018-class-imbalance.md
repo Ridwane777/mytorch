@@ -75,7 +75,7 @@ F1 on the test set, % (mean, min–max of 3 runs):
 | Oversampling | 67.6 (66.8–68.1) | 44.1 (42.1–45.8) | 38.6 (36.1–40.8) | 57.6 (56.6–58.1) | 60.6 (59.5–62.0) | 53.7 (53.0–54.3) | 57.0 (56.2–57.5) |
 | Undersampling | 61.0 (60.4–61.6) | 43.1 (41.4–44.6) | 40.3 (39.3–41.3) | 58.1 (56.6–60.0) | 59.1 (59.1–59.2) | 52.3 (51.7–52.6) | 53.5 (53.0–53.9) |
 
-Full table with cost, graphs and reading: [performance/imbalance.md](../performance/imbalance.md).
+Full table with cost, graphs and reading: [performance/04-imbalance.md](../performance/04-imbalance.md).
 
 Reproduce, with the dataset extracted at the root of the repository:
 
@@ -86,7 +86,7 @@ sh scripts/bench_imbalance.sh
 It writes `docs/performance/data/imbalance_runs.csv` (one row per network),
 `docs/performance/data/imbalance_f1.png` (F1 per class), `docs/performance/data/imbalance_family_f1.png`
 (F1 per family) and the training and resampling logs in `docs/performance/data/imbalance_logs/`.
-Method: [performance/imbalance.md](../performance/imbalance.md).
+Method: [performance/04-imbalance.md](../performance/04-imbalance.md).
 
 ## Consequences
 
@@ -103,7 +103,7 @@ Method: [performance/imbalance.md](../performance/imbalance.md).
   behave differently when early stopping is turned back on, and 20 fixed epochs may over-train the
   oversampled file.
 - ❌ One sample of 20,000 training positions (the default of the script, memory-bound as noted in
-  [stalemate.md](../performance/stalemate.md)) and three initial weights: no confidence interval;
+  [14-stalemate.md](../performance/14-stalemate.md)) and three initial weights: no confidence interval;
   the ranking of close options could change with another seed (`SEED=…`).
 - ❌ The conclusion "do nothing" holds for this small network and sample: with the full training set
   or another encoding, an imbalance remedy could matter more.

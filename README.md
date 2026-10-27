@@ -45,7 +45,7 @@ On error, the message goes to standard error and the program exits with code 84.
 | `src/analyzer/` | Chess part: FEN reading, encoding, command-line interface |
 | `src/generator/` | `my_torch_generator`: creates blank networks from a configuration |
 | `tests/` | Criterion tests, same subfolders as `src/` |
-| `my_torch_network_final.nn` | Pre-trained network evaluated by the autograder: 96.2 % accuracy on 71,555 unseen positions ([measure](docs/performance/final-network.md)) |
+| `my_torch_network_final.nn` | Pre-trained network evaluated by the autograder: 96.2 % accuracy on 71,555 unseen positions ([measure](docs/performance/10-final-network.md)) |
 | `configs/` | Generator configurations ([format](docs/configuration.md)) |
 | `scripts/` | Training, benchmarks and graphs, to reproduce our results |
 | `bonus/` | Bonuses, with their own Makefile (required by the subject): the rule-based chess oracle and the stalemate position generator |

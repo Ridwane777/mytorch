@@ -7,7 +7,7 @@
 my_torch is a neural-network library written from scratch in standard C++20, small enough to be read
 in full (about 3,700 lines for the library), with a complete worked example: a chess position
 classifier that reaches 96.2 % accuracy on positions it has never seen
-([final-network.md](../performance/final-network.md)). The product idea: sell it as **teaching
+([10-final-network.md](../performance/10-final-network.md)). The product idea: sell it as **teaching
 material** for deep-learning courses that want students to see every computation, from the matrix
 product to backpropagation, instead of calling a black box.
 
@@ -64,7 +64,7 @@ No price is set: it depends on the interviews of section 4. The costs to cover a
 ## 6. SWOT
 | Strengths | Weaknesses |
 | --- | --- |
-| Readable, dependency-free, tested (finite differences, sanitizers); every choice justified by an ADR and every claim measured | CPU only, double precision: slow for large networks (`docs/performance/matmul.md`); only dense layers today; two authors, no external user yet |
+| Readable, dependency-free, tested (finite differences, sanitizers); every choice justified by an ADR and every claim measured | CPU only, double precision: slow for large networks (`docs/performance/12-matmul.md`); only dense layers today; two authors, no external user yet |
 | **Opportunities** | **Threats** |
 | Schools want projects that cannot be solved by calling a library; demand for explainable AI teaching | Free alternatives (micrograd, courses); AI assistants that generate such code; the name "my_torch" next to the PyTorch trademark ([risk-analysis.md](../legal/risk-analysis.md), R4) |
 

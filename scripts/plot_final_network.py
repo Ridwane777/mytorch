@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Draws the final network graphs (docs/performance/final-network.md) from the run files that
+"""Draws the final network graphs (docs/performance/10-final-network.md) from the run files that
 scripts/train_final.sh writes, copied to docs/performance/data/final-network/<run>/: validation
 loss per epoch and per-class F1 on the test split, with and without augmentation, and the
 confusion matrix of the pushed network."""

@@ -67,11 +67,11 @@ The line counts match the figures stated in issue #12 (723,019 lines; 300,000 `N
   has Black to move, and every `... Black` line has White to move (135,587 and 94,295 against the
   label counts, 113,713 and 79,424 for White to move). A network that knows the side to move
   therefore knows which of the two colours is possible; this is consistent with the gain of the
-  side-to-move inputs in [encodings.md](encodings.md).
+  side-to-move inputs in [03-encodings.md](03-encodings.md).
 - **Pieces per board** (mean): `Nothing` 14.9, `Check` 14.6, `Checkmate` 13.8. The distribution is
   irregular (peaks at 9 and 20 pieces for `Check`, a regular cycle for `Nothing`), which suggests
   the files are made of different generators (`10_pieces`, `20_pieces`, `many_pieces`).
-  Verified since in [eda.md](eda.md): about 6.5, 14.6 and 23 pieces on average per file group.
+  Verified since in [02-eda.md](02-eda.md): about 6.5, 14.6 and 23 pieces on average per file group.
 
 Raw data: [`data/dataset_labels.csv`](data/dataset_labels.csv),
 [`data/dataset_pieces.csv`](data/dataset_pieces.csv),

@@ -52,7 +52,7 @@ and restores the best weights when `restoreBest` is true.
 
 ## Consequences
 
-- ✅ On the overfitting benchmark (`docs/performance/overfitting.md`, 5 seeds, test set never used
+- ✅ On the overfitting benchmark (`docs/performance/08-overfitting.md`, 5 seeds, test set never used
   for a choice), every remedy lowers the median test loss from 0.758: early stopping 0.267, dropout
   0.325, L2 0.488, L1 0.579, elastic net 0.580.
 - ✅ L1 drives the weight of a useless input to below 0.01 while keeping the useful one (tested).

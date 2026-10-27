@@ -1,6 +1,6 @@
 # Exploratory data analysis: what the network has to learn, and the shortcuts it could take
 
-Complements [dataset.md](dataset.md) (classes, duplicates, contradictions, imbalance, side to move,
+Complements [01-dataset.md](01-dataset.md) (classes, duplicates, contradictions, imbalance, side to move,
 pieces per board, split), which this page does not repeat. Here: which piece gives check, which
 pieces are present, where the attacked king stands, the material balance, the FEN fields that are
 almost always empty, and the source files. The aim is practical: know which simple clues
@@ -93,7 +93,7 @@ are much closer to the balance of ordinary positions.
 Castling rights exist in under 4 % of the positions and an en passant square in under 0.06 %: the
 dataset is made of middlegames and endgames. The castling inputs of `fen-onehot-773` and
 `fen-attacks-901` are almost always zero; most of their gain over `fen-onehot-768`
-([encodings.md](encodings.md)) must come from the side to move.
+([03-encodings.md](03-encodings.md)) must come from the side to move.
 
 ### 6. Source files
 
@@ -103,7 +103,7 @@ dataset is made of middlegames and endgames. The castling inputs of `fen-onehot-
 | `*/20_pieces.txt` | 300,000 | 14.5 to 14.7 | 33.3 % |
 | `*/many_pieces.txt` | 202,734 | 22.2 to 23.6 | 14.1 % |
 
-This **confirms** the hypothesis of [dataset.md](dataset.md): the three files of each class come from
+This **confirms** the hypothesis of [01-dataset.md](01-dataset.md): the three files of each class come from
 three generators with about 6.5, 14.6 and 23 pieces, which explains the peaks of its piece-count
 chart. The mix of classes differs between the groups: checkmates are a third of the 20-piece
 positions but a seventh of the crowded ones.

@@ -22,7 +22,7 @@ has never seen, and what does the symmetry augmentation bring?
 - Machines, 2026-10-27, commit b6b5404:
   - augmented run: laptop, Intel Core i7-1355U, 12 threads (ADR-0024), g++ 15.2;
   - non-augmented run: shared VPS, 8-core AMD EPYC, g++ 13.3. Results are bit-identical across the
-    two machines (checked during the trial runs, docs/performance/trials.md), but the VPS is shared
+    two machines (checked during the trial runs, docs/performance/09-trials.md), but the VPS is shared
     with other users, so **its time is not comparable** with the laptop's.
 - The test split was used **only to measure** these two networks. Every choice (encoding,
   architecture, augmentation, initialisation) was made earlier on the validation split.
@@ -68,7 +68,7 @@ Predicting the whole test split takes 2.8 s (peak 148 MB) on the laptop.
 
 ## Limits and next steps
 - One seed per run: the seed spread measured in the trials (±0.3 to ±0.6 points of macro F1,
-  docs/performance/trials.md) is small next to the 5.4 points of the augmentation, but the third
+  docs/performance/09-trials.md) is small next to the 5.4 points of the augmentation, but the third
   decimal of these scores is not significant.
 - Check against checkmate is the remaining weakness. Candidates, not measured: an input feature for
   the number of legal king moves, or more mates in the training data (the classes are kept at their
