@@ -18,3 +18,4 @@ Status as of 2026-10-26:
 | Costs | `business/costs.md`: measured and estimated | To write |
 | Commercial | [business/](business/README.md): business plan, SWOT, roadmap | To write |
 | Retrospective | [retrospective/](retrospective/README.md) | To fill in during the project |
+| Defense | [defense/](defense/README.md): [demo.md](defense/demo.md) with `scripts/demo.sh`, [questions.md](defense/questions.md) linked to the ADRs, [glossary.md](defense/glossary.md) | Written; full rehearsal by the pair still to do |
