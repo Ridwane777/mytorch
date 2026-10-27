@@ -6,7 +6,7 @@ Short answers; the linked document gives the details and the measurements.
 | Question | Answer | Details |
 | --- | --- | --- |
 | Why C++ and not Python? | Speed of training decides how many experiments we can run, NumPy would do part of the computation for us, and the GIL limits threads | [ADR-0002](../adr/0002-cpp-language.md), [ADR-0001](../adr/0001-python-numpy-language.md) (abandoned) |
-| Why your own matrix class and not Eigen? | The subject wants the computation to be ours; a row-major `double` matrix is enough | [ADR-0003](../adr/0003-in-house-linear-algebra.md) |
+| Why your own matrix class and not Eigen? | The subject forbids neural-network libraries and says nothing about linear algebra. The staff allowed Eigen orally, but not in the PDF: we kept our own code so as to take no risk at grading and to be able to explain every computation. In hindsight, Eigen behind our `Matrix` would have given fast products from day 1 (not measured) | [ADR-0003](../adr/0003-in-house-linear-algebra.md), [retrospective](../retrospective/retrospective.md) §2 |
 | Why `double`? | Finite-difference checks need the precision; it costs twice the memory and time of `float` | ADR-0003; [retrospective](../retrospective/retrospective.md) §3 |
 | How is a FEN turned into numbers? | `fen-attacks-901`: 768 piece planes, side to move, castling, and the squares each side attacks. Best of four encodings measured | [ADR-0016](../adr/0016-input-encoding.md), [encodings.md](../performance/encodings.md) |
 | Why 901 → 256 → 128 → 5? | Best of 8 trials on the validation split; 512 → 256 is not significantly better over five seeds and is twice as large | [ADR-0023](../adr/0023-final-architecture.md), [trials.md](../performance/trials.md) |

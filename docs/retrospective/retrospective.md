@@ -15,6 +15,7 @@ again at full scale.
 | --- | --- | --- | --- |
 | The full pipeline (split → augment → train → score) came on day 6 (`scripts/train_final.sh`, ADR-0022). Training on the whole dataset then showed that encoding the whole file at once would need about 10.4 GB: we had to rework the data path (ADR-0021) | A **walking skeleton**: the thinnest end-to-end run on the full dataset on day 1, even with a one-layer network, then improve each stage | As soon as the data is larger than a quick test (here, from the first day: 723,019 positions) | Half a day at the start, and a first network with poor scores |
 | The matrix product stayed a plain loop until the end (ADR-0003 already listed the optimisation as a task). The 8 architecture trials took 5,260 s with one thread per run; since ADR-0024 the products alone are 4 to 5 times faster on one thread (`matmul.md`), so the trials would have been shorter, by an amount we did not measure | **Profile on day 2** (`perf`, ten minutes) and do the blocked product before the experiments | Whenever experiments are repeated: every gain is multiplied by the number of runs | One day of work, done earlier |
+| We wrote the matrix product ourselves (ADR-0003), a plain loop until the end (ADR-0024). The teaching staff had allowed Eigen orally, which answers the question left open by ADR-0003, but the subject PDF does not say so | **Eigen behind our `Matrix` class**: same interface, Eigen only for the products; fast products from day 1, so shorter experiments. Speed against our blocked product: not measured | As soon as the permission is **written** (email, intranet message) and training time limits the number of experiments, which was our case | A dependency (header-only, can be copied into the repository); a penalty risk while the permission is only oral; less of the computation to defend; results no longer bit-identical across thread counts or machines, since Eigen's order of summation depends on the vectorisation. Lesson: **get any oral permission that touches a subject constraint confirmed in writing** |
 | An early estimate of 17 minutes per epoch was wrong: the measurement gave 3 minutes (`training-memory.md`) | **Measure before planning**, never plan on an estimate | Always | A short run |
 | Encodings (ADR-0016) and class imbalance (ADR-0018) were compared on 20,000 positions and one network size, because the code was slow and memory-bound at that time | Redo the decisive comparisons at full scale once training is fast | When the full-scale run fits in an hour, which is the case since ADR-0021 and ADR-0024 | About one hour of compute per comparison |
 
@@ -40,6 +41,8 @@ again at full scale.
 - **Automatic hyperparameter search** (#10) was not done: learning rate, batch size and layer sizes
   come from the trials and the defaults. A small random search on 10 % of the data would cost a few
   hours of compute.
+
+- **An inaccuracy in an accepted ADR**: ADR-0020 rejects LAPACK / Eigen as "Forbidden: no linear algebra library (ADR-0003)". ADR-0003 says the opposite: the subject is silent on linear algebra libraries, and we chose in-house code to avoid any ambiguity. Accepted ADRs are not rewritten, so the correction is recorded here.
 
 ## 5. What we would keep without hesitation
 - **ADRs written when the decision is made**, with their ❌: they made every choice defendable and
