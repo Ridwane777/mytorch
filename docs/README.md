@@ -17,4 +17,4 @@ Status as of 2026-10-26:
 | Dependencies | [dependencies.md](dependencies.md): compilers, test and plotting tools, tested versions, services and secrets (none) | Written; autograder versions still to check |
 | Costs | [business/costs.md](business/costs.md): measured and estimated, kept apart | Written: compute measured, energy estimated with its method, developer time not tracked |
 | Commercial | [business/](business/README.md): [business-plan.md](business/business-plan.md), a teaching library: problem, market, competition, model, SWOT, roadmap | Written; market not sized (no sourced figure) |
-| Retrospective | [retrospective/](retrospective/README.md) | To fill in during the project |
+| Retrospective | [retrospective/](retrospective/README.md): [retrospective.md](retrospective/retrospective.md), time, costs, risks, product, what we keep, next actions | Written on 2026-10-27, to update until the defense |
