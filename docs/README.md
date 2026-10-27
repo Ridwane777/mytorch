@@ -7,7 +7,7 @@ Status as of 2026-10-26:
 
 | Area | Document | Status |
 | --- | --- | --- |
-| Decisions | [adr/](adr/README.md): ADRs and index, [template](adr/TEMPLATE.md) | 25 ADRs: 0001 (Python) abandoned, 0002 to 0023 accepted, 0024 and 0025 proposed |
+| Decisions | [adr/](adr/README.md): ADRs and index, [template](adr/TEMPLATE.md) | 27 ADRs: 0001 (Python) abandoned, 0002 to 0023 accepted, 0024 to 0027 proposed |
 | Data | [reading-a-fen.md](reading-a-fen.md): useful chess rules, reading a dataset line field by field, label distribution | Written |
 | Data | [verification-dataset.md](verification-dataset.md): dataset labels checked by the oracle (100% agreement) | Written |
 | Usage | [usage.md](usage.md): generate, train and predict from the command line, reproduce the final network; [configuration.md](configuration.md): every key of a configuration file; [library.md](library.md): using `my_torch` in another project | Written |

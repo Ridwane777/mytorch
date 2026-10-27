@@ -118,14 +118,57 @@ ConfusionMatrix confusion(const Matrix &probabilities, const Matrix &targets)
     return matrix;
 }
 
-ClassificationReport report(const Matrix &probabilities, const Matrix &targets)
+ConfusionMatrix confusion(const std::vector<std::size_t> &expected,
+                          const std::vector<std::size_t> &predicted, std::size_t classes)
+{
+    if (expected.size() != predicted.size())
+        throw Error("confusion: " + std::to_string(expected.size()) + " expected classes for " +
+                    std::to_string(predicted.size()) + " predictions");
+    if (expected.empty() || classes == 0)
+        throw Error("confusion: empty input");
+    ConfusionMatrix matrix{std::vector<std::vector<std::size_t>>(
+        classes, std::vector<std::size_t>(classes, 0))};
+
+    for (std::size_t r = 0; r < expected.size(); r++) {
+        if (expected[r] >= classes || predicted[r] >= classes)
+            throw Error("confusion: class index out of range at row " + std::to_string(r));
+        matrix.counts[expected[r]][predicted[r]]++;
+    }
+    return matrix;
+}
+
+ConfusionMatrix merge(const ConfusionMatrix &confusion, const std::vector<std::size_t> &groupOf,
+                      std::size_t groups)
+{
+    if (groupOf.size() != confusion.classes())
+        throw Error("merge: " + std::to_string(groupOf.size()) + " groups given for " +
+                    std::to_string(confusion.classes()) + " classes");
+    ConfusionMatrix merged{std::vector<std::vector<std::size_t>>(
+        groups, std::vector<std::size_t>(groups, 0))};
+
+    for (std::size_t c = 0; c < groupOf.size(); c++)
+        if (groupOf[c] >= groups)
+            throw Error("merge: class " + std::to_string(c) + " goes to group " +
+                        std::to_string(groupOf[c]) + ", but there are " + std::to_string(groups));
+    for (std::size_t e = 0; e < groupOf.size(); e++)
+        for (std::size_t p = 0; p < groupOf.size(); p++)
+            merged.counts[groupOf[e]][groupOf[p]] += confusion.counts[e][p];
+    return merged;
+}
+
+ClassificationReport report(const ConfusionMatrix &confusion)
 {
     ClassificationReport rep;
-    rep.confusion = confusion(probabilities, targets);
+    rep.confusion = confusion;
     const std::size_t classes = rep.confusion.classes();
     const std::size_t total = rep.confusion.total();
     std::size_t correct = 0;
 
+    if (classes == 0 || total == 0)
+        throw Error("report: empty confusion matrix");
+    for (const auto &row : rep.confusion.counts)
+        if (row.size() != classes)
+            throw Error("report: the confusion matrix is not square");
     rep.perClass.resize(classes);
     for (std::size_t c = 0; c < classes; c++) {
         ClassMetrics &m = rep.perClass[c];
@@ -149,6 +192,12 @@ ClassificationReport report(const Matrix &probabilities, const Matrix &targets)
         rep.weightedF1 += m.f1 * weight;
     }
     rep.accuracy = ratio(correct, total);
+    return rep;
+}
+
+ClassificationReport report(const Matrix &probabilities, const Matrix &targets)
+{
+    ClassificationReport rep = report(confusion(probabilities, targets));
 
     const Matrix p = asClasses(probabilities);
     const auto expected = classesOf(targets);

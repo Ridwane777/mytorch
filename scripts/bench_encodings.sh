@@ -34,6 +34,8 @@ WORK="$(mktemp -d)"
 trap 'rm -rf "$WORK"' EXIT
 
 make -s
+g++ -std=c++20 -O2 -pthread -Wall -Wextra -Werror -Iinclude scripts/score.cpp build/libmy_torch.a \
+    -o "$WORK/score"
 mkdir -p "$OUT/encodings_logs"
 OUT="$(cd "$OUT" && pwd)"
 rm -f "$OUT/encodings_runs.csv" "$OUT"/encodings_logs/*.log
@@ -63,8 +65,10 @@ for name in $ENCODINGS; do
             > "$OUT/encodings_logs/${name}_$run.log"
         ./my_torch_analyzer --predict "$WORK/${name}_$run.nn" "$WORK/test_boards.txt" \
             > "$WORK/predictions.txt"
+        "$WORK/score" "$WORK/${name}_$run.nn" "$WORK/test_labeled.txt" "$WORK/predictions.txt" \
+            "$WORK"
         python3 scripts/score_encodings.py "$OUT/encodings_runs.csv" "$encoding" "$run" \
-            "$WORK/test_labeled.txt" "$WORK/predictions.txt" "$WORK/time.txt" \
+            "$WORK/report.json" "$WORK/time.txt" \
             "$OUT/encodings_logs/${name}_$run.log"
         run=$((run + 1))
     done

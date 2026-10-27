@@ -3,6 +3,7 @@
 // Public header of the my_torch module: the analyzer and the generator include only this one.
 
 #include "my_torch/Activations.hpp"
+#include "my_torch/Data.hpp"
 #include "my_torch/Dense.hpp"
 #include "my_torch/Dropout.hpp"
 #include "my_torch/Error.hpp"

@@ -5,7 +5,8 @@
 #   2. 20,000 dataset positions drawn with a fixed seed;
 #   3. shuffled together, 80 % to train, 20 % to test (never trained on);
 #   4. bonus/configs/stalemate_network.conf generated and trained with my_torch_analyzer;
-#   5. predictions on the test set scored by scripts/score_predictions.py.
+#   5. predictions on the test set scored by bonus/scripts/score_predictions.py, which calls
+#      scripts/score.cpp (the library's metrics, ADR-0026).
 # Usage: sh bonus/scripts/stalemate_experiment.sh [output directory]
 set -eu
 
@@ -17,6 +18,8 @@ seeded() { yes "$1" | head -c 1048576; }
 
 make -s
 make -s -C bonus
+g++ -std=c++20 -O2 -pthread -Wall -Wextra -Werror -Iinclude scripts/score.cpp build/libmy_torch.a \
+    -o "$WORK/score"
 ./bonus/my_torch_positions 5000 1 0.5 > "$WORK/generated.txt" 2> "$WORK/generation.log"
 sed 's/$/ generated/' "$WORK/generated.txt" > "$WORK/generated_tagged.txt"
 # shuf reads its randomness from a file: a fixed file gives a fixed draw.
@@ -43,4 +46,5 @@ mkdir -p "$OUT"
 cp "$WORK/training.log" "$OUT/stalemate_training.log"
 { cat "$WORK/generation.log"; echo "training: $(cat "$WORK/train_time.txt")"; } \
     > "$OUT/stalemate_run.txt"
-python3 bonus/scripts/score_predictions.py "$WORK/test_tagged.txt" "$WORK/predictions.txt" "$OUT"
+python3 bonus/scripts/score_predictions.py "$WORK/score" "$WORK/stalemate_network_1.nn" \
+    "$WORK/test_tagged.txt" "$WORK/predictions.txt" "$OUT"

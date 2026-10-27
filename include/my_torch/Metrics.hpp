@@ -28,6 +28,16 @@ struct ConfusionMatrix {
 
 ConfusionMatrix confusion(const Matrix &probabilities, const Matrix &targets);
 
+// The same from class indices, for hard predictions read back from a file (scikit-learn's
+// confusion_matrix). Throws on different lengths, no example, or an index >= classes.
+ConfusionMatrix confusion(const std::vector<std::size_t> &expected,
+                          const std::vector<std::size_t> &predicted, std::size_t classes);
+
+// Merges classes into groups: groupOf[c] is the group of class c (for instance the two colours of
+// a check into one "Check" family). Throws unless groupOf has one entry per class, each < groups.
+ConfusionMatrix merge(const ConfusionMatrix &confusion, const std::vector<std::size_t> &groupOf,
+                      std::size_t groups);
+
 struct ClassMetrics {
     Scalar precision = 0; // 0 when the class is never predicted (predicted == 0)
     Scalar recall = 0;    // 0 when the class never occurs (support == 0)
@@ -50,6 +60,10 @@ struct ClassificationReport {
 };
 
 ClassificationReport report(const Matrix &probabilities, const Matrix &targets);
+// Every count-based metric of a confusion matrix: the probability version above computes them
+// here too, so precision, recall and F1 have a single implementation. logLoss stays 0, since it
+// needs probabilities. Throws on an empty matrix (no class or no example).
+ClassificationReport report(const ConfusionMatrix &confusion);
 
 // Fraction of rows whose expected class is among the k most probable ones. Throws unless
 // 1 <= k <= number of classes.
