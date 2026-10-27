@@ -1,6 +1,6 @@
 # Overall retrospective
 
-[retrospective.md](retrospective.md): a look at the whole project (2026-10-21 to 2026-10-27, 32
-merged pull requests). What we could have done better, what would have reduced the time, the costs
-or the risks, with named alternatives, the threshold where they become preferable and their cost;
-what we would keep; the next actions. Updated as the project goes on.
+[retrospective.md](retrospective.md): a technical look at the whole project, component by component
+(linear algebra, training loop, encoding, architecture, data and evaluation, file and pipeline). For
+each choice: the alternative we would name today, the threshold where it becomes preferable and its
+cost; then what we would keep and the next technical actions. Updated as the project goes on.

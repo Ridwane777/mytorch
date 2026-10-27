@@ -6,7 +6,7 @@ Short answers; the linked document gives the details and the measurements.
 | Question | Answer | Details |
 | --- | --- | --- |
 | Why C++ and not Python? | Speed of training decides how many experiments we can run, NumPy would do part of the computation for us, and the GIL limits threads | [ADR-0002](../adr/0002-cpp-language.md), [ADR-0001](../adr/0001-python-numpy-language.md) (abandoned) |
-| Why your own matrix class and not Eigen? | The subject forbids neural-network libraries and says nothing about linear algebra. The staff allowed Eigen orally, but not in the PDF: we kept our own code so as to take no risk at grading and to be able to explain every computation. In hindsight, Eigen behind our `Matrix` would have given fast products from day 1 (not measured) | [ADR-0003](../adr/0003-in-house-linear-algebra.md), [retrospective](../retrospective/retrospective.md) §2 |
+| Why your own matrix class and not Eigen? | The subject forbids neural-network libraries and says nothing about linear algebra. The staff allowed Eigen orally, but not in the PDF: we kept our own code so as to take no risk at grading and to be able to explain every computation. In hindsight, Eigen behind our `Matrix` would have given fast products from day 1 (not measured) | [ADR-0003](../adr/0003-in-house-linear-algebra.md), [retrospective](../retrospective/retrospective.md) §3 |
 | Why `double`? | Finite-difference checks need the precision; it costs twice the memory and time of `float` | ADR-0003; [retrospective](../retrospective/retrospective.md) §3 |
 | How is a FEN turned into numbers? | `fen-attacks-901`: 768 piece planes, side to move, castling, and the squares each side attacks. Best of four encodings measured | [ADR-0016](../adr/0016-input-encoding.md), [03-encodings.md](../performance/03-encodings.md) |
 | Why 901 → 256 → 128 → 5? | Best of 8 trials on the validation split; 512 → 256 is not significantly better over five seeds and is twice as large | [ADR-0023](../adr/0023-final-architecture.md), [09-trials.md](../performance/09-trials.md) |
@@ -22,7 +22,7 @@ Short answers; the linked document gives the details and the measurements.
 | How good is the network? | 96.2 % accuracy, macro F1 0.948, on 71,555 positions never used for training or for any choice | [10-final-network.md](../performance/10-final-network.md) |
 | How do you know the test positions were never seen? | The split deduplicates positions before cutting, with a fixed seed; validation and test are never augmented | [ADR-0017](../adr/0017-dataset-split.md), [01-dataset.md](../performance/01-dataset.md) |
 | Where does it fail? | Check against checkmate of the same side: 91 % of the errors. The colour is never wrong | 10-final-network.md |
-| How would you fix it? | An input saying whether the king has a legal move; not measured yet | [retrospective](../retrospective/retrospective.md) §4 |
+| How would you fix it? | An input saying whether the king has a legal move; not measured yet | [retrospective](../retrospective/retrospective.md) §5 |
 | Is the result reproducible? | Same command, same files: seeded split, shuffling and initialisation; bit-identical on two machines and for any thread count | [ADR-0022](../adr/0022-validation-tail-and-training-pipeline.md), [ADR-0024](../adr/0024-parallel-blocked-matmul.md) |
 
 ## Implementation
