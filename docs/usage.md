@@ -43,4 +43,7 @@ The script splits the dataset, augments the training part only, appends the unto
 part at the end of the training file (`validation_tail`), generates and trains the network, then
 scores it on the test part: `scores.txt` (precision, recall and F1 per class), `confusion.png`,
 `curve.png` and `run.txt` (commit, configuration checksum, machine, times, memory). Running it twice
-gives the same network byte for byte. Design choices: [ADR-0022](adr/0022-validation-tail-and-training-pipeline.md).
+gives the same network byte for byte. `EVAL=validation` scores the validation split instead of the
+test split (for trial runs, so that choices never look at the test split); `BUILD=0` skips the build
+for parallel runs. `sh scripts/trial_runs.sh` trains every configuration of `configs/trials/` in
+parallel and gathers their validation scores ([trials.md](performance/trials.md)). Design choices: [ADR-0022](adr/0022-validation-tail-and-training-pipeline.md).

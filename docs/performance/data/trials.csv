@@ -1,0 +1,9 @@
+run,hidden,init,parameters,validation_accuracy,validation_macro_f1,epochs,train_seconds,peak_mb
+d512x256_uniform,512x256,uniform,594437,0.8664,0.8333,8,5187.19,229
+c256x128_uniform,256x128,uniform,264453,0.8588,0.8289,9,3340.54,172
+b256_uniform,256,uniform,232197,0.852,0.8251,9,3109.61,160
+d512x256_he_uniform,512x256,he_uniform,594437,0.8537,0.825,7,4751.79,229
+c256x128_he_uniform,256x128,he_uniform,264453,0.8486,0.8188,8,3118.63,170
+b256_he_uniform,256,he_uniform,232197,0.8423,0.8166,7,2606.9,160
+a128_uniform,128,uniform,116101,0.8393,0.8119,11,2216.71,139
+a128_he_uniform,128,he_uniform,116101,0.8305,0.8067,9,1845.28,140
