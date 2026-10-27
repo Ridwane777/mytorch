@@ -5,7 +5,8 @@
 # choose), then gathers the results in trials.csv and trials.png.
 # Usage: sh scripts/trial_runs.sh [output directory (default docs/performance/data)]
 # Environment: DATASET (default dataset), FRACTION (default 0.1), PARALLEL (default: number of
-# cores), RUNS (default runs/trials), TRIALS (default configs/trials).
+# cores), RUNS (default runs/trials), TRIALS (default configs/trials), MY_TORCH_THREADS (default 1:
+# the runs already share the cores, ADR-0024).
 set -eu
 export LC_ALL=C
 
@@ -16,6 +17,7 @@ PARALLEL="${PARALLEL:-$(nproc)}"
 RUNS="${RUNS:-runs/trials}"
 TRIALS="${TRIALS:-configs/trials}"
 export DATASET="${DATASET:-dataset}"
+export MY_TORCH_THREADS="${MY_TORCH_THREADS:-1}"
 
 make -s my_torch_analyzer my_torch_generator
 mkdir -p "$RUNS" "$OUT"
