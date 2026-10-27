@@ -15,6 +15,7 @@
 #include "my_torch/Network.hpp"
 #include "my_torch/Optimizer.hpp"
 #include "my_torch/Optimizers.hpp"
+#include "my_torch/Parallel.hpp"
 #include "my_torch/Schedulers.hpp"
 
 namespace my_torch {
