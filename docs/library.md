@@ -8,7 +8,7 @@ like any other program would ([architecture](architecture.md)).
 
 ```bash
 make build/libmy_torch.a                     # the static library, from src/my_torch/
-g++ -std=c++20 -O2 -I<repo>/include my_program.cpp <repo>/build/libmy_torch.a -o my_program
+g++ -std=c++20 -O2 -pthread -I<repo>/include my_program.cpp <repo>/build/libmy_torch.a -o my_program
 ```
 
 One header gives the whole public API: `#include "my_torch/my_torch.hpp"`. Every function reports an
