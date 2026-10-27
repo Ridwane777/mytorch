@@ -20,4 +20,5 @@ issue #16),
 [training-memory.md](training-memory.md) (training memory, whole file encoded against batch by batch, issue #17),
 [matmul.md](matmul.md) (blocked, threaded matrix product, issues #25 and #33),
 [eda.md](eda.md) (exploratory analysis: checking pieces, king squares, material, FEN fields, shortcuts),
-[trials.md](trials.md) (architecture and initialisation of the final network, five seeds per finalist, issue #17).
+[trials.md](trials.md) (architecture and initialisation of the final network, five seeds per finalist, issue #17),
+[final-network.md](final-network.md) (the pushed network on the test split, with and without augmentation, issue #17).
