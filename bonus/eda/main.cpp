@@ -1,4 +1,4 @@
-// Exploratory analysis of the dataset (docs/performance/eda.md): one pass over every position,
+// Exploratory analysis of the dataset (docs/performance/02-eda.md): one pass over every position,
 // with the oracle to tell which piece gives check. Writes six CSV files to OUTPUT.
 // Usage: my_torch_eda DATASET_DIRECTORY OUTPUT_DIRECTORY
 #include <algorithm>

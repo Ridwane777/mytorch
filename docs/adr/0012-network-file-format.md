@@ -74,7 +74,7 @@ unknown types and keys.
 - ✅ Each kind of corrupted file is rejected with its line number, including a single changed digit
   in a weight, caught by the checksum (tested); the analyzer turns these errors into exit code 84 (#15).
 - ✅ For the planned 768-128-5 network: 2.15 MB, saved in 35 ms and loaded in 16 ms
-  (`docs/performance/serialization.md`).
+  (`docs/performance/13-serialization.md`).
 - ❌ 2.7 times larger than a raw binary format; at about 5 million parameters a file would pass
   GitHub's 100 MB limit, and a binary version 2 would be needed.
 - ❌ The optimizer state (Adam's moments) is not saved: resuming with Adam is not identical to an

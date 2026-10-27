@@ -36,7 +36,7 @@ the same positions.
 ## Consequences
 
 - ✅ Peak memory of one epoch on 100,000 positions: 1,338 MB before, 109 MB after; the whole dataset
-  with `fen-attacks-901` trains in 198 MB, 180 s per epoch (`docs/performance/training-memory.md`).
+  with `fen-attacks-901` trains in 198 MB, 180 s per epoch (`docs/performance/11-training-memory.md`).
 - ✅ Same results: the networks trained before and after are byte-identical, and a source that
   builds its rows from a formula trains bit for bit like the same rows in matrices (tested).
 - ✅ The library stays generic: `DataSource` knows nothing about chess, and `docs/library.md` shows

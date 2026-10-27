@@ -1,5 +1,5 @@
 #!/bin/sh
-# Reproduces the weight initialisation comparison (docs/performance/initialisation.md).
+# Reproduces the weight initialisation comparison (docs/performance/06-initialisation.md).
 # Builds the benchmark against src/my_torch, runs it, then draws the graphs (matplotlib).
 set -eu
 

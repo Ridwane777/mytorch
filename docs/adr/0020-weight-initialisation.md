@@ -80,7 +80,7 @@ orthonormal rows otherwise, with a gain of 1. Biases stay at zero. Everything dr
   refusal of `init=` in a network file.
 - ✅ Existing configurations, with or without `init=uniform`, generate byte-identical networks; the
   file format and the analyzer do not change.
-- ✅ The comparison is measured ([initialisation.md](../performance/initialisation.md)), on a
+- ✅ The comparison is measured ([06-initialisation.md](../performance/06-initialisation.md)), on a
   synthetic two-spirals problem with a 2-64-64-64-1 network, 5 seeds, Adam at 0.001: with `tanh`
   the default is the slowest (final loss 0.218 against 0.0632 for `lecun_normal`, after 400 epochs).
 - ❌ The default `uniform` keeps its original variance, 1 / (3·fan_in): the measurement above shows

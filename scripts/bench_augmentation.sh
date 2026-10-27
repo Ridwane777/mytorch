@@ -1,5 +1,5 @@
 #!/bin/sh
-# Compares training with and without symmetry augmentation (docs/performance/augmentation.md,
+# Compares training with and without symmetry augmentation (docs/performance/05-augmentation.md,
 # ADR-0019).
 #   1. TRAIN + TEST positions drawn at random from the dataset with a fixed seed (Python's
 #      random.Random(SEED).sample): the first TRAIN go to train.txt, the last TEST to test.txt.

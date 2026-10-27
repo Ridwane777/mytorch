@@ -88,7 +88,7 @@ Median of 3 networks per arm (min–max), 5,000 test positions never trained on:
   feeding the symmetric copies is worth their cost under this protocol.
 - **Leak check** (`data/augmentation_split.txt`): 11 distinct test positions also appear in
   `train.txt` and 23 in `train_augmented.txt`, out of 5,000. The 11 come from the dataset's own
-  duplicates (1.03 % of its lines, see [dataset.md](dataset.md)); 12 more come from symmetric copies.
+  duplicates (1.03 % of its lines, see [01-dataset.md](01-dataset.md)); 12 more come from symmetric copies.
   This is under 0.5 % of the test set and cannot explain an 8-point gain, but it is not the expected
   `0`.
 

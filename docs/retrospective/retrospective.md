@@ -1,6 +1,6 @@
 # Retrospective: what we could have done better
 
-Written on 2026-10-27, after the final network ([final-network.md](../performance/final-network.md)).
+Written on 2026-10-27, after the final network ([10-final-network.md](../performance/10-final-network.md)).
 Each point names an alternative, the threshold where it becomes the better choice, and its own cost.
 The facts come from the ADRs, the measurements and `git log`.
 
@@ -14,8 +14,8 @@ again at full scale.
 | What happened | Alternative | When it is better | Its cost |
 | --- | --- | --- | --- |
 | The full pipeline (split → augment → train → score) came on day 6 (`scripts/train_final.sh`, ADR-0022). Training on the whole dataset then showed that encoding the whole file at once would need about 10.4 GB: we had to rework the data path (ADR-0021) | A **walking skeleton**: the thinnest end-to-end run on the full dataset on day 1, even with a one-layer network, then improve each stage | As soon as the data is larger than a quick test (here, from the first day: 723,019 positions) | Half a day at the start, and a first network with poor scores |
-| The matrix product stayed a plain loop until the end (ADR-0003 already listed the optimisation as a task). The 8 architecture trials took 5,260 s with one thread per run; since ADR-0024 the products alone are 4 to 5 times faster on one thread (`matmul.md`), so the trials would have been shorter, by an amount we did not measure | **Profile on day 2** (`perf`, ten minutes) and do the blocked product before the experiments | Whenever experiments are repeated: every gain is multiplied by the number of runs | One day of work, done earlier |
-| An early estimate of 17 minutes per epoch was wrong: the measurement gave 3 minutes (`training-memory.md`) | **Measure before planning**, never plan on an estimate | Always | A short run |
+| The matrix product stayed a plain loop until the end (ADR-0003 already listed the optimisation as a task). The 8 architecture trials took 5,260 s with one thread per run; since ADR-0024 the products alone are 4 to 5 times faster on one thread (`12-matmul.md`), so the trials would have been shorter, by an amount we did not measure | **Profile on day 2** (`perf`, ten minutes) and do the blocked product before the experiments | Whenever experiments are repeated: every gain is multiplied by the number of runs | One day of work, done earlier |
+| An early estimate of 17 minutes per epoch was wrong: the measurement gave 3 minutes (`11-training-memory.md`) | **Measure before planning**, never plan on an estimate | Always | A short run |
 | Encodings (ADR-0016) and class imbalance (ADR-0018) were compared on 20,000 positions and one network size, because the code was slow and memory-bound at that time | Redo the decisive comparisons at full scale once training is fast | When the full-scale run fits in an hour, which is the case since ADR-0021 and ADR-0024 | About one hour of compute per comparison |
 
 ## 3. What would have reduced the costs or the risks
@@ -35,7 +35,7 @@ again at full scale.
   Better as soon as the remaining errors are mostly of this kind, which they are. Cost: it moves chess
   rules into the encoding (less general), and a new encoding means retraining.
 - **One seed per run**: only the trials measured the seed spread (±0.3 to ±0.6 points of macro F1,
-  [trials.md](../performance/trials.md)). Running three seeds of every decisive comparison costs three
+  [09-trials.md](../performance/09-trials.md)). Running three seeds of every decisive comparison costs three
   times the compute, and becomes affordable now that training is faster.
 - **Automatic hyperparameter search** (#10) was not done: learning rate, batch size and layer sizes
   come from the trials and the defaults. A small random search on 10 % of the data would cost a few

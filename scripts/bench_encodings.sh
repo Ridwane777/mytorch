@@ -1,5 +1,5 @@
 #!/bin/sh
-# Compares the four input encodings on the real dataset (docs/performance/encodings.md, ADR-0016).
+# Compares the four input encodings on the real dataset (docs/performance/03-encodings.md, ADR-0016).
 #   1. TRAIN + TEST positions drawn at random from the dataset with a fixed seed (Python's
 #      random.sample): the first TRAIN to train (the network file holds out 10 % of them for early
 #      stopping), the last TEST to score, never trained on;

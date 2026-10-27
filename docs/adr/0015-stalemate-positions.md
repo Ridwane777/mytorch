@@ -46,7 +46,7 @@ sixth label and the oracle maps its stalemate verdict to it. The experiment is r
 ## Consequences
 
 - ✅ A six-class network trained on 20,000 dataset and generated positions recognizes 69.9 % of
-  unseen test stalemates (`docs/performance/stalemate.md`).
+  unseen test stalemates (`docs/performance/14-stalemate.md`).
 - ✅ Every generated position is legal and its label equals the oracle's verdict; the same seed
   gives the same positions (tested).
 - ❌ The network also calls 200 non-stalemates stalemates (precision 55.5 %): the generated

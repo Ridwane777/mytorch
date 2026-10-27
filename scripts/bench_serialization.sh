@@ -1,5 +1,5 @@
 #!/bin/sh
-# Reproduces the network file measurement (docs/performance/serialization.md).
+# Reproduces the network file measurement (docs/performance/13-serialization.md).
 set -eu
 
 cd "$(dirname "$0")/.."

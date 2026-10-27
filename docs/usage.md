@@ -46,4 +46,4 @@ scores it on the test part: `scores.txt` (precision, recall and F1 per class), `
 gives the same network byte for byte. `EVAL=validation` scores the validation split instead of the
 test split (for trial runs, so that choices never look at the test split); `BUILD=0` skips the build
 for parallel runs. `sh scripts/trial_runs.sh` trains every configuration of `configs/trials/` in
-parallel and gathers their validation scores ([trials.md](performance/trials.md)). Design choices: [ADR-0022](adr/0022-validation-tail-and-training-pipeline.md).
+parallel and gathers their validation scores ([09-trials.md](performance/09-trials.md)). Design choices: [ADR-0022](adr/0022-validation-tail-and-training-pipeline.md).

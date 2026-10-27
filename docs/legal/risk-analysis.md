@@ -11,7 +11,7 @@
 | R2 | Ownership and license of the code | CPI art. L113-2 and L113-3 (work of collaboration, two authors); the school rules on student projects | Medium | **High** | No license granted, all rights reserved (ADR-0025); the ownership under the the school rules is to check before any release |
 | R3 | Breaking the subject's ban on neural-network libraries (academic integrity) | the school subject and rules | **High** if broken | — | All computation is ours (ADR-0002, ADR-0003); no NN library in the build (`docs/dependencies.md`); PyTorch and scikit-learn appear only in the bonus comparison plan (#42, #43), outside the graded executables |
 | R4 | The name "my_torch" next to the PyTorch trademark | Trademark law (CPI book VII); PyTorch is a trademark of The Linux Foundation | Low (name imposed by the subject, not used commercially) | **High** | Rename before any commercial use |
-| R5 | A wrong prediction used to make a decision | Civil code, art. 1240 (liability for fault) | Low | Medium | Accuracy published honestly (96.2 % on unseen positions, [final-network.md](../performance/final-network.md)); terms of use: provided as is, no warranty |
+| R5 | A wrong prediction used to make a decision | Civil code, art. 1240 (liability for fault) | Low | Medium | Accuracy published honestly (96.2 % on unseen positions, [10-final-network.md](../performance/10-final-network.md)); terms of use: provided as is, no warranty |
 | R6 | Personal data | GDPR (Regulation (EU) 2016/679) | None | Low | The programs read local files, have no network access and log nothing ([privacy-policy.md](privacy-policy.md)) |
 | R7 | Rules on artificial intelligence | AI Act (Regulation (EU) 2024/1689) | None | Low | A chess position classifier is not among the high-risk uses (Annex III); no obligation beyond the transparency already given by the documentation |
 | R8 | Licenses of the dependencies | GPL v3 with the GCC Runtime Library Exception; MIT; PSF; matplotlib license | Low | Low | The executables only link the C++ standard library, which the runtime exception allows under any license ([licenses.md](licenses.md)) |
@@ -19,7 +19,7 @@
 ## 2. The main risks in detail
 
 ### R1: the dataset
-- the school gave the dataset as `dataset.zip` (723,019 positions, `docs/performance/dataset.md`). It
+- the school gave the dataset as `dataset.zip` (723,019 positions, `docs/performance/01-dataset.md`). It
   comes with no license file and no statement of its origin.
 - A chess position is a fact, but a **collection** of positions gathered with a substantial
   investment can be protected by the database producer's right (CPI art. L341-1). Without a license,

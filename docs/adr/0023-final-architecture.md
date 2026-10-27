@@ -11,7 +11,7 @@ The final network uses `fen-attacks-901` (ADR-0016), the natural class distribut
 augmentation (ADR-0019) and the dataset split (ADR-0017). Its hidden layers and its weight
 initialisation (ADR-0020) were still open. A full training takes hours on one core, so the choice
 was made on trial runs: 10 % of the data, scored on the validation split only, so that the test
-split stays an unbiased measure of the final network (`docs/performance/trials.md`).
+split stays an unbiased measure of the final network (`docs/performance/09-trials.md`).
 
 ## Options considered
 
