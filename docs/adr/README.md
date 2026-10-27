@@ -26,3 +26,4 @@ One file per decision, based on [TEMPLATE.md](TEMPLATE.md). An accepted ADR is n
 | [0020](0020-weight-initialisation.md) | Weight initialisation chosen per layer in the configuration, original default kept | Accepted | 2026-10-25 |
 | [0021](0021-training-data-source.md) | Training data as a batch source, positions encoded on demand | Accepted | 2026-10-26 |
 | [0022](0022-validation-tail-and-training-pipeline.md) | Untouched validation set at the end of the training file, one-command training pipeline | Accepted | 2026-10-26 |
+| [0023](0023-final-architecture.md) | Final network architecture, 901 → 256 → 128 → 5 with the default initialisation | Accepted | 2026-10-27 |

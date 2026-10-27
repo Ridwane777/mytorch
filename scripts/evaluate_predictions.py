@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Scores the predictions of scripts/train_final.sh on the test split.
+"""Scores the predictions of scripts/train_final.sh on the test split (or the validation split).
 
 Arguments: the test file ("FEN label" per line), the predictions (one label per line, same order),
 the training log of my_torch_analyzer and the output directory. Writes scores.txt (accuracy, macro
@@ -29,7 +29,7 @@ def main(test_file, predictions_file, log_file, directory):
                         "Checkmate Black") else 99)
     pairs = Counter(zip(expected, predicted))
 
-    lines = [f"test positions: {len(expected)}"]
+    lines = [f"positions scored: {len(expected)}"]
     accuracy = sum(pairs[(l, l)] for l in labels) / len(expected)
     f1s = []
     rows = []
@@ -64,7 +64,7 @@ def main(test_file, predictions_file, log_file, directory):
     ax.set_yticks(range(len(labels)), labels)
     ax.set_xlabel("predicted")
     ax.set_ylabel("expected")
-    ax.set_title(f"Test split ({len(expected):,} positions), accuracy {accuracy:.1%}")
+    ax.set_title(f"{len(expected):,} positions, accuracy {accuracy:.1%}")
     fig.tight_layout()
     fig.savefig(out / "confusion.png", dpi=120)
 
