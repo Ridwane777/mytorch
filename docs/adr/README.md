@@ -32,3 +32,4 @@ One file per decision, based on [TEMPLATE.md](TEMPLATE.md). An accepted ADR is n
 | [0026](0026-scores-from-the-library.md) | Published scores computed by the library | Accepted | 2026-10-27 |
 | [0027](0027-generic-data-splits.md) | Generic data splits in the library | Accepted | 2026-10-27 |
 | [0028](0028-hyperparameter-search-api.md) | Hyperparameter search in the library: search space, objective, grid and random strategies, resumable log | Proposed | 2026-10-28 |
+| [0029](0029-chess-gui.md) | Chess GUI: a page with chess.js and chessboard.js, served by a local C++ server | Proposed | 2026-10-28 |

@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>my_torch chess analyzer</title>
+  <link rel="stylesheet" href="vendor/chessboard.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>my_torch chess analyzer</h1>
+    <p id="network" class="muted">Loading the network…</p>
+  </header>
+  <main>
+    <section class="board-column">
+      <div id="board"></div>
+      <div class="controls">
+        <button id="new">New game</button>
+        <button id="undo">Undo</button>
+        <button id="flip">Flip board</button>
+      </div>
+      <form id="fen-form">
+        <label for="fen">FEN</label>
+        <div class="fen-row">
+          <input id="fen" spellcheck="false" autocomplete="off">
+          <button type="submit">Analyse</button>
+        </div>
+      </form>
+      <p id="status" class="muted"></p>
+    </section>
+    <section class="panel">
+      <h2>Network</h2>
+      <p id="prediction" class="verdict">—</p>
+      <div id="bars"></div>
+      <h2>Rule-based oracle</h2>
+      <p id="oracle" class="verdict">—</p>
+      <p id="agreement"></p>
+      <h2>Moves</h2>
+      <ol id="moves"></ol>
+    </section>
+  </main>
+  <footer class="muted">
+    The network answers from the position alone; the oracle computes the answer from the rules.
+    Pieces: Wikimedia Commons (Cburnett, CC BY-SA 3.0).
+  </footer>
+  <script src="vendor/jquery.min.js"></script>
+  <script src="vendor/chess.js"></script>
+  <script src="vendor/chessboard.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

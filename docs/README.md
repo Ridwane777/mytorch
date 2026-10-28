@@ -7,10 +7,11 @@ Status as of 2026-10-26:
 
 | Area | Document | Status |
 | --- | --- | --- |
-| Decisions | [adr/](adr/README.md): ADRs and index, [template](adr/TEMPLATE.md) | 28 ADRs: 0001 (Python) abandoned, 0002 to 0027 accepted, 0028 proposed |
+| Decisions | [adr/](adr/README.md): ADRs and index, [template](adr/TEMPLATE.md) | 29 ADRs: 0001 (Python) abandoned, 0002 to 0027 accepted, 0028 and 0029 proposed |
 | Data | [reading-a-fen.md](reading-a-fen.md): useful chess rules, reading a dataset line field by field, label distribution | Written |
 | Data | [verification-dataset.md](verification-dataset.md): dataset labels checked by the oracle (100% agreement) | Written |
 | Usage | [usage.md](usage.md): generate, train and predict from the command line, reproduce the final network; [configuration.md](configuration.md): every key of a configuration file; [library.md](library.md): using `my_torch` in another project | Written |
+| Usage | [gui.md](gui.md): bonus chess GUI, a playable board analysed move by move by the network and the oracle (ADR-0029) | Written |
 | Architecture | [architecture.md](architecture.md): the four parts and their dependency rule, module map, main classes, generate/train/predict flows with diagrams, errors, tests | Written |
 | Performance | [performance/](performance/README.md): 14 numbered documents in reading order: data (01 dataset to 05 augmentation), training (06 initialisation to 09 trials), [10-final-network.md](performance/10-final-network.md), code performance (11 training memory, 12 matrix product, 13 network file), bonus (14 stalemate) | Measured on test problems and on the chess dataset; the pushed network scores 0.9615 accuracy and 0.9478 macro F1 on the test split |
 | Legal | [legal/](legal/README.md): [risk-analysis.md](legal/risk-analysis.md), [licenses.md](legal/licenses.md), [privacy-policy.md](legal/privacy-policy.md), [terms-of-use.md](legal/terms-of-use.md), [legal-notice.md](legal/legal-notice.md) | Written: student analysis, not legal advice; the dataset is never published |
