@@ -1,6 +1,6 @@
 # ADR-0028: Hyperparameter search in the library
 
-- **Status**: Proposed
+- **Status**: Accepted (2026-10-28)
 - **Date**: 2026-10-28
 - **Deciders**: Ridwane777 (issue #10)
 
