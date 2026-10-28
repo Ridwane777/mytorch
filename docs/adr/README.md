@@ -35,3 +35,4 @@ One file per decision, based on [TEMPLATE.md](TEMPLATE.md). An accepted ADR is n
 | [0029](0029-chess-gui.md) | Chess GUI: a page with chess.js and chessboard.js, served by a local C++ server | Proposed | 2026-10-28 |
 | [0030](0030-hyperparameter-search-result.md) | Candidate configuration from the hyperparameter search: lr 0.001, batches of 32, 512 → 256, dropout 0.2, to confirm at 100 % on the test split | Proposed | 2026-10-28 |
 | [0031](0031-training-stability.md) | Training stability: gradient clipping by value and by norm, off by default; stop on the first non-finite value, naming the layer | Proposed | 2026-10-28 |
+| [0032](0032-checkpoints.md) | Checkpoints: the whole training state saved after every epoch, resumed when the file exists, identical to an uninterrupted run | Proposed | 2026-10-28 |

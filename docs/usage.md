@@ -10,6 +10,9 @@ make                                              # builds my_torch_analyzer and
 ./my_torch_analyzer --train --save trained.nn basic_network_1.nn train.txt
 ./my_torch_analyzer --train basic_network_1.nn train.txt   # without --save: overwrites the file
 
+# 2b. A long training: save its state after every epoch; after a stop, rerun the same command
+./my_torch_analyzer --train --save trained.nn --checkpoint run.ckpt basic_network_1.nn train.txt
+
 # 3. Predict: one answer per position, in file order (expected outputs, if present, are ignored)
 ./my_torch_analyzer --predict trained.nn chessboards.txt
 ```
@@ -25,6 +28,12 @@ make                                              # builds my_torch_analyzer and
   `Nothing`, `Check` and `Checkmate` answers without colors; one with five labels answers with them.
 - In `--train`, an expected output trains the label equal to it, or else the label equal to its
   first word (`Check White` trains `Check`).
+- With `--checkpoint FILE` (ADR-0032, an option beyond the subject's usage), the whole training
+  state (weights, optimizer memory, generators, history, early stopping) is written to FILE after
+  every epoch. If FILE exists, training resumes after its last epoch and ends with the same weights
+  as an uninterrupted run; an epoch cut in the middle is run again. A checkpoint from another
+  training (other settings, layers or data size) is refused: delete it to start again. Raising
+  `epochs` in the network file and rerunning extends a finished training.
 - Training settings come from the network file: loss, optimizer, scheduler, epochs, batch size,
   seed, early stopping and the `validation` fraction held out from the training file.
 - Every input is checked before anything is printed or written. On an error the message goes to

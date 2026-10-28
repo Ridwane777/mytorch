@@ -28,6 +28,8 @@ class SGD : public Optimizer {
     void setLearningRate(Scalar rate) override;
     Scalar learningRate() const override;
     std::string type() const override;
+    void saveState(std::ostream &out) const override;
+    void loadState(std::istream &in) override;
 
   private:
     Scalar _rate;
@@ -49,6 +51,8 @@ class Adam : public Optimizer {
     void setLearningRate(Scalar rate) override;
     Scalar learningRate() const override;
     std::string type() const override;
+    void saveState(std::ostream &out) const override;
+    void loadState(std::istream &in) override;
 
   protected:
     Adam(Scalar learningRate, Scalar weightDecay, Scalar beta1, Scalar beta2, Scalar epsilon,
@@ -86,6 +90,8 @@ class RMSProp : public Optimizer {
     void setLearningRate(Scalar rate) override;
     Scalar learningRate() const override;
     std::string type() const override;
+    void saveState(std::ostream &out) const override;
+    void loadState(std::istream &in) override;
 
   private:
     Scalar _rate;
@@ -104,6 +110,8 @@ class Adagrad : public Optimizer {
     void setLearningRate(Scalar rate) override;
     Scalar learningRate() const override;
     std::string type() const override;
+    void saveState(std::ostream &out) const override;
+    void loadState(std::istream &in) override;
 
   private:
     Scalar _rate;

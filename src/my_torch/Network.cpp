@@ -4,9 +4,12 @@
 #include <cmath>
 #include <limits>
 #include <numeric>
+#include <optional>
 #include <random>
+#include <sstream>
 #include <string>
 
+#include "my_torch/Checkpoint.hpp"
 #include "my_torch/Error.hpp"
 #include "my_torch/Metrics.hpp"
 
@@ -117,6 +120,30 @@ void clip(const std::vector<OwnedParameter> &params, const TrainConfig &config)
     }
 }
 
+// What a checkpoint must match (ADR-0032): every training setting but the number of epochs, so
+// that a finished training can be extended, the layers and their shapes, the optimizer, and the
+// sizes of the data. The data itself is not hashed: reading it all would cost a pass over the file.
+std::uint64_t fingerprint(const std::vector<std::unique_ptr<Layer>> &layers,
+                          const Optimizer &optimizer, const TrainConfig &c,
+                          const DataSource &train, const DataSource *validation)
+{
+    std::ostringstream text;
+    text.precision(17);
+    text << "batch=" << c.batchSize << " seed=" << c.seed << " shuffle=" << c.shuffle
+         << " patience=" << c.patience << " min_delta=" << c.minDelta
+         << " restore_best=" << c.restoreBest << " clip_norm=" << c.clipNorm
+         << " clip_value=" << c.clipValue << " optimizer=" << optimizer.type()
+         << " train=" << train.size() << 'x' << train.inputWidth() << 'x' << train.targetWidth()
+         << " validation=" << (validation ? validation->size() : 0) << '\n';
+    for (const auto &layer : layers) {
+        text << layer->type();
+        for (const Parameter &p : layer->parameters())
+            text << ' ' << p.value->rows() << 'x' << p.value->cols();
+        text << '\n';
+    }
+    return fingerprintOf(text.str());
+}
+
 std::pair<Matrix, Matrix> batchOf(const DataSource &data, const std::vector<std::size_t> &rows)
 {
     Matrix inputs(rows.size(), data.inputWidth());
@@ -207,17 +234,19 @@ const std::vector<std::unique_ptr<Layer>> &Network::layers() const noexcept
 }
 
 History Network::fit(const Dataset &train, const Dataset *validation, Loss &loss,
-                     Optimizer &optimizer, const TrainConfig &config, const Scheduler *scheduler)
+                     Optimizer &optimizer, const TrainConfig &config, const Scheduler *scheduler,
+                     const std::string &checkpoint)
 {
     const MatrixSource trainSource(train);
     if (!validation)
-        return fit(trainSource, nullptr, loss, optimizer, config, scheduler);
+        return fit(trainSource, nullptr, loss, optimizer, config, scheduler, checkpoint);
     const MatrixSource validationSource(*validation);
-    return fit(trainSource, &validationSource, loss, optimizer, config, scheduler);
+    return fit(trainSource, &validationSource, loss, optimizer, config, scheduler, checkpoint);
 }
 
 History Network::fit(const DataSource &train, const DataSource *validation, Loss &loss,
-                     Optimizer &optimizer, const TrainConfig &config, const Scheduler *scheduler)
+                     Optimizer &optimizer, const TrainConfig &config, const Scheduler *scheduler,
+                     const std::string &checkpoint)
 {
     checkSource(train, "training");
     if (validation) {
@@ -251,8 +280,64 @@ History Network::fit(const DataSource &train, const DataSource *validation, Loss
     Scalar best = 0;
     std::size_t sinceBest = 0;
     std::vector<Matrix> bestWeights;
+    std::size_t start = 0;
+    const std::uint64_t print =
+        checkpoint.empty() ? 0 : fingerprint(_layers, optimizer, config, train, validation);
 
-    for (std::size_t epoch = 0; epoch < config.epochs; epoch++) {
+    if (!checkpoint.empty())
+        if (const std::optional<TrainingState> state = loadCheckpoint(checkpoint, print)) {
+            if (state->weights.size() != params.size() || state->layers.size() != _layers.size())
+                throw Error("checkpoint '" + checkpoint + "' does not match the network");
+            for (std::size_t i = 0; i < params.size(); i++) {
+                if (state->weights[i].rows() != params[i].value->rows() ||
+                    state->weights[i].cols() != params[i].value->cols())
+                    throw Error("checkpoint '" + checkpoint + "' does not match the network");
+                *params[i].value = state->weights[i];
+            }
+            std::istringstream optimizerState(state->optimizer);
+            optimizer.loadState(optimizerState);
+            for (std::size_t i = 0; i < _layers.size(); i++) {
+                std::istringstream layerState(state->layers[i]);
+                _layers[i]->loadState(layerState);
+            }
+            std::istringstream shuffleState(state->shuffle);
+            if (!(shuffleState >> rng))
+                throw Error("checkpoint '" + checkpoint + "': malformed generator state");
+            history = state->history;
+            best = state->best;
+            sinceBest = state->sinceBest;
+            bestWeights = state->bestWeights;
+            start = state->epoch;
+        }
+    // Saves the state after `finished` epochs.
+    const auto save = [&](std::size_t finished) {
+        TrainingState state;
+        state.epoch = finished;
+        std::ostringstream shuffleState;
+        shuffleState << rng;
+        state.shuffle = shuffleState.str();
+        state.history = history;
+        state.best = best;
+        state.sinceBest = sinceBest;
+        state.bestWeights = bestWeights;
+        for (const Parameter &p : params)
+            state.weights.push_back(*p.value);
+        std::ostringstream optimizerState;
+        optimizerState.precision(17);
+        optimizer.saveState(optimizerState);
+        state.optimizer = optimizerState.str();
+        for (const auto &layer : _layers) {
+            std::ostringstream layerState;
+            layerState.precision(17);
+            layer->saveState(layerState);
+            state.layers.push_back(layerState.str());
+        }
+        saveCheckpoint(checkpoint, print, state);
+    };
+    // A checkpoint written when early stopping ended the training: nothing left to run.
+    const bool stopped = config.patience > 0 && sinceBest >= config.patience;
+
+    for (std::size_t epoch = start; epoch < config.epochs && !stopped; epoch++) {
         if (scheduler)
             optimizer.setLearningRate(scheduler->rate(epoch));
         std::iota(order.begin(), order.end(), 0);
@@ -318,17 +403,22 @@ History Network::fit(const DataSource &train, const DataSource *validation, Loss
             stats.validationAccuracy = static_cast<Scalar>(right) / static_cast<Scalar>(total);
         }
         history.push_back(stats);
-        if (config.patience == 0)
-            continue;
-        if (bestWeights.empty() || stats.validationLoss < best - config.minDelta) {
-            best = stats.validationLoss;
-            sinceBest = 0;
-            bestWeights.clear();
-            for (const Parameter &p : params)
-                bestWeights.push_back(*p.value);
-        } else if (++sinceBest >= config.patience) {
-            break;
+        bool stop = false;
+        if (config.patience > 0) {
+            if (bestWeights.empty() || stats.validationLoss < best - config.minDelta) {
+                best = stats.validationLoss;
+                sinceBest = 0;
+                bestWeights.clear();
+                for (const Parameter &p : params)
+                    bestWeights.push_back(*p.value);
+            } else {
+                stop = ++sinceBest >= config.patience;
+            }
         }
+        if (!checkpoint.empty())
+            save(epoch + 1);
+        if (stop)
+            break;
     }
     if (config.restoreBest && !bestWeights.empty())
         for (std::size_t i = 0; i < params.size(); i++)

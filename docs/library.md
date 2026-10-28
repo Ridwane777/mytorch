@@ -65,6 +65,7 @@ Built outside the repository against `build/libmy_torch.a` only, it printed (202
 | Losses | `MSE`, `MAE`, `Huber`, `BinaryCrossEntropy`, `CrossEntropy` (label smoothing, class weights) | ADR-0007 |
 | Optimizers and schedules | `SGD`, `Adam`, `AdamW`, `RMSProp`, `Adagrad`; constant, step, exponential, cosine, warm-up | ADR-0008 |
 | Training | `Network::fit` with mini-batches, seeded shuffling, validation, early stopping | ADR-0009, ADR-0010 |
+| Checkpoints | `fit(..., scheduler, "run.ckpt")` saves the whole training state after every epoch and resumes from the file when it exists, with the same weights as an uninterrupted run; optimizers and layers save their memory with `saveState` / `loadState` | ADR-0032 |
 | Training stability | Gradient clipping by value (`clipValue`) and by global norm (`clipNorm`), off by default; `fit` stops with an `Error` naming the epoch, the batch and the layer on the first NaN or infinite loss, gradient or weight | ADR-0031 |
 | Speed | Matrix products blocked and split over all hardware threads, results identical for any thread count; set `MY_TORCH_THREADS=1` or call `setThreadCount(1)` to stay on one thread | ADR-0024 |
 | Splits and cross-validation | `stratifiedSplit` (parts keeping the class proportions), `stratifiedKFold`, `SubsetSource` (train on some rows of a source without copying), `targetClasses` | ADR-0027 |

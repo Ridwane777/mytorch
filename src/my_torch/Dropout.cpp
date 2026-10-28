@@ -49,6 +49,17 @@ std::uint64_t Dropout::seed() const noexcept
     return _seed;
 }
 
+void Dropout::saveState(std::ostream &out) const
+{
+    out << _rng;
+}
+
+void Dropout::loadState(std::istream &in)
+{
+    if (!(in >> _rng))
+        throw Error("dropout: malformed generator state");
+}
+
 void Dropout::save(std::ostream &out) const
 {
     out << "dropout rate=" << _rate << " seed=" << _seed << '\n';

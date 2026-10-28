@@ -137,13 +137,17 @@ class Network {
     // Throws my_torch::Error on empty or mismatched data, a zero batch size, a negative clipping
     // threshold or a missing Softmax. Stops with my_torch::Error on the first non-finite loss,
     // gradient or weight (ADR-0031), naming the epoch, the batch and the layer (counted from 1).
+    // With a checkpoint path (ADR-0032), the whole training state is saved there at the end of
+    // every epoch, and when the file already exists training resumes after its last epoch: the
+    // returned history then includes the epochs run before the interruption. The checkpoint must
+    // come from the same settings (except epochs), layers, optimizer and data sizes.
     History fit(const DataSource &train, const DataSource *validation, Loss &loss,
                 Optimizer &optimizer, const TrainConfig &config,
-                const Scheduler *scheduler = nullptr);
+                const Scheduler *scheduler = nullptr, const std::string &checkpoint = {});
     // Same, on matrices held in memory (wrapped in MatrixSource).
     History fit(const Dataset &train, const Dataset *validation, Loss &loss,
                 Optimizer &optimizer, const TrainConfig &config,
-                const Scheduler *scheduler = nullptr);
+                const Scheduler *scheduler = nullptr, const std::string &checkpoint = {});
 
     std::vector<Parameter> parameters();
     const std::vector<std::unique_ptr<Layer>> &layers() const noexcept;
