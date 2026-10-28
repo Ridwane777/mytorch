@@ -19,6 +19,7 @@ performance of the code itself.
 | 07 | [07-optimizers.md](07-optimizers.md) | Which optimizer and learning-rate scheduler? | #5 |
 | 08 | [08-overfitting.md](08-overfitting.md) | L1, L2, elastic net, dropout and early stopping against overfitting | #7 |
 | 09 | [09-trials.md](09-trials.md) | Architecture and initialisation of the final network, five seeds per finalist | #17 |
+| 15 | [15-hyperparameters.md](15-hyperparameters.md) | Learning rate, batch size, hidden layers and dropout: grid search against random search | #10 |
 | **Final network** | | | |
 | 10 | [10-final-network.md](10-final-network.md) | How good is the pushed network on the test split, with and without augmentation? | #17 |
 | **Code performance** | | | |

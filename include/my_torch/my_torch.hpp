@@ -18,6 +18,7 @@
 #include "my_torch/Optimizers.hpp"
 #include "my_torch/Parallel.hpp"
 #include "my_torch/Schedulers.hpp"
+#include "my_torch/Search.hpp"
 
 namespace my_torch {
 

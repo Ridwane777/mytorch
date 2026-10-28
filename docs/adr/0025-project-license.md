@@ -1,8 +1,8 @@
 # ADR-0025: No license, all rights reserved
 
-- **Status**: Proposed
+- **Status**: Accepted (2026-10-28)
 - **Date**: 2026-10-27
-- **Deciders**: Ridwane777 (issue #20), pending agreement of Meric-BG
+- **Deciders**: Ridwane777 (issue #20)
 
 ## Context
 The repository has no license file. The code is a work of collaboration of the two members of the

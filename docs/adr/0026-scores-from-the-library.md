@@ -1,8 +1,8 @@
 # ADR-0026: Published scores computed by the library
 
-- **Status**: Proposed
+- **Status**: Accepted (2026-10-28)
 - **Date**: 2026-10-27
-- **Deciders**: Ridwane777, pending review by Meric-BG (public API change)
+- **Deciders**: Ridwane777
 
 ## Context
 The library has had tested metrics since ADR-0011 (`my_torch::report`), but they take

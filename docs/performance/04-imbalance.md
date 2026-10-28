@@ -1,7 +1,7 @@
 # Class imbalance: none, weighting, oversampling, undersampling
 
 Measurement for issue #16: which way of handling the imbalance of the dataset gives the best F1 per
-class? Related decision: [ADR-0018](../adr/0018-class-imbalance.md) (Proposed).
+class? Related decision: [ADR-0018](../adr/0018-class-imbalance.md) (Accepted).
 
 **Status: measured** on the real dataset, 2026-10-26.
 
