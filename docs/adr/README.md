@@ -31,3 +31,4 @@ One file per decision, based on [TEMPLATE.md](TEMPLATE.md). An accepted ADR is n
 | [0025](0025-project-license.md) | No license, all rights reserved | Proposed | 2026-10-27 |
 | [0026](0026-scores-from-the-library.md) | Published scores computed by the library | Proposed | 2026-10-27 |
 | [0027](0027-generic-data-splits.md) | Generic data splits in the library | Proposed | 2026-10-27 |
+| [0029](0029-chess-gui.md) | Chess GUI: a page with chess.js and chessboard.js, served by a local C++ server | Proposed | 2026-10-28 |
