@@ -81,6 +81,11 @@ struct TrainConfig {
     // validation set after an augmented training set without any leak. 0 = unused; giving both
     // validation and validationTail is an error.
     std::size_t validationTail = 0;
+    // Gradient clipping (ADR-0031), applied between backward and the optimizer step; 0 = off.
+    // clipValue clamps each gradient to [-clipValue, clipValue]; clipNorm then rescales all the
+    // gradients together so that their global L2 norm is at most clipNorm, keeping the direction.
+    Scalar clipNorm = 0;
+    Scalar clipValue = 0;
 };
 
 // The numbers 0..count-1 in an order shuffled by seed, with the same portable Fisher-Yates as
@@ -129,7 +134,9 @@ class Network {
     // Mini-batch training (ADR-0009). Each epoch: apply the scheduler if any, shuffle with the
     // seed, then for each batch zero the gradients, forward, loss, backward, optimizer step. When
     // loss.fusesSoftmax(), the last layer must be a Softmax and its backward is skipped (ADR-0007).
-    // Throws my_torch::Error on empty or mismatched data, a zero batch size or a missing Softmax.
+    // Throws my_torch::Error on empty or mismatched data, a zero batch size, a negative clipping
+    // threshold or a missing Softmax. Stops with my_torch::Error on the first non-finite loss,
+    // gradient or weight (ADR-0031), naming the epoch, the batch and the layer (counted from 1).
     History fit(const DataSource &train, const DataSource *validation, Loss &loss,
                 Optimizer &optimizer, const TrainConfig &config,
                 const Scheduler *scheduler = nullptr);

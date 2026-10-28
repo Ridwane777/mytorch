@@ -1,8 +1,11 @@
 #include "my_torch/Network.hpp"
 
+#include <algorithm>
+#include <cmath>
 #include <limits>
 #include <numeric>
 #include <random>
+#include <string>
 
 #include "my_torch/Error.hpp"
 #include "my_torch/Metrics.hpp"
@@ -53,6 +56,67 @@ void checkSource(const DataSource &data, const char *name)
 }
 
 // Batch of the given rows, built by the source into zeroed matrices.
+// A parameter with the 1-based index and the type of its layer, for the error messages.
+struct OwnedParameter {
+    Parameter parameter;
+    std::size_t layer;
+    std::string type;
+};
+
+bool allFinite(const Matrix &m)
+{
+    const Scalar *v = m.data();
+    for (std::size_t i = 0; i < m.size(); i++)
+        if (!std::isfinite(v[i]))
+            return false;
+    return true;
+}
+
+std::string position(std::size_t epoch, std::size_t batch)
+{
+    return " at epoch " + std::to_string(epoch + 1) + ", batch " + std::to_string(batch + 1);
+}
+
+// Throws on the first parameter whose value (weights) or gradient is not finite.
+void checkFinite(const std::vector<OwnedParameter> &params, bool gradients, std::size_t epoch,
+                 std::size_t batch)
+{
+    for (const OwnedParameter &p : params)
+        if (!allFinite(gradients ? *p.parameter.grad : *p.parameter.value))
+            throw Error(std::string("fit: non-finite ") + (gradients ? "gradient" : "weight") +
+                        " in layer " + std::to_string(p.layer) + " (" + p.type + ")" +
+                        position(epoch, batch) +
+                        "; lower the learning rate or set clip_norm / clip_value");
+}
+
+// Gradient clipping (ADR-0031): by value first, then by global norm.
+void clip(const std::vector<OwnedParameter> &params, const TrainConfig &config)
+{
+    if (config.clipValue > 0)
+        for (const OwnedParameter &p : params) {
+            Scalar *g = p.parameter.grad->data();
+            for (std::size_t i = 0; i < p.parameter.grad->size(); i++)
+                g[i] = std::clamp(g[i], -config.clipValue, config.clipValue);
+        }
+    if (config.clipNorm <= 0)
+        return;
+    Scalar squares = 0;
+    for (const OwnedParameter &p : params) {
+        const Scalar *g = p.parameter.grad->data();
+        for (std::size_t i = 0; i < p.parameter.grad->size(); i++)
+            squares += g[i] * g[i];
+    }
+    const Scalar norm = std::sqrt(squares);
+    if (norm <= config.clipNorm)
+        return;
+    const Scalar scale = config.clipNorm / norm;
+    for (const OwnedParameter &p : params) {
+        Scalar *g = p.parameter.grad->data();
+        for (std::size_t i = 0; i < p.parameter.grad->size(); i++)
+            g[i] *= scale;
+    }
+}
+
 std::pair<Matrix, Matrix> batchOf(const DataSource &data, const std::vector<std::size_t> &rows)
 {
     Matrix inputs(rows.size(), data.inputWidth());
@@ -164,6 +228,8 @@ History Network::fit(const DataSource &train, const DataSource *validation, Loss
     }
     if (config.batchSize == 0)
         throw Error("fit: batch size must be positive");
+    if (!(config.clipNorm >= 0) || !(config.clipValue >= 0))
+        throw Error("fit: clip_norm and clip_value must be positive, or 0 for no clipping");
     if (_layers.empty())
         throw Error("fit: the network has no layer");
     if (config.patience > 0 && !validation)
@@ -176,6 +242,10 @@ History Network::fit(const DataSource &train, const DataSource *validation, Loss
     std::vector<std::size_t> order(count);
     std::mt19937_64 rng(config.seed);
     const std::vector<Parameter> params = parameters();
+    std::vector<OwnedParameter> owned;
+    for (std::size_t i = 0; i < _layers.size(); i++)
+        for (const Parameter &p : _layers[i]->parameters())
+            owned.push_back({p, i + 1, _layers[i]->type()});
     const std::size_t lastBackward = skipSoftmax ? _layers.size() - 1 : _layers.size();
     History history;
     Scalar best = 0;
@@ -203,15 +273,22 @@ History Network::fit(const DataSource &train, const DataSource *validation, Loss
             const Matrix prediction = forward(inputs, true);
             // The loss is a batch mean: weight it by the batch size so that a smaller last batch
             // does not count as much as a full one.
-            lossSum += loss.value(prediction, targets) * static_cast<Scalar>(end - begin);
+            const Scalar batchLoss = loss.value(prediction, targets);
+            if (!std::isfinite(batchLoss))
+                throw Error("fit: non-finite loss" + position(epoch, batches) +
+                            "; lower the learning rate or set clip_norm / clip_value");
+            lossSum += batchLoss * static_cast<Scalar>(end - begin);
             for (const auto &layer : _layers)
                 penaltySum += layer->penalty();
-            batches++;
             correct += countCorrect(prediction, targets);
             Matrix grad = loss.gradient(prediction, targets);
             for (std::size_t i = lastBackward; i-- > 0;)
                 grad = _layers[i]->backward(grad);
+            checkFinite(owned, true, epoch, batches);
+            clip(owned, config);
             optimizer.step(params);
+            checkFinite(owned, false, epoch, batches);
+            batches++;
         }
         EpochStats stats;
         stats.trainLoss = lossSum / static_cast<Scalar>(count);
