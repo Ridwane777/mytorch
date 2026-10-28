@@ -4,6 +4,7 @@
 #include <cmath>
 #include <string>
 
+#include "my_torch/Checkpoint.hpp"
 #include "my_torch/Error.hpp"
 
 namespace my_torch {
@@ -239,6 +240,53 @@ Scalar Adagrad::learningRate() const
 std::string Adagrad::type() const
 {
     return "adagrad";
+}
+
+void SGD::saveState(std::ostream &out) const
+{
+    writeMatrices(out, _velocity);
+}
+
+void SGD::loadState(std::istream &in)
+{
+    _velocity = readMatrices(in);
+}
+
+void Adam::saveState(std::ostream &out) const
+{
+    out << _steps << '\n';
+    writeMatrices(out, _m);
+    writeMatrices(out, _v);
+    writeMatrices(out, _vmax);
+}
+
+void Adam::loadState(std::istream &in)
+{
+    if (!(in >> _steps))
+        throw Error(std::string(_name) + ": malformed step count");
+    _m = readMatrices(in);
+    _v = readMatrices(in);
+    _vmax = readMatrices(in);
+}
+
+void RMSProp::saveState(std::ostream &out) const
+{
+    writeMatrices(out, _square);
+}
+
+void RMSProp::loadState(std::istream &in)
+{
+    _square = readMatrices(in);
+}
+
+void Adagrad::saveState(std::ostream &out) const
+{
+    writeMatrices(out, _sum);
+}
+
+void Adagrad::loadState(std::istream &in)
+{
+    _sum = readMatrices(in);
 }
 
 } // namespace my_torch

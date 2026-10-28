@@ -40,6 +40,7 @@ and the main code never includes `bonus/`.
 | `Network` | A sequence of layers: `add`, `forward`, `predict`, `fit`, `parameters`, `save`, `load`, `fromConfig`; `ModelInfo` (encoding, labels, training settings); `DataSource` and `MatrixSource`, where `fit` takes its batches | ADR-0004, ADR-0009, ADR-0021 |
 | `Data` | Stratified split, stratified k-fold, `SubsetSource` (a view on some rows of a source), `targetClasses` | ADR-0027 |
 | `Metrics` | Confusion matrix (from probabilities or class indices), merge of classes, accuracy, precision, recall, F1, log-loss, top-k, ROC AUC, calibration, CSV/JSON export; every published score goes through it (`scripts/score.cpp`) | ADR-0011, ADR-0026 |
+| `Checkpoint` | `saveCheckpoint`, `loadCheckpoint`, `TrainingState`; atomic text file with a checksum and a fingerprint of the training | ADR-0032 |
 | `Search` | `SearchSpace`, `Trial`, `SearchStrategy` with `GridSearch` and `RandomSearch`, `SearchResult`; resumable CSV log | ADR-0028 |
 | `Factory` | `makeLoss`, `makeOptimizer`, `makeScheduler`: build the training objects from their description in a file | ADR-0012 |
 | `Serialization.cpp` | Reader and writer of network files and configuration files | ADR-0012, ADR-0013 |
@@ -50,7 +51,7 @@ and the main code never includes `bonus/`.
 | --- | --- | --- |
 | `Fen` | `parseFen`, `parseLine`, `parseFile`: a FEN line into a `Position` (64 squares, side to move, castling, en passant, counters) and an optional `Label` | ADR-0005 |
 | `Encoding` | The `Encoding` interface, the table of encodings looked up by name (`fen-onehot-768`, `fen-onehot-773`, `fen-signed-385`, `fen-attacks-901`), and `PositionSource`, which encodes training positions batch by batch | ADR-0014, ADR-0016, ADR-0021 |
-| `Cli` | `analyzer::run`: argument parsing, `--predict`, `--train`, `--save` | ADR-0014 |
+| `Cli` | `analyzer::run`: argument parsing, `--predict`, `--train`, `--save`, `--checkpoint` | ADR-0014, ADR-0032 |
 | `main.cpp` | Calls `run`, turns any exception into a message on standard error and exit code 84 | ADR-0004 |
 
 ### Generator (`src/generator/`) and bonus (`bonus/`)

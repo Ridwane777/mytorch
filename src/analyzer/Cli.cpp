@@ -30,11 +30,16 @@ constexpr const char *usage =
     "                optionally an expected output.\n"
     "    --save      Save neural network into SAVEFILE. Only works in train mode.\n"
     "    LOADFILE    File containing an artificial neural network\n"
-    "    CHESSFILE   File containing chessboards\n";
+    "    CHESSFILE   File containing chessboards\n"
+    "\n"
+    "EXTRA OPTION\n"
+    "    --checkpoint FILE  In train mode, save the training state into FILE after every\n"
+    "                epoch; if FILE exists, resume the training from it.\n";
 
 struct Options {
     bool train = false;
     std::optional<std::string> save;
+    std::optional<std::string> checkpoint;
     std::string network;
     std::string chessboards;
 };
@@ -55,6 +60,10 @@ Options parseArguments(const std::vector<std::string> &args)
             if (o.save || i + 1 >= args.size())
                 throw Error("--save needs exactly one SAVEFILE");
             o.save = args[++i];
+        } else if (a == "--checkpoint") {
+            if (o.checkpoint || i + 1 >= args.size())
+                throw Error("--checkpoint needs exactly one FILE");
+            o.checkpoint = args[++i];
         } else if (a.size() > 1 && a[0] == '-') {
             throw Error("unknown option '" + a + "'");
         } else {
@@ -65,6 +74,8 @@ Options parseArguments(const std::vector<std::string> &args)
         throw Error("give exactly one of --predict and --train");
     if (o.save && !o.train)
         throw Error("--save only works with --train");
+    if (o.checkpoint && !o.train)
+        throw Error("--checkpoint only works with --train");
     if (files.size() != 2)
         throw Error("expected LOADFILE and CHESSFILE");
     o.network = files[0];
@@ -149,7 +160,8 @@ int train(const Options &o)
     const auto optimizer = my_torch::makeOptimizer(spec.optimizer);
     const auto scheduler = my_torch::makeScheduler(spec.scheduler);
     const my_torch::History history = net.fit(trainSet, held ? &validationSet : nullptr, *loss,
-                                              *optimizer, spec.config, scheduler.get());
+                                              *optimizer, spec.config, scheduler.get(),
+                                              o.checkpoint.value_or(""));
 
     std::cout << std::fixed << std::setprecision(4);
     for (std::size_t e = 0; e < history.size(); e++) {

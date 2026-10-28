@@ -22,6 +22,9 @@ class Dropout : public Layer {
     std::uint64_t seed() const noexcept;
     // "dropout rate=… seed=…": a reloaded layer restarts its mask sequence from the seed.
     void save(std::ostream &out) const override;
+    // The generator's position, so that a resumed training draws the same masks (ADR-0032).
+    void saveState(std::ostream &out) const override;
+    void loadState(std::istream &in) override;
 
   private:
     Scalar _rate;

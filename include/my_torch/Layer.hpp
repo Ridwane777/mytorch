@@ -1,5 +1,6 @@
 #pragma once
 
+#include <istream>
 #include <ostream>
 #include <string>
 #include <vector>
@@ -41,6 +42,11 @@ class Layer {
     {
         out << type() << '\n';
     }
+    // Training state other than the parameters, for checkpoints (ADR-0032): the generator of a
+    // dropout layer. Parameter-free, stateless layers keep these defaults. loadState reads what
+    // saveState wrote and throws my_torch::Error on malformed text.
+    virtual void saveState(std::ostream &) const {}
+    virtual void loadState(std::istream &) {}
     // Stable name written in the network file (#8), for example "dense" or "relu".
     virtual std::string type() const = 0;
 };

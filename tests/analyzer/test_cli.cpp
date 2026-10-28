@@ -368,3 +368,41 @@ Test(cli, validation_tail_errors)
     cr_assert_throw(my_torch::Network::fromConfig(conf), my_torch::Error);
     std::remove(conf.c_str());
 }
+
+Test(cli, train_with_a_checkpoint_resumes_from_it)
+{
+    const std::string training = "optimizer adam lr=0.01\ntrain epochs=4 batch=6 seed=3\n";
+    const std::string net = makeNetwork("ckpt", fiveLabels, training);
+    const std::string chess = path("ckpt.txt");
+    const std::string checkpoint = path("ckpt.ckpt");
+    const std::string once = path("once.nn");
+    const std::string twice = path("twice.nn");
+    write(chess, chessFile(true));
+
+    cr_assert_eq(runCli({"--train", "--save", once, "--checkpoint", checkpoint, net, chess}).code,
+                 0);
+    cr_assert(fs::exists(checkpoint));
+    // Run again: the 4 epochs are in the checkpoint, so nothing is trained and the network is
+    // the same; the epochs are still listed.
+    const Result again =
+        runCli({"--train", "--save", twice, "--checkpoint", checkpoint, net, chess});
+    const bool same = read(once) == read(twice);
+    cleanup();
+
+    cr_assert_eq(again.code, 0);
+    cr_assert(again.out.find("epoch 4/4") != std::string::npos, "%s", again.out.c_str());
+    cr_assert(same, "the resumed network differs");
+}
+
+Test(cli, checkpoint_only_works_with_train)
+{
+    try {
+        analyzer::run({"--predict", "--checkpoint", "x.ckpt", "a.nn", "b.txt"});
+        cr_assert_fail("--checkpoint was accepted with --predict");
+    } catch (const my_torch::Error &e) {
+        cr_assert(std::string(e.what()).find("--checkpoint only works with --train") !=
+                      std::string::npos,
+                  "%s", e.what());
+    }
+    cr_assert_eq(runCli({"--train", "--checkpoint"}).code, analyzer::EXIT_ERROR);
+}

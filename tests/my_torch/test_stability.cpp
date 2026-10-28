@@ -71,6 +71,8 @@ class Spy : public Optimizer {
     {
         return "spy";
     }
+    void saveState(std::ostream &) const override {}
+    void loadState(std::istream &) override {}
 
     std::vector<Scalar> received;
 };
