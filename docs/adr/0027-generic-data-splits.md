@@ -1,8 +1,8 @@
 # ADR-0027: Generic data splits in the library
 
-- **Status**: Proposed
+- **Status**: Accepted (2026-10-28)
 - **Date**: 2026-10-27
-- **Deciders**: Ridwane777, pending review by Meric-BG (public API change)
+- **Deciders**: Ridwane777
 
 ## Context
 The only split of the project is `scripts/dataset_split.py` (ADR-0017): dedupe-aware and stratified,

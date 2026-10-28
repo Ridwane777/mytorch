@@ -27,7 +27,8 @@ One file per decision, based on [TEMPLATE.md](TEMPLATE.md). An accepted ADR is n
 | [0021](0021-training-data-source.md) | Training data as a batch source, positions encoded on demand | Accepted | 2026-10-26 |
 | [0022](0022-validation-tail-and-training-pipeline.md) | Untouched validation set at the end of the training file, one-command training pipeline | Accepted | 2026-10-26 |
 | [0023](0023-final-architecture.md) | Final network architecture, 901 → 256 → 128 → 5 with the default initialisation | Accepted | 2026-10-27 |
-| [0024](0024-parallel-blocked-matmul.md) | Parallel and blocked matrix product, bit-identical results | Proposed | 2026-10-27 |
-| [0025](0025-project-license.md) | No license, all rights reserved | Proposed | 2026-10-27 |
-| [0026](0026-scores-from-the-library.md) | Published scores computed by the library | Proposed | 2026-10-27 |
-| [0027](0027-generic-data-splits.md) | Generic data splits in the library | Proposed | 2026-10-27 |
+| [0024](0024-parallel-blocked-matmul.md) | Parallel and blocked matrix product, bit-identical results | Accepted | 2026-10-27 |
+| [0025](0025-project-license.md) | No license, all rights reserved | Accepted | 2026-10-27 |
+| [0026](0026-scores-from-the-library.md) | Published scores computed by the library | Accepted | 2026-10-27 |
+| [0027](0027-generic-data-splits.md) | Generic data splits in the library | Accepted | 2026-10-27 |
+| [0028](0028-hyperparameter-search-api.md) | Hyperparameter search in the library: search space, objective, grid and random strategies, resumable log | Proposed | 2026-10-28 |

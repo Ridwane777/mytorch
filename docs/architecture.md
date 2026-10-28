@@ -40,6 +40,7 @@ and the main code never includes `bonus/`.
 | `Network` | A sequence of layers: `add`, `forward`, `predict`, `fit`, `parameters`, `save`, `load`, `fromConfig`; `ModelInfo` (encoding, labels, training settings); `DataSource` and `MatrixSource`, where `fit` takes its batches | ADR-0004, ADR-0009, ADR-0021 |
 | `Data` | Stratified split, stratified k-fold, `SubsetSource` (a view on some rows of a source), `targetClasses` | ADR-0027 |
 | `Metrics` | Confusion matrix (from probabilities or class indices), merge of classes, accuracy, precision, recall, F1, log-loss, top-k, ROC AUC, calibration, CSV/JSON export; every published score goes through it (`scripts/score.cpp`) | ADR-0011, ADR-0026 |
+| `Search` | `SearchSpace`, `Trial`, `SearchStrategy` with `GridSearch` and `RandomSearch`, `SearchResult`; resumable CSV log | ADR-0028 |
 | `Factory` | `makeLoss`, `makeOptimizer`, `makeScheduler`: build the training objects from their description in a file | ADR-0012 |
 | `Serialization.cpp` | Reader and writer of network files and configuration files | ADR-0012, ADR-0013 |
 

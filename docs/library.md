@@ -69,6 +69,7 @@ Built outside the repository against `build/libmy_torch.a` only, it printed (202
 | Splits and cross-validation | `stratifiedSplit` (parts keeping the class proportions), `stratifiedKFold`, `SubsetSource` (train on some rows of a source without copying), `targetClasses` | ADR-0027 |
 | Data that does not fit in memory | Implement `DataSource` (`size`, `inputWidth`, `targetWidth`, `fill`) and pass it to `fit`: only one batch is built at a time | ADR-0021 |
 | Evaluation | `report` from probabilities or from a confusion matrix (accuracy, precision, recall, F1), `confusion` from probabilities or from class indices, `merge` of classes into groups, `rocAuc`, `calibration`, CSV/JSON export | ADR-0011, ADR-0026 |
+| Hyperparameter search | `SearchSpace`, `GridSearch`, `RandomSearch(count, seed)`: the library chooses the combinations, your objective trains and scores each one; a CSV log makes a long search resumable | ADR-0028 |
 | Saving | `Network::save`, `Network::load`, `Network::fromConfig` (versioned text file with a checksum) | ADR-0012, ADR-0013 |
 
 ## A data source of your own
@@ -102,3 +103,23 @@ for (const my_torch::Fold &fold : folds) {
     // net.fit(train, &validation, loss, optimizer, config); then score it
 }
 ```
+
+## Hyperparameter search
+
+```cpp
+// Every combination of two hyperparameters; the objective returns a score, higher is better.
+my_torch::SearchSpace space;
+space.add("lr", {0.0003, 0.001, 0.003});
+space.add("hidden", {std::string("256x128"), std::string("512x256")});
+const my_torch::SearchResult result = my_torch::GridSearch().run(
+    space,
+    [&](const my_torch::Trial &t) {
+        // build a network with t.text("hidden"), train it with t.number("lr"), score it
+        return validationMacroF1;
+    },
+    "search.csv"); // rerunning skips the trials already in search.csv
+const my_torch::TrialResult &best = result.best();
+```
+
+`my_torch::RandomSearch(12, 7)` in place of `GridSearch()` tries 12 combinations drawn with seed 7.
+The chess network's search is `scripts/hyperparam_search.cpp`.

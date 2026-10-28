@@ -7,7 +7,7 @@ Status as of 2026-10-26:
 
 | Area | Document | Status |
 | --- | --- | --- |
-| Decisions | [adr/](adr/README.md): ADRs and index, [template](adr/TEMPLATE.md) | 27 ADRs: 0001 (Python) abandoned, 0002 to 0023 accepted, 0024 to 0027 proposed |
+| Decisions | [adr/](adr/README.md): ADRs and index, [template](adr/TEMPLATE.md) | 28 ADRs: 0001 (Python) abandoned, 0002 to 0027 accepted, 0028 proposed |
 | Data | [reading-a-fen.md](reading-a-fen.md): useful chess rules, reading a dataset line field by field, label distribution | Written |
 | Data | [verification-dataset.md](verification-dataset.md): dataset labels checked by the oracle (100% agreement) | Written |
 | Usage | [usage.md](usage.md): generate, train and predict from the command line, reproduce the final network; [configuration.md](configuration.md): every key of a configuration file; [library.md](library.md): using `my_torch` in another project | Written |
@@ -18,4 +18,4 @@ Status as of 2026-10-26:
 | Costs | [business/costs.md](business/costs.md): measured and estimated, kept apart | Written: compute measured, energy estimated with its method, developer time not tracked |
 | Commercial | [business/](business/README.md): [business-plan.md](business/business-plan.md), a teaching library: problem, market, competition, model, SWOT, roadmap | Written; market not sized (no sourced figure) |
 | Retrospective | [retrospective/](retrospective/README.md): [retrospective.md](retrospective/retrospective.md), technical, by component: where the time goes (profile), linear algebra, training loop, encoding, architecture, data and evaluation, file and pipeline; what we keep, next actions | Written on 2026-10-27, to update until the defense |
-| Defense | [defense/](defense/README.md): [demo.md](defense/demo.md) with `scripts/demo.sh`, [questions.md](defense/questions.md) linked to the ADRs, [glossary.md](defense/glossary.md) | Written; full rehearsal by the pair still to do |
+| Defense | [defense/](defense/README.md): [demo.md](defense/demo.md) with `scripts/demo.sh`, [questions.md](defense/questions.md) linked to the ADRs, [glossary.md](defense/glossary.md) | Written; used for the defense (#23 closed) |

@@ -1,8 +1,8 @@
 # ADR-0024: Parallel and blocked matrix product, bit-identical results
 
-- **Status**: Proposed
+- **Status**: Accepted (2026-10-28)
 - **Date**: 2026-10-27
-- **Deciders**: Ridwane777 (issues #25 and #33), pending review by Meric-BG
+- **Deciders**: Ridwane777 (issues #25 and #33)
 
 ## Context
 The final network (ADR-0023, 901 → 256 → 128 → 5) is trained on the whole dataset, and almost all
