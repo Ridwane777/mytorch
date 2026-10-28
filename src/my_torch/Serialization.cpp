@@ -7,7 +7,7 @@
 //   optimizer <type> key=value…
 //   scheduler <type> key=value…
 //   train epochs=… batch=… seed=… shuffle=… patience=… min_delta=… restore_best=… validation=…
-//         validation_tail=…
+//         validation_tail=… clip_norm=… clip_value=…
 //   layers <count>            then each layer as written by Layer::save
 //   end checksum=<16 hex digits>
 //
@@ -374,7 +374,8 @@ void writeConfig(std::ostream &out, const TrainConfig &c)
     out << "train epochs=" << c.epochs << " batch=" << c.batchSize << " seed=" << c.seed
         << " shuffle=" << c.shuffle << " patience=" << c.patience << " min_delta=" << c.minDelta
         << " restore_best=" << c.restoreBest << " validation=" << c.validation
-        << " validation_tail=" << c.validationTail << '\n';
+        << " validation_tail=" << c.validationTail << " clip_norm=" << c.clipNorm
+        << " clip_value=" << c.clipValue << '\n';
 }
 
 TrainConfig readTrainConfig(Reader &reader, const std::vector<std::string> &w)
@@ -406,6 +407,11 @@ TrainConfig readTrainConfig(Reader &reader, const std::vector<std::string> &w)
                 reader.fail("train: validation must be in [0, 1[");
         } else if (key == "validation_tail") {
             c.validationTail = reader.count(value);
+        } else if (key == "clip_norm" || key == "clip_value") {
+            const Scalar threshold = reader.number(value);
+            if (!(threshold >= 0))
+                reader.fail("train: " + key + " must be positive, or 0 for no clipping");
+            (key == "clip_norm" ? c.clipNorm : c.clipValue) = threshold;
         }
         else
             reader.fail("train: unknown setting '" + key + "'");
