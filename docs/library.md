@@ -62,6 +62,7 @@ Built outside the repository against `build/libmy_torch.a` only, it printed (202
 | Need | API | Details |
 | --- | --- | --- |
 | Layers | `Dense` (with L1/L2 and a choice of initialisation), `ReLU`, `LeakyReLU`, `Sigmoid`, `Tanh`, `Softmax`, `Dropout` | ADR-0004, ADR-0010, ADR-0020 |
+| Normalization | `BatchNorm` (batch statistics in training, running averages in prediction) and `LayerNorm` (per example), with trained gamma and beta, between a `Dense` and its activation | ADR-0033 |
 | Losses | `MSE`, `MAE`, `Huber`, `BinaryCrossEntropy`, `CrossEntropy` (label smoothing, class weights) | ADR-0007 |
 | Optimizers and schedules | `SGD`, `Adam`, `AdamW`, `RMSProp`, `Adagrad`; constant, step, exponential, cosine, warm-up | ADR-0008 |
 | Training | `Network::fit` with mini-batches, seeded shuffling, validation, early stopping | ADR-0009, ADR-0010 |

@@ -1,0 +1,7 @@
+network,normalization,epochs,training_seconds,seconds_per_epoch,best_validation_loss,validation_accuracy,validation_macro_f1
+shallow,none,9,409.65,45.5,0.3618,0.8588,0.8289
+shallow,batch,8,294.41,36.8,0.3385,0.8565,0.8308
+shallow,layer,7,256.54,36.6,0.3408,0.8519,0.8248
+deep,none,10,1223.65,122.4,0.3364,0.8689,0.8378
+deep,batch,9,825.97,91.8,0.3418,0.8563,0.8317
+deep,layer,11,978.39,88.9,0.3485,0.8622,0.8347

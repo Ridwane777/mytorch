@@ -63,6 +63,8 @@ softmax
 | `relu`, `sigmoid`, `tanh`, `softmax` | none |
 | `leaky_relu` | `slope` (0.01) |
 | `dropout` | `rate` (required, 0 ≤ rate < 1), `seed` (derived from the network seed when omitted) |
+| `batch_norm <features>` | `momentum` (0.1) of the running averages used in prediction, `epsilon` (1e-5); placed after a `dense`, `<features>` = its outputs (ADR-0033) |
+| `layer_norm <features>` | `epsilon` (1e-5); same placement (ADR-0033) |
 
 #### Weight initialisation (`init=<name>`)
 

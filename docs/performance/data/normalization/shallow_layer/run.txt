@@ -1,0 +1,11 @@
+date: 2026-10-29T01:15:25Z
+commit: edbc19d
+configuration: configs/normalization/shallow_layer.conf, sha256 14b9021442539f597fde13a2b6d67cc6140457abcb31be07de6ac43b67b72c03
+machine: 13th Gen Intel(R) Core(TM) i7-1355U, 14 GB RAM, Linux 7.0.0-38-generic
+compiler: g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0
+split seed: 42, fraction: 0.1, augmentation: 1, scored on: validation
+training lines: 228976, validation lines: 7155, test lines: 7155
+epochs run: 7
+training: 256.54 s, peak 172 MB
+prediction of the validation split: 0.39 s, peak 131 MB
+total: 265 s

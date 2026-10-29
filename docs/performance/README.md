@@ -27,6 +27,7 @@ performance of the code itself.
 | 12 | [12-matmul.md](12-matmul.md) | Blocked, threaded matrix product: speed and identical results | #25, #33 |
 | 13 | [13-serialization.md](13-serialization.md) | Network file size and save/load time | #8 |
 | 16 | [16-benchmarks.md](16-benchmarks.md) | Learning curves of the full trainings, accuracy per category of position, training and prediction times, cost of the checks and checkpoints | #18 |
+| 17 | [17-normalization.md](17-normalization.md) | BatchNorm and LayerNorm against no normalization, on the final architecture and a deep network | #30 |
 | **Bonus** | | | |
 | 14 | [14-stalemate.md](14-stalemate.md) | Stalemate: generated positions and a six-class network | #24 |
 
