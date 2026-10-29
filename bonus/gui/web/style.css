@@ -62,3 +62,5 @@ label { font-size: 13px; color: var(--muted); }
 #agreement.bad { color: var(--bad); font-weight: 600; }
 #moves { columns: 2; margin: 0; padding-left: 24px; font: 13px ui-monospace, monospace; }
 footer { margin-top: 24px; font-size: 13px; }
+.small { font-size: 13px; margin: 6px 0 0; }
+.saliency-row select { font: inherit; padding: 4px 8px; border: 1px solid var(--border); border-radius: 6px; background: var(--surface); }

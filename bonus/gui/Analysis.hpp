@@ -29,7 +29,8 @@ class Analysis {
     explicit Analysis(const std::string &networkPath);
 
     // JSON for one FEN: the position as read back, the network's class and the probability of
-    // each label, and the oracle's verdict. Throws my_torch::Error on an invalid FEN.
+    // each label, the oracle's verdict, and the saliency of the 64 squares, a8 to h1, by gradient
+    // and by occlusion (gui::saliency). Throws my_torch::Error on an invalid FEN.
     std::string analyze(std::string_view fen);
 
   private:

@@ -65,8 +65,10 @@ Matrix BatchNorm::forward(const Matrix &input, bool training)
 
     if (!training) {
         _normalized = Matrix();
+        _inverseStd = Matrix(1, n);
         for (std::size_t j = 0; j < n; j++) {
             const Scalar inverse = 1 / std::sqrt(_runningVariance(0, j) + _epsilon);
+            _inverseStd(0, j) = inverse;
             for (std::size_t i = 0; i < m; i++)
                 normalized(i, j) = (input(i, j) - _runningMean(0, j)) * inverse;
         }
@@ -98,8 +100,17 @@ Matrix BatchNorm::forward(const Matrix &input, bool training)
 
 Matrix BatchNorm::backward(const Matrix &gradOutput)
 {
-    if (_normalized.size() == 0)
-        throw Error("batch_norm: backward needs a training forward");
+    if (_normalized.size() == 0) {
+        // After a prediction forward the statistics are constants: dx = g·gamma / σ_running. Used
+        // for input gradients (saliency, ADR-0035); the parameters get no gradient.
+        if (_inverseStd.cols() != gradOutput.cols())
+            throw Error("batch_norm: backward needs a forward first");
+        Matrix grad(gradOutput.rows(), gradOutput.cols());
+        for (std::size_t i = 0; i < grad.rows(); i++)
+            for (std::size_t j = 0; j < grad.cols(); j++)
+                grad(i, j) = gradOutput(i, j) * _gamma(0, j) * _inverseStd(0, j);
+        return grad;
+    }
     if (gradOutput.rows() != _normalized.rows() || gradOutput.cols() != _normalized.cols())
         throw Error("batch_norm: the gradient does not match the last forward");
     const Matrix d = parameterGradients(gradOutput, _normalized, _gamma, _gammaGrad, _betaGrad);

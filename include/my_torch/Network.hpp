@@ -2,6 +2,7 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <functional>
 #include <memory>
 #include <string>
 #include <vector>
@@ -62,6 +63,8 @@ class MatrixSource : public DataSource {
 // Validation is evaluated this many examples at a time, so it never needs one big matrix.
 constexpr std::size_t EVALUATION_CHUNK = 4096;
 
+struct EpochStats;
+
 struct TrainConfig {
     std::size_t epochs = 10;
     std::size_t batchSize = 32;
@@ -86,6 +89,10 @@ struct TrainConfig {
     // gradients together so that their global L2 norm is at most clipNorm, keeping the direction.
     Scalar clipNorm = 0;
     Scalar clipValue = 0;
+    // Called by fit at the end of each epoch it runs, with the 0-based epoch and its measurements
+    // (ADR-0035), before early stopping decides; the parameters then hold the weights of that
+    // epoch and the gradients of its last batch. Not saved in network files. Empty = none.
+    std::function<void(std::size_t epoch, const EpochStats &stats)> onEpoch;
 };
 
 // The numbers 0..count-1 in an order shuffled by seed, with the same portable Fisher-Yates as
@@ -135,6 +142,13 @@ struct UncertainPrediction {
     std::vector<Scalar> disagreement;
 };
 
+class Network;
+
+// Table of the layers (ADR-0035), as Keras' summary(): index, type, output width and number of
+// trained parameters per layer, then the total. Widths follow the Dense layers from the input
+// width of the network's info.
+std::string modelSummary(Network &network);
+
 // Sequential network: layers apply in the order they were added. A graph architecture
 // (residual blocks, #31) will get its own ADR.
 class Network {
@@ -148,6 +162,10 @@ class Network {
     // result, and the network's own generators are left as they were. The last layer must output
     // probabilities (softmax). Throws my_torch::Error if passes is 0 or the network has no dropout
     // layer, since every pass would then be the same.
+    // d probability(output) / d input, one row per input row, through every layer in prediction
+    // mode (saliency, ADR-0035). The last layer must output probabilities (softmax). The
+    // parameters' gradients are left as they were. Throws my_torch::Error on an output out of range.
+    Matrix inputGradient(const Matrix &input, std::size_t output);
     UncertainPrediction predictMonteCarlo(const Matrix &input, std::size_t passes,
                                           std::uint64_t seed = 1);
 
