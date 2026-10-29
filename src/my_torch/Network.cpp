@@ -10,6 +10,7 @@
 #include <string>
 
 #include "my_torch/Checkpoint.hpp"
+#include "my_torch/Dropout.hpp"
 #include "my_torch/Error.hpp"
 #include "my_torch/Metrics.hpp"
 
@@ -216,6 +217,76 @@ Matrix Network::forward(const Matrix &input, bool training)
 Matrix Network::predict(const Matrix &input)
 {
     return forward(input, false);
+}
+
+UncertainPrediction Network::predictMonteCarlo(const Matrix &input, std::size_t passes,
+                                               std::uint64_t seed)
+{
+    if (passes == 0)
+        throw Error("predictMonteCarlo: at least one pass is needed");
+    std::vector<std::size_t> dropouts;
+    for (std::size_t i = 0; i < _layers.size(); i++)
+        if (dynamic_cast<const Dropout *>(_layers[i].get()))
+            dropouts.push_back(i);
+    if (dropouts.empty())
+        throw Error("predictMonteCarlo: the network has no dropout layer, every pass would be the "
+                    "same");
+    // Keep the generators of the network, and give each dropout layer one derived from seed.
+    std::vector<std::string> saved;
+    for (const std::size_t i : dropouts) {
+        std::ostringstream state;
+        _layers[i]->saveState(state);
+        saved.push_back(state.str());
+        std::ostringstream fresh;
+        fresh << std::mt19937_64(seed * 1000003 + i);
+        std::istringstream in(fresh.str());
+        _layers[i]->loadState(in);
+    }
+
+    const std::size_t rows = input.rows();
+    UncertainPrediction result;
+    std::vector<Scalar> passEntropy(rows, 0);
+    std::vector<std::vector<std::size_t>> votes(rows);
+    for (std::size_t pass = 0; pass < passes; pass++) {
+        Matrix output = input;
+        for (const auto &layer : _layers)
+            output = layer->forward(output, dynamic_cast<const Dropout *>(layer.get()) != nullptr);
+        if (pass == 0) {
+            result.mean = Matrix(rows, output.cols());
+            for (auto &v : votes)
+                v.assign(output.cols(), 0);
+        }
+        for (std::size_t r = 0; r < rows; r++) {
+            std::size_t top = 0;
+            for (std::size_t c = 0; c < output.cols(); c++) {
+                const Scalar p = output(r, c);
+                result.mean(r, c) += p / static_cast<Scalar>(passes);
+                if (p > 0)
+                    passEntropy[r] -= p * std::log(p) / static_cast<Scalar>(passes);
+                if (p > output(r, top))
+                    top = c;
+            }
+            votes[r][top]++;
+        }
+    }
+    for (std::size_t k = 0; k < dropouts.size(); k++) {
+        std::istringstream in(saved[k]);
+        _layers[dropouts[k]]->loadState(in);
+    }
+
+    for (std::size_t r = 0; r < rows; r++) {
+        Scalar entropy = 0;
+        for (std::size_t c = 0; c < result.mean.cols(); c++) {
+            const Scalar p = result.mean(r, c);
+            if (p > 0)
+                entropy -= p * std::log(p);
+        }
+        const std::size_t mode = *std::max_element(votes[r].begin(), votes[r].end());
+        result.entropy.push_back(entropy);
+        result.mutualInformation.push_back(std::max<Scalar>(0, entropy - passEntropy[r]));
+        result.disagreement.push_back(1 - static_cast<Scalar>(mode) / static_cast<Scalar>(passes));
+    }
+    return result;
 }
 
 std::vector<Parameter> Network::parameters()

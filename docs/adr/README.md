@@ -37,3 +37,4 @@ One file per decision, based on [TEMPLATE.md](TEMPLATE.md). An accepted ADR is n
 | [0031](0031-training-stability.md) | Training stability: gradient clipping by value and by norm, off by default; stop on the first non-finite value, naming the layer | Accepted | 2026-10-28 |
 | [0032](0032-checkpoints.md) | Checkpoints: the whole training state saved after every epoch, resumed when the file exists, identical to an uninterrupted run | Accepted | 2026-10-28 |
 | [0033](0033-normalization.md) | Normalization: BatchNorm and LayerNorm layers between a Dense and its activation, running averages in prediction; not added to the final network | Accepted | 2026-10-29 |
+| [0034](0034-mc-dropout.md) | Uncertainty by Monte Carlo dropout: N passes with only the dropout layers active; no better than the plain top probability on the chess network | Proposed | 2026-10-29 |

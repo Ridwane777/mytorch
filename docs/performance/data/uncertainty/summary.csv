@@ -1,0 +1,6 @@
+measure,prediction,accuracy,errors,auc,errors_in_most_uncertain_5pct,errors_in_most_uncertain_10pct,errors_in_most_uncertain_20pct,accuracy_on_most_certain_90pct
+plain confidence (no dropout),plain,0.9547,3244,0.9376,0.448,0.717,0.916,0.9857
+MC confidence,mc,0.9544,3261,0.9321,0.436,0.697,0.898,0.9847
+MC entropy,mc,0.9544,3261,0.9299,0.416,0.69,0.896,0.9843
+MC mutual information,mc,0.9544,3261,0.7594,0.09,0.156,0.376,0.9573
+MC disagreement,mc,0.9544,3261,0.8369,0.382,0.589,0.754,0.9792
