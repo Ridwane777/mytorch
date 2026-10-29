@@ -122,6 +122,19 @@ struct ModelInfo {
     TrainingSpec training;
 };
 
+// Monte Carlo dropout (ADR-0034): the mean of several predictions with the dropout layers active,
+// and three measures of how much they disagree, per row (natural logarithms):
+// - entropy: of the mean probabilities, the total uncertainty;
+// - mutualInformation: entropy minus the mean entropy of each pass, the part due to the passes
+//   disagreeing (the uncertainty of the model rather than of the position);
+// - disagreement: share of the passes whose top class is not the most frequent one.
+struct UncertainPrediction {
+    Matrix mean;
+    std::vector<Scalar> entropy;
+    std::vector<Scalar> mutualInformation;
+    std::vector<Scalar> disagreement;
+};
+
 // Sequential network: layers apply in the order they were added. A graph architecture
 // (residual blocks, #31) will get its own ADR.
 class Network {
@@ -130,6 +143,13 @@ class Network {
 
     Matrix forward(const Matrix &input, bool training = false);
     Matrix predict(const Matrix &input);
+    // `passes` predictions with only the Dropout layers in training mode (BatchNorm and the others
+    // stay in prediction mode), their generators seeded from `seed`: the same seed gives the same
+    // result, and the network's own generators are left as they were. The last layer must output
+    // probabilities (softmax). Throws my_torch::Error if passes is 0 or the network has no dropout
+    // layer, since every pass would then be the same.
+    UncertainPrediction predictMonteCarlo(const Matrix &input, std::size_t passes,
+                                          std::uint64_t seed = 1);
 
     // Mini-batch training (ADR-0009). Each epoch: apply the scheduler if any, shuffle with the
     // seed, then for each batch zero the gradients, forward, loss, backward, optimizer step. When
