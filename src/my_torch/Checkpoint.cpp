@@ -8,7 +8,7 @@
 
 #include "my_torch/Error.hpp"
 
-// Checkpoint file, format version 1 (ADR-0032):
+// Checkpoint file, format version 2 (ADR-0032; version 1 had no best_layers):
 //
 //   my_torch_checkpoint 1
 //   fingerprint <16 hex digits>
@@ -18,6 +18,7 @@
 //                            validationAccuracy
 //   early <best> <sinceBest>
 //   best_weights             then matrices
+//   best_layers <count>      then per layer: <length> and that many characters
 //   weights                  then matrices
 //   optimizer <length>       then that many characters
 //   layers <count>           then per layer: <length> and that many characters
@@ -31,7 +32,7 @@ namespace my_torch {
 namespace {
 
 constexpr const char *magic = "my_torch_checkpoint";
-constexpr int formatVersion = 1;
+constexpr int formatVersion = 2;
 
 std::string hex(std::uint64_t value)
 {
@@ -130,6 +131,9 @@ void saveCheckpoint(const std::string &path, std::uint64_t fingerprint, const Tr
     body << "early " << state.best << ' ' << state.sinceBest << '\n';
     body << "best_weights\n";
     writeMatrices(body, state.bestWeights);
+    body << "best_layers " << state.bestLayers.size() << '\n';
+    for (const std::string &layer : state.bestLayers)
+        writeBlock(body, layer);
     body << "weights\n";
     writeMatrices(body, state.weights);
     body << "optimizer ";
@@ -212,6 +216,16 @@ std::optional<TrainingState> loadCheckpoint(const std::string &path, std::uint64
     try {
         expect(in, path, "best_weights");
         state.bestWeights = readMatrices(in);
+    } catch (const Error &e) {
+        corrupted(path, e.what());
+    }
+    expect(in, path, "best_layers");
+    std::size_t bestLayers = 0;
+    if (!(in >> bestLayers))
+        corrupted(path, "malformed best layer count");
+    for (std::size_t i = 0; i < bestLayers; i++)
+        state.bestLayers.push_back(readBlock(in, path));
+    try {
         expect(in, path, "weights");
         state.weights = readMatrices(in);
     } catch (const Error &e) {

@@ -1,5 +1,6 @@
 #include <criterion/criterion.h>
 
+#include <algorithm>
 #include <cmath>
 #include <cstdio>
 #include <fstream>
@@ -282,4 +283,30 @@ Test(normalization, rejects_invalid_settings)
     cr_assert_throw(layer.forward(Matrix(2, 4), true), Error);
     layer.forward(Matrix(2, 3), false);
     cr_assert_throw(layer.backward(Matrix(2, 3)), Error);
+}
+
+Test(normalization, early_stopping_restores_the_running_averages_of_the_best_epoch)
+{
+    // Regression: the best weights were restored with the running averages of the last epoch,
+    // which made a BatchNorm network much worse than its best epoch.
+    Network net = normalizedNetwork();
+    CrossEntropy loss;
+    Adam adam(0.05);
+    TrainConfig config;
+    config.epochs = 60;
+    config.batchSize = 8;
+    config.patience = 2;
+    const Dataset train = data();
+    Matrix targets(20, 3);
+    for (std::size_t i = 0; i < 20; i++)
+        targets(i, (i * 2) % 3) = 1;
+    const Dataset check{gradient_check::random(20, 4, 21), targets};
+
+    const History h = net.fit(train, &check, loss, adam, config);
+    Scalar best = h[0].validationLoss;
+    for (const EpochStats &s : h)
+        best = std::min(best, s.validationLoss);
+    cr_assert_lt(h.size(), 60, "the case must stop early");
+    cr_assert_eq(loss.value(net.predict(check.inputs), check.targets), best,
+                 "the restored network is not the one of the best epoch");
 }
