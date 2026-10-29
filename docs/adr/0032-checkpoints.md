@@ -64,3 +64,8 @@ changing it: the usage line of the subject is unchanged and the option is listed
 - ❌ `Optimizer` gets two pure virtual functions: an optimizer written outside the library must now
   implement them.
 - Follow-up: save within an epoch if epochs grow past an hour.
+
+## Note (2026-10-29)
+Format version 2: the checkpoint also stores the layers' state at the best epoch (`best_layers`),
+restored with the best weights, after BatchNorm (ADR-0033) showed that restoring the best weights
+with the running averages of the last epoch breaks a network. Version 1 files are refused.

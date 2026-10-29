@@ -31,6 +31,7 @@ struct TrainingState {
     Scalar best = 0;
     std::size_t sinceBest = 0;
     std::vector<Matrix> bestWeights;
+    std::vector<std::string> bestLayers; // Layer::saveState at the best epoch (BatchNorm averages)
     std::vector<Matrix> weights;
     std::string optimizer;           // Optimizer::saveState
     std::vector<std::string> layers; // Layer::saveState, one per layer

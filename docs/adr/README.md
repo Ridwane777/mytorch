@@ -36,3 +36,4 @@ One file per decision, based on [TEMPLATE.md](TEMPLATE.md). An accepted ADR is n
 | [0030](0030-hyperparameter-search-result.md) | Candidate configuration from the hyperparameter search: lr 0.001, batches of 32, 512 → 256, dropout 0.2; below the final network at 100 % on the test split | Abandoned | 2026-10-28 |
 | [0031](0031-training-stability.md) | Training stability: gradient clipping by value and by norm, off by default; stop on the first non-finite value, naming the layer | Proposed | 2026-10-28 |
 | [0032](0032-checkpoints.md) | Checkpoints: the whole training state saved after every epoch, resumed when the file exists, identical to an uninterrupted run | Proposed | 2026-10-28 |
+| [0033](0033-normalization.md) | Normalization: BatchNorm and LayerNorm layers between a Dense and its activation, running averages in prediction; not added to the final network | Proposed | 2026-10-29 |

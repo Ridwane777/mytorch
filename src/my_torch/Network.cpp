@@ -280,6 +280,19 @@ History Network::fit(const DataSource &train, const DataSource *validation, Loss
     Scalar best = 0;
     std::size_t sinceBest = 0;
     std::vector<Matrix> bestWeights;
+    // The layers' own state at the best epoch: restoring the weights of an epoch with the running
+    // averages of a later one would break a BatchNorm network (ADR-0033).
+    std::vector<std::string> bestLayers;
+    const auto layerStates = [&] {
+        std::vector<std::string> states;
+        for (const auto &layer : _layers) {
+            std::ostringstream text;
+            text.precision(17);
+            layer->saveState(text);
+            states.push_back(text.str());
+        }
+        return states;
+    };
     std::size_t start = 0;
     const std::uint64_t print =
         checkpoint.empty() ? 0 : fingerprint(_layers, optimizer, config, train, validation);
@@ -307,6 +320,7 @@ History Network::fit(const DataSource &train, const DataSource *validation, Loss
             best = state->best;
             sinceBest = state->sinceBest;
             bestWeights = state->bestWeights;
+            bestLayers = state->bestLayers;
             start = state->epoch;
         }
     // Saves the state after `finished` epochs.
@@ -320,6 +334,7 @@ History Network::fit(const DataSource &train, const DataSource *validation, Loss
         state.best = best;
         state.sinceBest = sinceBest;
         state.bestWeights = bestWeights;
+        state.bestLayers = bestLayers;
         for (const Parameter &p : params)
             state.weights.push_back(*p.value);
         std::ostringstream optimizerState;
@@ -411,6 +426,7 @@ History Network::fit(const DataSource &train, const DataSource *validation, Loss
                 bestWeights.clear();
                 for (const Parameter &p : params)
                     bestWeights.push_back(*p.value);
+                bestLayers = layerStates();
             } else {
                 stop = ++sinceBest >= config.patience;
             }
@@ -420,9 +436,14 @@ History Network::fit(const DataSource &train, const DataSource *validation, Loss
         if (stop)
             break;
     }
-    if (config.restoreBest && !bestWeights.empty())
+    if (config.restoreBest && !bestWeights.empty()) {
         for (std::size_t i = 0; i < params.size(); i++)
             *params[i].value = bestWeights[i];
+        for (std::size_t i = 0; i < bestLayers.size() && i < _layers.size(); i++) {
+            std::istringstream text(bestLayers[i]);
+            _layers[i]->loadState(text);
+        }
+    }
     return history;
 }
 
