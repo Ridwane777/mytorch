@@ -62,6 +62,7 @@ Built outside the repository against `build/libmy_torch.a` only, it printed (202
 | Need | API | Details |
 | --- | --- | --- |
 | Layers | `Dense` (with L1/L2 and a choice of initialisation), `ReLU`, `LeakyReLU`, `Sigmoid`, `Tanh`, `Softmax`, `Dropout` | ADR-0004, ADR-0010, ADR-0020 |
+| Convolution | `BoardPlanes` (901 inputs to 19 planes of 8 × 8), `Conv2D` (im2col), `MaxPool2D`, `AvgPool2D`, `GlobalAvgPool`; rows are channel-major `channels × height × width`; `Layer::outputWidth` follows the widths | ADR-0037 |
 | Inspection | `modelSummary(network)` (layers, widths, parameters), `TrainConfig::onEpoch` (called after each epoch, to read weights and gradients), `inputGradient(input, output)` (saliency) | ADR-0035 |
 | Uncertainty | `predictMonteCarlo(input, passes, seed)`: mean of several predictions with only the dropout layers active, with the entropy, mutual information and disagreement of each row | ADR-0034 |
 | Normalization | `BatchNorm` (batch statistics in training, running averages in prediction) and `LayerNorm` (per example), with trained gamma and beta, between a `Dense` and its activation | ADR-0033 |
