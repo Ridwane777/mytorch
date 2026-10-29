@@ -1,0 +1,17 @@
+group,category,positions,correct,accuracy
+checking piece,bishop,3239,2882,0.889781
+checking piece,double check,210,178,0.847619
+checking piece,knight,4625,4390,0.949189
+checking piece,none,29756,29613,0.995194
+checking piece,pawn,1770,1640,0.926554
+checking piece,queen,20110,19060,0.947787
+checking piece,rook,11845,11038,0.93187
+pieces on the board,02-05,5650,5539,0.980354
+pieces on the board,06-10,17901,17377,0.970728
+pieces on the board,11-15,15575,14944,0.959486
+pieces on the board,16-20,16823,15921,0.946383
+pieces on the board,21-25,11929,11438,0.95884
+pieces on the board,26-32,3677,3582,0.974164
+side in check,black in check,22732,21250,0.934806
+side in check,no check,29756,29613,0.995194
+side in check,white in check,19067,17938,0.940788

@@ -40,11 +40,12 @@ weight throws `my_torch::Error`, for example
   under the sanitizers).
 - ✅ Off by default: the final network and its configuration are unchanged; older network files,
   without the two keys, still load.
-- ❌ The checks read every gradient and every weight once per batch. On a 3-epoch synthetic training
-  of the final architecture, `fit` took 3 % to 7 % longer than without them; this was measured while
-  another training ran on the same laptop, so the figure is noisy and to be measured again on an idle
-  machine.
+- ❌ The checks read every gradient and every weight once per batch. Their cost is too small to
+  measure: on a 3-epoch synthetic training of the final architecture on an idle laptop, `fit` took
+  3.93 s ± 0.38 with them against 4.02 s ± 0.21 without (5 runs each,
+  `docs/performance/16-benchmarks.md`). A first measurement, 3 % to 7 % slower, was taken while
+  another training ran and is replaced by this one.
 - ❌ Stopping loses the run: there is no checkpoint to resume a training from.
 - ❌ No per-layer clipping, and no automatic choice of the threshold.
-- Follow-up: measure the overhead on an idle machine; if it exceeds a few percent, check the weights
-  once per epoch instead of once per batch.
+- Follow-up: if a larger network makes the checks measurable, check the weights once per epoch
+  instead of once per batch.
