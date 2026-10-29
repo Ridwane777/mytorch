@@ -28,6 +28,7 @@
 #include "my_torch/Error.hpp"
 #include "my_torch/Factory.hpp"
 #include "my_torch/Network.hpp"
+#include "my_torch/Normalization.hpp"
 
 namespace my_torch {
 
@@ -77,6 +78,15 @@ void checkConsistency(const ModelInfo &info, const std::vector<std::unique_ptr<L
             throw Error("network file: labels must be non-empty single lines");
     std::size_t width = info.inputs;
     for (std::size_t i = 0; i < layers.size(); i++) {
+        std::size_t normalized = 0;
+        if (const auto *batch = dynamic_cast<const BatchNorm *>(layers[i].get()))
+            normalized = batch->features();
+        if (const auto *layer = dynamic_cast<const LayerNorm *>(layers[i].get()))
+            normalized = layer->features();
+        if (normalized != 0 && normalized != width)
+            throw Error("network file: layer " + std::to_string(i + 1) + " normalizes " +
+                        std::to_string(normalized) + " features but receives " +
+                        std::to_string(width));
         const auto *dense = dynamic_cast<const Dense *>(layers[i].get());
         if (!dense)
             continue;
@@ -352,6 +362,49 @@ std::unique_ptr<Layer> readDropout(Reader &reader, const std::vector<std::string
     return std::make_unique<Dropout>(reader.number(settings["rate"]), seed);
 }
 
+// "batch_norm <features> momentum=… epsilon=…" and "layer_norm <features> epsilon=…" (ADR-0033);
+// in a network file, the lines gamma and beta follow, then for batch_norm the running mean and
+// variance.
+std::unique_ptr<Layer> readBatchNorm(Reader &reader, const std::vector<std::string> &w,
+                                     const Context &ctx)
+{
+    if (w.size() < 2)
+        reader.fail("batch_norm: expected the number of features");
+    const std::size_t features = reader.count(w[1]);
+    auto settings = layerSettings(reader, w, 2, {"momentum", "epsilon"});
+    auto layer = std::make_unique<BatchNorm>(
+        features, settings.count("momentum") ? reader.number(settings["momentum"]) : 0.1,
+        settings.count("epsilon") ? reader.number(settings["epsilon"]) : 1e-5);
+    if (ctx.config)
+        return layer;
+    for (Matrix *row : {&layer->gamma(), &layer->beta(), &layer->runningMean(),
+                        &layer->runningVariance()}) {
+        const auto values = reader.numbers(features);
+        for (std::size_t j = 0; j < features; j++)
+            (*row)(0, j) = values[j];
+    }
+    return layer;
+}
+
+std::unique_ptr<Layer> readLayerNorm(Reader &reader, const std::vector<std::string> &w,
+                                     const Context &ctx)
+{
+    if (w.size() < 2)
+        reader.fail("layer_norm: expected the number of features");
+    const std::size_t features = reader.count(w[1]);
+    auto settings = layerSettings(reader, w, 2, {"epsilon"});
+    auto layer = std::make_unique<LayerNorm>(
+        features, settings.count("epsilon") ? reader.number(settings["epsilon"]) : 1e-5);
+    if (ctx.config)
+        return layer;
+    for (Matrix *row : {&layer->gamma(), &layer->beta()}) {
+        const auto values = reader.numbers(features);
+        for (std::size_t j = 0; j < features; j++)
+            (*row)(0, j) = values[j];
+    }
+    return layer;
+}
+
 // One entry per layer type: adding a layer to the format is one line here plus its save().
 using LayerReader = std::function<std::unique_ptr<Layer>(
     Reader &, const std::vector<std::string> &, const Context &)>;
@@ -365,6 +418,8 @@ const std::map<std::string, LayerReader> &layerReaders()
         {"tanh", readPlain<Tanh>},
         {"softmax", readPlain<Softmax>},
         {"dropout", readDropout},
+        {"batch_norm", readBatchNorm},
+        {"layer_norm", readLayerNorm},
     };
     return readers;
 }
