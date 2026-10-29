@@ -135,8 +135,8 @@ def saliency(path, test_file, out):
                    f" network {LABELS[int(r['predicted'])]} {float(r['probability']):.2f}\n"
                    f"most important: {name(int(r['top_occlusion']))}")
     fig.suptitle("Probability lost when each piece is removed (red: the piece supports the answer;"
-                 " green frame: checking piece, purple: king in check, from the oracle)")
-    fig.tight_layout()
+                 " green frame: checking piece, purple: king in check, from the oracle)", y=0.99)
+    fig.tight_layout(rect=(0, 0, 1, 0.93))
     fig.savefig(out / "saliency_examples.png", dpi=100)
     plt.close(fig)
 

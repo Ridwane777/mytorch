@@ -1,0 +1,13 @@
+saliency of 41799 positions: 52 s
+all right: 39188 positions, most important square by occlusion on the checking piece 97.6%, on it or the king 98.6%; by gradient on either 75.7%
+all wrong: 2611 positions, most important square by occlusion on the checking piece 90.3%, on it or the king 92.6%; by gradient on either 45.0%
+pawn: 1640 positions, most important square by occlusion on the checking piece 93.8%, on it or the king 95.6%; by gradient on either 71.4%
+knight: 4390 positions, most important square by occlusion on the checking piece 98.6%, on it or the king 98.9%; by gradient on either 70.9%
+bishop: 2882 positions, most important square by occlusion on the checking piece 96.9%, on it or the king 98.2%; by gradient on either 70.3%
+rook: 11038 positions, most important square by occlusion on the checking piece 97.7%, on it or the king 98.5%; by gradient on either 75.7%
+queen: 19060 positions, most important square by occlusion on the checking piece 98.6%, on it or the king 99.2%; by gradient on either 78.1%
+double check: 178 positions, most important square by occlusion on the checking piece 9.6%, on it or the king 74.7%; by gradient on either 73.6%
+date: 2026-10-29T03:53:40Z
+commit: 80a3b2c
+network: my_torch_network_final.nn, sha256 21fa995a4e09ad013fe162eeb32631d937b6d0d4ff380a57aa24474206d81f7d
+machine: 13th Gen Intel(R) Core(TM) i7-1355U, 12 threads, Linux 7.0.0-38-generic

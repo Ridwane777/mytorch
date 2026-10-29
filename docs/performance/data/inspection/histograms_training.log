@@ -1,0 +1,19 @@
+epoch 1  loss 0.717132  validation loss 0.584694  validation accuracy 0.728861
+epoch 2  loss 0.468114  validation loss 0.436886  validation accuracy 0.808106
+epoch 3  loss 0.339246  validation loss 0.394731  validation accuracy 0.827114
+epoch 4  loss 0.266592  validation loss 0.370464  validation accuracy 0.843746
+epoch 5  loss 0.215469  validation loss 0.375668  validation accuracy 0.851572
+epoch 6  loss 0.179419  validation loss 0.36179  validation accuracy 0.85884
+epoch 7  loss 0.149562  validation loss 0.398053  validation accuracy 0.855625
+epoch 8  loss 0.127009  validation loss 0.41248  validation accuracy 0.857582
+epoch 9  loss 0.108952  validation loss 0.446098  validation accuracy 0.851712
+my_torch_analyzer --train on the same files:
+epoch 1/30  loss 0.7171  accuracy 0.6637  validation loss 0.5847  validation accuracy 0.7289
+epoch 2/30  loss 0.4681  accuracy 0.7918  validation loss 0.4369  validation accuracy 0.8081
+epoch 3/30  loss 0.3392  accuracy 0.8534  validation loss 0.3947  validation accuracy 0.8271
+epoch 4/30  loss 0.2666  accuracy 0.8869  validation loss 0.3705  validation accuracy 0.8437
+epoch 5/30  loss 0.2155  accuracy 0.9100  validation loss 0.3757  validation accuracy 0.8516
+epoch 6/30  loss 0.1794  accuracy 0.9263  validation loss 0.3618  validation accuracy 0.8588
+epoch 7/30  loss 0.1496  accuracy 0.9393  validation loss 0.3981  validation accuracy 0.8556
+epoch 8/30  loss 0.1270  accuracy 0.9492  validation loss 0.4125  validation accuracy 0.8576
+epoch 9/30  loss 0.1090  accuracy 0.9571  validation loss 0.4461  validation accuracy 0.8517
