@@ -1,0 +1,6 @@
+date: 2026-10-29T03:16:44Z
+commit: 16d2399
+network: runs/candidate_network/network.nn, sha256 0a522aa593ffdeaba9ad45236556711af943eefba74da8095bde74865c2da161
+machine: 13th Gen Intel(R) Core(TM) i7-1355U, 12 threads, 14 GB RAM, Linux 7.0.0-38-generic
+positions: 71555, passes: 30, seed: 1
+plain and MC predictions: 149 s
