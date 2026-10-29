@@ -22,7 +22,7 @@ early stopping keeps the best loss, the epochs since it and the best weights.
 | Save the weights only (the network file) | Exists already | Adam restarts cold, other batches and masks: not the same training |
 | **The whole state, at the end of each epoch (chosen)** | Simple: no partial sums to save; the loop restarts at an epoch boundary | An epoch cut in the middle is run again (about 7.5 minutes for the final network) |
 | The whole state after every N batches | Loses less on a stop | Batch index, partial loss and accuracy sums, the epoch's order to save; more code and more writes |
-| **Text, 17 significant digits, checksum (chosen)** | Every double reads back exactly; same style as the network file (ADR-0012); readable | 16.3 MB for the final architecture, larger than a binary file |
+| **Text, 17 significant digits, checksum (chosen)** | Every double reads back exactly; same style as the network file (ADR-0012); readable | 16.4 MB for the final architecture, larger than a binary file |
 | Binary file | Smaller and faster | Byte order and format to define; unreadable when debugging |
 | **Resume automatically when the file exists (chosen)** | Rerunning the same command resumes, as the hyperparameter search does (ADR-0028) | A forgotten file would resume an old run: guarded by a fingerprint, see below |
 | An explicit `--resume` option | No surprise | Two commands to remember; a script must know whether it is the first run |
@@ -53,8 +53,9 @@ changing it: the usage line of the subject is unchanged and the option is listed
   and after the best epoch. Corrupted, truncated and foreign checkpoints are refused; the tests also
   pass under the sanitizers.
 - ✅ Cheap: on the final architecture (901 → 256 → 128 → 5, Adam, no early stopping), one checkpoint
-  is 16.3 MB and took 0.3 to 0.45 s to write on the development laptop, measured while another
-  training ran; an epoch of the full training takes about 450 s, so less than 0.1 %.
+  is 16.4 MB and costs about 0.24 s, measured on an idle laptop (5 runs,
+  `docs/performance/16-benchmarks.md`; a first measurement under load gave 0.3 to 0.45 s); an epoch
+  of the full training takes about 450 s, so less than 0.1 %.
 - ❌ An epoch interrupted in the middle is run again.
 - ❌ The data itself is not in the fingerprint, only its size: a different file of the same size
   would be resumed. Hashing it would cost a pass over the 2.3 million positions at every start.

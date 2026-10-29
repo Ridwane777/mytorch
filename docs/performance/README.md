@@ -26,7 +26,8 @@ performance of the code itself.
 | 11 | [11-training-memory.md](11-training-memory.md) | Training memory: whole file encoded against batch by batch | #17 |
 | 12 | [12-matmul.md](12-matmul.md) | Blocked, threaded matrix product: speed and identical results | #25, #33 |
 | 13 | [13-serialization.md](13-serialization.md) | Network file size and save/load time | #8 |
+| 16 | [16-benchmarks.md](16-benchmarks.md) | Learning curves of the full trainings, accuracy per category of position, training and prediction times, cost of the checks and checkpoints | #18 |
 | **Bonus** | | | |
 | 14 | [14-stalemate.md](14-stalemate.md) | Stalemate: generated positions and a six-class network | #24 |
 
-Still open: the remaining benchmarks of #18.
+The benchmarks of #18 are gathered in [16-benchmarks.md](16-benchmarks.md).
