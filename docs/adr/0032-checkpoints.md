@@ -1,8 +1,8 @@
 # ADR-0032: Checkpoints, saving the training state and resuming identically
 
-- **Status**: Proposed
+- **Status**: Accepted (2026-10-29)
 - **Date**: 2026-10-28
-- **Deciders**: Ridwane777 (issue #35), review by Meric-BG (the change touches `include/my_torch/`)
+- **Deciders**: Ridwane777 (issue #35), approved by Meric-BG
 
 ## Context
 A full training of the chess network lasts 1 h 45 for the final network (6,285 s, 14 epochs) and

@@ -32,8 +32,8 @@ One file per decision, based on [TEMPLATE.md](TEMPLATE.md). An accepted ADR is n
 | [0026](0026-scores-from-the-library.md) | Published scores computed by the library | Accepted | 2026-10-27 |
 | [0027](0027-generic-data-splits.md) | Generic data splits in the library | Accepted | 2026-10-27 |
 | [0028](0028-hyperparameter-search-api.md) | Hyperparameter search in the library: search space, objective, grid and random strategies, resumable log | Accepted | 2026-10-28 |
-| [0029](0029-chess-gui.md) | Chess GUI: a page with chess.js and chessboard.js, served by a local C++ server | Proposed | 2026-10-28 |
+| [0029](0029-chess-gui.md) | Chess GUI: a page with chess.js and chessboard.js, served by a local C++ server | Accepted | 2026-10-28 |
 | [0030](0030-hyperparameter-search-result.md) | Candidate configuration from the hyperparameter search: lr 0.001, batches of 32, 512 → 256, dropout 0.2; below the final network at 100 % on the test split | Abandoned | 2026-10-28 |
-| [0031](0031-training-stability.md) | Training stability: gradient clipping by value and by norm, off by default; stop on the first non-finite value, naming the layer | Proposed | 2026-10-28 |
-| [0032](0032-checkpoints.md) | Checkpoints: the whole training state saved after every epoch, resumed when the file exists, identical to an uninterrupted run | Proposed | 2026-10-28 |
-| [0033](0033-normalization.md) | Normalization: BatchNorm and LayerNorm layers between a Dense and its activation, running averages in prediction; not added to the final network | Proposed | 2026-10-29 |
+| [0031](0031-training-stability.md) | Training stability: gradient clipping by value and by norm, off by default; stop on the first non-finite value, naming the layer | Accepted | 2026-10-28 |
+| [0032](0032-checkpoints.md) | Checkpoints: the whole training state saved after every epoch, resumed when the file exists, identical to an uninterrupted run | Accepted | 2026-10-28 |
+| [0033](0033-normalization.md) | Normalization: BatchNorm and LayerNorm layers between a Dense and its activation, running averages in prediction; not added to the final network | Accepted | 2026-10-29 |

@@ -1,8 +1,8 @@
 # ADR-0029: Chess GUI: a page with chess.js and chessboard.js, served by a local C++ server
 
-- **Status**: Proposed
+- **Status**: Accepted (2026-10-29)
 - **Date**: 2026-10-28
-- **Deciders**: Ridwane777
+- **Deciders**: Ridwane777, approved by Meric-BG
 
 ## Context
 The analyzer reads a file of FEN lines and prints one label per line: right for the autograder,
