@@ -39,3 +39,4 @@ One file per decision, based on [TEMPLATE.md](TEMPLATE.md). An accepted ADR is n
 | [0033](0033-normalization.md) | Normalization: BatchNorm and LayerNorm layers between a Dense and its activation, running averages in prediction; not added to the final network | Accepted | 2026-10-29 |
 | [0034](0034-mc-dropout.md) | Uncertainty by Monte Carlo dropout: N passes with only the dropout layers active; no better than the plain top probability on the chess network | Proposed | 2026-10-29 |
 | [0035](0035-network-inspection.md) | Network inspection: model summary, epoch callback, input gradient; saliency per square by occlusion, shown in the GUI | Proposed | 2026-10-29 |
+| [0036](0036-comparison-framework.md) | Comparison framework with existing networks: PyTorch, scikit-learn, XGBoost and LightGBM only under `comparison/` in a separate virtualenv, one common protocol, a guard script; waits for the teaching staff's approval | Proposed | 2026-10-29 |
