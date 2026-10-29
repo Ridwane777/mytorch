@@ -1,6 +1,6 @@
 # ADR-0030: Candidate configuration from the hyperparameter search
 
-- **Status**: Proposed
+- **Status**: Abandoned (2026-10-29): combination 15 trained at 100 % scored below the final network on the test split, see Outcome
 - **Date**: 2026-10-28
 - **Deciders**: Ridwane777 (issue #10)
 
@@ -40,3 +40,10 @@ ADR-0023. Until then, the pushed network and ADR-0023 stay unchanged.
 - ❌ Selected on the validation split among 36 scores, so the 0.848 is optimistic.
 - Follow-up: train combination 15 on 100 % of the data, evaluate both networks on the test split,
   then write the superseding ADR or abandon this one.
+
+## Outcome (2026-10-29)
+The follow-up was run: combination 15 trained on 100 % of the data by `scripts/train_final.sh`
+(`configs/candidate_network.conf`) and scored on the test split reaches an accuracy of 0.9547 and a
+macro F1 of 0.9379, against 0.9615 and 0.9478 for the final network, for 13,661 s of training against
+6,285 s (`docs/performance/15-hyperparameters.md`, "Check at 100 % of the data"). The gain measured
+at 10 % does not hold at 100 %: the candidate is abandoned, the final network and ADR-0023 stay.

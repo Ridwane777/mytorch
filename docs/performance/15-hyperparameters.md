@@ -118,6 +118,34 @@ are **not reliable**:
 - **Combinations 25 and 26**: the project was compiled on the same machine during these trials,
   which may have lengthened them.
 
+### Check at 100 % of the data, on the test split
+
+Combination 15 was then trained like the final network, by `scripts/train_final.sh` on 100 % of the
+data (2,289,784 augmented training positions, early stopping on the 71,558 validation positions), with
+[`configs/candidate_network.conf`](../../configs/candidate_network.conf), and scored once on the
+71,555 test positions
+([`run.txt`](data/candidate-network/run.txt), [`scores.txt`](data/candidate-network/scores.txt),
+[`training.log`](data/candidate-network/training.log)). The final network's figures come from
+[10-final-network.md](10-final-network.md), same split, same machine.
+
+| Test split | Final network (lr 0.001, batch 64, 256 → 128, no dropout) | Combination 15 (lr 0.001, batch 32, 512 → 256, dropout 0.2) |
+| --- | --- | --- |
+| Accuracy | **0.9615** | 0.9547 |
+| Macro F1 | **0.9478** | 0.9379 |
+| F1 Check White / Check Black | **0.943 / 0.947** | 0.936 / 0.934 |
+| F1 Checkmate White / Checkmate Black | **0.922 / 0.931** | 0.912 / 0.912 |
+| Epochs run, training time | 14, 6,285 s | 10, 13,661 s (not reliable: other work ran on the laptop) |
+
+![Training curve of combination 15 at 100 %](data/candidate-network/curve.png)
+
+**The ranking at 10 % did not hold at 100 %**: combination 15 is 0.7 point of accuracy and 1 point
+of macro F1 below the final network, on every class but `Nothing`, for twice the training time. The
+likely cause: dropout 0.2 regularizes, which paid at 229,000 positions, where the networks overfit,
+but slows learning at 2.3 million. Its training accuracy was still 0.946 at the last epoch, and early
+stopping (patience 3) ended the run at epoch 10 while the validation accuracy was still rising
+slowly (0.9567), keeping the weights of epoch 7. **The final network is kept**; ADR-0030 is abandoned.
+Only one seed was run at 100 %, and dropout with a longer patience was not tried.
+
 ## Limits
 
 - **10 % of the data**: the ranking of combinations at 10 % may differ at 100 %, larger networks
