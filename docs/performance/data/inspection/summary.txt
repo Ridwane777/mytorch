@@ -1,0 +1,8 @@
+#   layer          output  parameters
+1   dense             256      230912
+2   relu              256           0
+3   dense             128       32896
+4   relu              128           0
+5   dense               5         645
+6   softmax             5           0
+total parameters: 264453

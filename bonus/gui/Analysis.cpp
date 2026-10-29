@@ -3,6 +3,7 @@
 #include <cstdio>
 
 #include "Oracle.hpp"
+#include "Saliency.hpp"
 #include "my_torch/Error.hpp"
 #include "my_torch/Metrics.hpp"
 
@@ -103,8 +104,20 @@ std::string Analysis::analyze(std::string_view fen)
         json += std::string(c ? "," : "") + "{\"label\":\"" + jsonEscape(labels[c]) +
                 "\",\"p\":" + p + "}";
     }
-    return json + "],\"oracle\":\"" + jsonEscape(oracle::verdictName(oracle::classify(position))) +
-           "\"}";
+    json += "],\"oracle\":\"" + jsonEscape(oracle::verdictName(oracle::classify(position))) + "\"";
+    // Squares a8 to h1, as in the FEN (ADR-0035).
+    const SquareSaliency squares = saliency(_network, _encoding, position);
+    for (const auto &[name, values] : {std::pair{"gradient", &squares.gradient},
+                                       std::pair{"occlusion", &squares.occlusion}}) {
+        json += std::string(",\"") + name + "\":[";
+        for (std::size_t s = 0; s < 64; s++) {
+            char v[32];
+            std::snprintf(v, sizeof v, "%.6f", (*values)[s]);
+            json += std::string(s ? "," : "") + v;
+        }
+        json += "]";
+    }
+    return json + "}";
 }
 
 } // namespace gui

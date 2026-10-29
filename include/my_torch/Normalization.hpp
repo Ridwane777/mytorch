@@ -23,7 +23,9 @@ class BatchNorm : public Layer {
     explicit BatchNorm(std::size_t features, Scalar momentum = 0.1, Scalar epsilon = 1e-5);
 
     Matrix forward(const Matrix &input, bool training) override;
-    // dgamma += Σ g·x̂, dbeta += Σ g; dX from the batch statistics of the last training forward.
+    // After a training forward: dgamma += Σ g·x̂, dbeta += Σ g, and dX from the batch statistics.
+    // After a prediction forward: dX = g·gamma / sqrt(running variance + epsilon), no parameter
+    // gradient (input gradients, ADR-0035).
     Matrix backward(const Matrix &gradOutput) override;
     std::vector<Parameter> parameters() override;
     std::string type() const override;
@@ -52,7 +54,7 @@ class BatchNorm : public Layer {
     Matrix _runningMean;
     Matrix _runningVariance;
     Matrix _normalized; // x̂ of the last training forward
-    Matrix _inverseStd; // 1 / sqrt(variance + epsilon) per column, same forward
+    Matrix _inverseStd; // 1 / sqrt(variance + epsilon) per column, of the last forward
 };
 
 // Layer normalization (Ba, Kiros and Hinton, 2016): mean and variance of each row over its

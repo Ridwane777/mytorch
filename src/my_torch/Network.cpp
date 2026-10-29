@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <cstdio>
 #include <limits>
 #include <numeric>
 #include <optional>
@@ -10,6 +11,7 @@
 #include <string>
 
 #include "my_torch/Checkpoint.hpp"
+#include "my_torch/Dense.hpp"
 #include "my_torch/Dropout.hpp"
 #include "my_torch/Error.hpp"
 #include "my_torch/Metrics.hpp"
@@ -217,6 +219,48 @@ Matrix Network::forward(const Matrix &input, bool training)
 Matrix Network::predict(const Matrix &input)
 {
     return forward(input, false);
+}
+
+Matrix Network::inputGradient(const Matrix &input, std::size_t output)
+{
+    const std::vector<Parameter> params = parameters();
+    std::vector<Matrix> savedGradients;
+    for (const Parameter &p : params)
+        savedGradients.push_back(*p.grad);
+    const Matrix probabilities = forward(input, false);
+    if (output >= probabilities.cols())
+        throw Error("inputGradient: output " + std::to_string(output) + " out of range");
+    Matrix grad(probabilities.rows(), probabilities.cols());
+    for (std::size_t r = 0; r < grad.rows(); r++)
+        grad(r, output) = 1;
+    for (std::size_t i = _layers.size(); i-- > 0;)
+        grad = _layers[i]->backward(grad);
+    for (std::size_t i = 0; i < params.size(); i++)
+        *params[i].grad = savedGradients[i];
+    return grad;
+}
+
+std::string modelSummary(Network &network)
+{
+    std::ostringstream out;
+    std::size_t width = network.info().inputs;
+    std::size_t total = 0;
+    out << "#   layer          output  parameters\n";
+    for (std::size_t i = 0; i < network.layers().size(); i++) {
+        Layer &layer = *network.layers()[i];
+        std::size_t count = 0;
+        for (const Parameter &p : layer.parameters())
+            count += p.value->size();
+        if (const auto *dense = dynamic_cast<const Dense *>(&layer))
+            width = dense->weights().cols();
+        total += count;
+        char line[96];
+        std::snprintf(line, sizeof line, "%-3zu %-14s %6zu  %10zu\n", i + 1, layer.type().c_str(),
+                      width, count);
+        out << line;
+    }
+    out << "total parameters: " << total << '\n';
+    return out.str();
 }
 
 UncertainPrediction Network::predictMonteCarlo(const Matrix &input, std::size_t passes,
@@ -489,6 +533,8 @@ History Network::fit(const DataSource &train, const DataSource *validation, Loss
             stats.validationAccuracy = static_cast<Scalar>(right) / static_cast<Scalar>(total);
         }
         history.push_back(stats);
+        if (config.onEpoch)
+            config.onEpoch(epoch, stats);
         bool stop = false;
         if (config.patience > 0) {
             if (bestWeights.empty() || stats.validationLoss < best - config.minDelta) {

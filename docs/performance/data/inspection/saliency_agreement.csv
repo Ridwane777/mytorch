@@ -1,0 +1,9 @@
+group,positions,top_occlusion_on_checker,top_occlusion_on_checker_or_king,top_gradient_on_checker_or_king
+all right,39188,0.9761,0.9862,0.7572
+all wrong,2611,0.9027,0.9257,0.45
+pawn,1640,0.9378,0.9561,0.714
+knight,4390,0.9856,0.9886,0.7091
+bishop,2882,0.9691,0.982,0.703
+rook,11038,0.9774,0.9849,0.7569
+queen,19060,0.9857,0.9919,0.7806
+double check,178,0.0955,0.7472,0.736

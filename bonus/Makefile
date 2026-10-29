@@ -15,7 +15,7 @@ EDA		=	my_torch_eda
 # Chess GUI (ADR-0029): links the library and the analyzer's encodings.
 GUI		=	my_torch_gui
 LIB		=	../build/libmy_torch.a
-GUI_SRC		=	gui/Analysis.cpp ../src/analyzer/Encoding.cpp $(ORACLE_SRC)
+GUI_SRC		=	gui/Analysis.cpp gui/Saliency.cpp ../src/analyzer/Encoding.cpp $(ORACLE_SRC)
 
 TESTS		=	unit_tests
 TESTS_SRC	=	$(wildcard tests/*.cpp)
@@ -34,11 +34,11 @@ $(EDA):	eda/main.cpp $(ORACLE_SRC) oracle/Oracle.hpp
 $(LIB):
 	$(MAKE) -C .. build/libmy_torch.a
 
-$(GUI):	gui/main.cpp $(GUI_SRC) gui/Analysis.hpp $(LIB)
+$(GUI):	gui/main.cpp $(GUI_SRC) gui/Analysis.hpp gui/Saliency.hpp $(LIB)
 	$(CXX) $(CXXFLAGS) $(RELEASE) -pthread -o $@ gui/main.cpp $(GUI_SRC) $(LIB) $(LDFLAGS)
 
 tests_run:	$(LIB)
-	$(CXX) $(CXXFLAGS) -O2 -pthread -o $(TESTS) $(TESTS_SRC) $(POSITIONS_SRC) gui/Analysis.cpp \
+	$(CXX) $(CXXFLAGS) -O2 -pthread -o $(TESTS) $(TESTS_SRC) $(POSITIONS_SRC) gui/Analysis.cpp gui/Saliency.cpp \
 		../src/analyzer/Encoding.cpp $(LIB) -lcriterion $(LDFLAGS)
 	./$(TESTS)
 

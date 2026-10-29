@@ -281,8 +281,8 @@ Test(normalization, rejects_invalid_settings)
     cr_assert_throw(LayerNorm(3, -1), Error);
     BatchNorm layer(3);
     cr_assert_throw(layer.forward(Matrix(2, 4), true), Error);
-    layer.forward(Matrix(2, 3), false);
-    cr_assert_throw(layer.backward(Matrix(2, 3)), Error);
+    BatchNorm fresh(3);
+    cr_assert_throw(fresh.backward(Matrix(2, 3)), Error);
 }
 
 Test(normalization, early_stopping_restores_the_running_averages_of_the_best_epoch)
