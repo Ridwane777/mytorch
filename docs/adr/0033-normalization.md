@@ -1,8 +1,8 @@
 # ADR-0033: Normalization layers, BatchNorm and LayerNorm
 
-- **Status**: Proposed
+- **Status**: Accepted (2026-10-29)
 - **Date**: 2026-10-29
-- **Deciders**: Ridwane777 (issue #30), review by Meric-BG (the change touches `include/my_torch/`)
+- **Deciders**: Ridwane777 (issue #30), approved by Meric-BG
 
 ## Context
 Issue #30 asks for batch normalization (with running statistics and a training / prediction mode)

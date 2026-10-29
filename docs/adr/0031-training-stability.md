@@ -1,8 +1,8 @@
 # ADR-0031: Training stability, gradient clipping and a stop on non-finite values
 
-- **Status**: Proposed
+- **Status**: Accepted (2026-10-29)
 - **Date**: 2026-10-28
-- **Deciders**: Ridwane777 (issue #34), review by Meric-BG (the change touches `include/my_torch/`)
+- **Deciders**: Ridwane777 (issue #34), approved by Meric-BG
 
 ## Context
 A full training of the chess network lasts hours (6,285 s for the final network,
