@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cmath>
 #include <random>
+#include <string>
 #include <vector>
 
 #include "my_torch/Error.hpp"
@@ -145,6 +146,14 @@ std::vector<Parameter> Dense::parameters()
 std::string Dense::type() const
 {
     return "dense";
+}
+
+std::size_t Dense::outputWidth(std::size_t inputWidth) const
+{
+    if (inputWidth != _weights.rows())
+        throw Error("expects " + std::to_string(_weights.rows()) + " inputs but receives " +
+                    std::to_string(inputWidth));
+    return _weights.cols();
 }
 
 Matrix &Dense::weights() noexcept

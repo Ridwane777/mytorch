@@ -5,6 +5,7 @@
 #include "my_torch/Activations.hpp"
 #include "my_torch/Checkpoint.hpp"
 #include "my_torch/Data.hpp"
+#include "my_torch/Convolution.hpp"
 #include "my_torch/Dense.hpp"
 #include "my_torch/Dropout.hpp"
 #include "my_torch/Error.hpp"
