@@ -14,7 +14,8 @@ import matplotlib.pyplot as plt
 CLASSES = [("nothing", "Nothing"), ("check_white", "Check White"), ("check_black", "Check Black"),
            ("checkmate_white", "Checkmate White"), ("checkmate_black", "Checkmate Black")]
 COLORS = {"cnn": "#3182bd", "dense": "#e6550d"}
-LABELS = {"cnn": "CNN", "dense": "Dense 901-256-128-5"}
+LABELS = {"cnn": "CNN (10 % of the training data)",
+          "dense": "Dense 901-256-128-5 (10 % of the training data)"}
 
 
 def read(path):
@@ -34,7 +35,8 @@ def grouped(ax, groups, data, title, low=None):
             ax.text(bar.get_x() + bar.get_width() / 2, v, f"{v:.4f}", ha="center", va="bottom",
                     fontsize=7, rotation=90)
     ax.set_xticks(range(len(groups)))
-    ax.set_xticklabels([label for _, label in groups], fontsize=8)
+    ax.set_xticklabels([label for _, label in groups], fontsize=8,
+                       rotation=15 if len(groups) > 2 else 0, ha="right" if len(groups) > 2 else "center")
     ax.set_title(title, fontsize=10)
     if low is not None:
         ax.set_ylim(low, 1.0 + (1.0 - low) * 0.18)
@@ -72,8 +74,9 @@ def main():
            "Prediction of the test split (s)", 1, "", "{:.2f}")
     single(fig.add_subplot(grid[1, 2]), data, "parameters", "Parameters", 1, "", "{:,.0f}")
     single(fig.add_subplot(grid[1, 3]), data, "file_bytes", "Network file (MB)", 1e-6, "", "{:.2f}")
-    fig.suptitle("Convolutional network against the dense network, test split "
-                 f"({int(data['test_positions']['cnn']):,} positions)", fontsize=12)
+    fig.suptitle("Convolutional network against the dense network, both trained on 10 % of the "
+                 f"training data, test split ({int(data['test_positions']['cnn']):,} positions)",
+                 fontsize=12)
     fig.savefig(sys.argv[2], dpi=140, bbox_inches="tight")
     print(sys.argv[2])
 
