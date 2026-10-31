@@ -1,0 +1,8 @@
+positions scored: 71555
+accuracy: 0.9615
+macro F1: 0.9478
+Nothing: precision 0.9964, recall 0.9952, F1 0.9958, support 29756
+Check White: precision 0.9502, recall 0.9354, F1 0.9427, support 13499
+Check Black: precision 0.9556, recall 0.9387, F1 0.9470, support 11314
+Checkmate White: precision 0.9112, recall 0.9339, F1 0.9224, support 9233
+Checkmate Black: precision 0.9182, recall 0.9439, F1 0.9309, support 7753

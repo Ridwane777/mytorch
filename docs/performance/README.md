@@ -22,6 +22,7 @@ performance of the code itself.
 | 15 | [15-hyperparameters.md](15-hyperparameters.md) | Learning rate, batch size, hidden layers and dropout: grid search against random search | #10 |
 | **Final network** | | | |
 | 10 | [10-final-network.md](10-final-network.md) | How good is the pushed network on the test split, with and without augmentation? | #17 |
+| 20 | [20-cnn.md](20-cnn.md) | Does a convolutional network on the board planes beat the dense network, and what do the two architectures look like? | #29 |
 | **Code performance** | | | |
 | 11 | [11-training-memory.md](11-training-memory.md) | Training memory: whole file encoded against batch by batch | #17 |
 | 12 | [12-matmul.md](12-matmul.md) | Blocked, threaded matrix product: speed and identical results | #25, #33 |
