@@ -139,7 +139,8 @@ did not change a dense network's predictions.
   about 1 point above the pushed dense network trained on ten times more (table above). For
   scale, the binomial standard error of an accuracy of 0.97 on 7,155 positions is about 0.2 points
   (a calculation, not a measurement), and the seed spread measured on the dense network in
-  [09-trials.md](09-trials.md) is 0.3 to 0.6 points of macro F1: the gap is much larger than both.
+  [09-trials.md](09-trials.md) is 0.3 to 0.6 points of macro F1: the 11-point gap over the 10 % dense network is much
+  larger than both; the 1-point gap over the pushed network is not (see above).
 - **The dense network overfits at this size**: its training loss falls to 0.109 while its
   validation loss rises from 0.362 (epoch 6, the best) to 0.446; the CNN's validation loss
   stays between 0.090 and 0.107 from epoch 8 to 12 and its best epoch is the 9th ([curves](data/cnn-vs-dense/)). The shared
