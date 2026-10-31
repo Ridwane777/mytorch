@@ -92,15 +92,20 @@ output shape and the parameter count of each layer
 - ✅ Measured outcome (`docs/performance/20-cnn.md`, 10 % of the data, same split and settings,
   one seed): the CNN (73,701 parameters, 1.5 MB) scores 0.9684 accuracy and 0.9561 macro F1 on 7,155
   test positions, the dense network (264,453 parameters, 5.6 MB) 0.8577 and 0.8302; all the CNN's
-  226 errors are check against checkmate of the same side. The pushed dense network, re-scored on
-  the full test split with this branch, still gives 0.9615 and 0.9478.
+  226 errors are check against checkmate of the same side. That dense baseline overfits at 10 % of
+  the data (best validation loss at epoch 6, then it rises): it is a data-starved reference, not
+  the dense network's best. The pushed dense network (all the data), scored on the same 7,155
+  positions with this branch, gives 0.9589 and 0.9459, so the 10 % CNN is about 1 point above it,
+  with one seed each; on the whole test split it still gives 0.9615 and 0.9478, unchanged.
 - ❌ The CNN is slower: 58 s against 28 s per epoch and 0.87 s against 0.24 s to predict the test
   split in the same session. A first pair of full-data trainings was lost and not relaunched, so
   the CNN has **not** been measured on all the data, and a time per full epoch (about 10 minutes)
   is an extrapolation.
 - **Should the CNN replace the pushed network?** Not yet, and not decided here: the evidence is a
-  10 % data run on a 7,155-position subset of the test split, which is not comparable with the
-  0.9615 of the dense network on all the data. `my_torch_network_final.nn` stays the dense network.
+  10 % data run on a 7,155-position subset of the test split, where the CNN is about 1 point above
+  the pushed dense network scored on the same positions (0.9684 against 0.9589 accuracy), one seed
+  each: a small gap, and the full-data CNN is unmeasured. `my_torch_network_final.nn` stays the
+  dense network.
   The pair decides after `sh scripts/train_final.sh configs/cnn_network.conf runs/cnn` and
   `sh scripts/bench_cnn.sh` against a full dense run on the same machine.
 - Follow-up: that full run; the status moves to Accepted when the pair has reviewed the

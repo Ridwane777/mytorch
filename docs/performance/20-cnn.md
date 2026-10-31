@@ -4,10 +4,14 @@
 the dense network of `configs/final_network.conf`, and at what cost in time, parameters and file
 size? What do the two architectures look like?
 
-**Short answer**: on 10 % of the data, yes by a wide margin (test accuracy 0.9684 against 0.8577),
-for 3.6 times fewer parameters, but twice as slow per epoch to train and 3.6 times slower to
-predict. **The full-data comparison was not run** (see "What was not measured"): the pushed network
-stays dense.
+**Short answer**: trained on the same 10 % of the data, the CNN scores 0.9684 test accuracy against
+0.8577 for the dense network, but that dense network is one that **overfits when given only 10 % of
+the data** (its best validation loss is at epoch 6, then it rises), not a converged one. The fair
+reference is the pushed dense network trained on all the data, which scores 0.9589 on the same test
+positions: the 10 % CNN is about 1 point above it, with one seed, so that gap is small and not
+established. The CNN has 3.6 times fewer parameters, but takes twice as long per epoch to train and
+3.6 times longer to predict. **The full-data CNN was not run** (see "What was not measured"): the
+pushed network stays dense.
 
 ## Method
 - Networks, both in [`configs/`](../../configs/): `final_network.conf` (dense, 901 → 256 → 128 → 5)
@@ -66,8 +70,8 @@ measurement**.
 | 1st session | 16 and 32 | 158.1 s | 26 min | 0.9357 |
 | 2nd session, same configuration and data | 32 and 64 | 154.0 s | 26 min | 0.9494 |
 
-The first two pilots decided the size (16 and 32). The same 32 and 64 pilot, repeated two days
-later, took 154 s instead of 431 s: **the laptop was 2.8 times slower during the first session**
+The first two pilots decided the size (16 and 32). The same 32 and 64 pilot, repeated about a day later
+(26 h), took 154 s instead of 431 s: **the laptop was 2.8 times slower during the first session**
 (cause not identified: power mode, temperature or another load). The 32 and 64 network is still
 above the 15-minute rule with the faster machine (26 min), so the choice stands, but the 72 and 26
 minute figures above, and the comment in `configs/cnn_network.conf`, come from the slow session.
@@ -107,16 +111,32 @@ Confusion matrices: [cnn](data/cnn-vs-dense/cnn/confusion.csv),
 [dense](data/cnn-vs-dense/dense/confusion.csv). Learning curves:
 [cnn](data/cnn-vs-dense/cnn/curve.csv), [dense](data/cnn-vs-dense/dense/curve.csv).
 
-**Reference: the pushed network on the full data.** `my_torch_network_final.nn` (dense, trained on
-all the data, [10-final-network.md](10-final-network.md)) re-scored on the 71,555 test positions
-with the build of this branch gives accuracy 0.9615 and macro F1 0.9478
-([data/cnn-vs-dense/pushed_network_rescore.txt](data/cnn-vs-dense/pushed_network_rescore.txt)):
-the same numbers as before, so the new `Layer::outputWidth` contract and the width validation did
-not change a dense network's predictions.
+**Reference: the pushed network, trained on all the data.** `my_torch_network_final.nn` (dense,
+trained on the whole augmented training split, never on a test position,
+[10-final-network.md](10-final-network.md)) scored on **the same 7,155 test positions** with the
+build of this branch (command and per-class scores in
+[data/cnn-vs-dense/pushed_network_10pct_test.txt](data/cnn-vs-dense/pushed_network_10pct_test.txt)):
+
+| Network, 7,155 test positions | Training data | Accuracy | Macro F1 |
+| --- | --- | --- | --- |
+| Dense, pushed | 100 % | 0.9589 | 0.9459 |
+| CNN (this benchmark) | 10 % | 0.9684 | 0.9561 |
+| Dense (this benchmark) | 10 % | 0.8577 | 0.8302 |
+
+The 10 % CNN is 0.95 points of accuracy and 1.02 points of macro F1 above the full-data dense
+network on these positions: it matches what the dense network needs ten times more data (and
+about 1 h 45 of training on the other laptop) to reach, with one seed each. Next to the 0.3 to 0.6
+points of macro F1 of seed spread measured on the dense network ([09-trials.md](09-trials.md)),
+a gap of about 1 point is small: suggestive, not established. Scored on the whole test split
+(71,555 positions), the pushed network gives accuracy 0.9615 and macro F1 0.9478
+([data/cnn-vs-dense/pushed_network_rescore.txt](data/cnn-vs-dense/pushed_network_rescore.txt)), the
+same numbers as before this branch: the new `Layer::outputWidth` contract and the width validation
+did not change a dense network's predictions.
 
 ## Reading
 - **The CNN learns the task from far less data.** With 10 % of the data it reaches 0.9684 accuracy
-  and 0.9561 macro F1, 11.1 and 12.6 points above the dense network trained on the same lines. For
+  and 0.9561 macro F1, 11.1 and 12.6 points above the dense network trained on the same lines, and
+  about 1 point above the pushed dense network trained on ten times more (table above). For
   scale, the binomial standard error of an accuracy of 0.97 on 7,155 positions is about 0.2 points
   (a calculation, not a measurement), and the seed spread measured on the dense network in
   [09-trials.md](09-trials.md) is 0.3 to 0.6 points of macro F1: the gap is much larger than both.
@@ -147,15 +167,17 @@ not change a dense network's predictions.
   CNN about two hours for 12 epochs, **an extrapolation, not a measurement**. The dense network's
   full-data time on the other laptop is 6,285 s ([10-final-network.md](10-final-network.md)); it
   was not re-run here, so no full-data time comparison is claimed.
-- Whether the CNN still beats the dense network at 100 % of the data (0.9615 accuracy). The
-  figures above say nothing about that: at 10 %, the dense network has not converged to what more
-  data gives it, and a 0.9684 on a 7,155-position subset is not comparable with 0.9615 on the
-  full test split.
+- Whether the CNN still beats the dense network at 100 % of the data. The 10 % CNN is only about
+  1 point above the full-data dense network on the same 7,155 positions (0.9684 against 0.9589), one
+  seed each; a CNN trained on all the data would probably improve, but that is a guess, not a
+  measurement. The 10 % dense run (0.8577) is a data-starved baseline, not the dense network's
+  best.
 - Other CNN sizes, kernels, pooling, depths, learning rates: no search was made for either network.
 
 ## Limits and next steps
 - **One seed per network, one split, 7,155 test positions**: the third decimal is not significant.
-- **Small data regime only** (see above). The first thing to run, when a few hours of the machine
+- **Small data regime only**: the CNN-against-dense comparison at equal data is at 10 %, where the
+  dense network overfits; at full data only the dense network was trained. The first thing to run, when a few hours of the machine
   are free: `sh scripts/train_final.sh configs/cnn_network.conf runs/cnn`, then `bench_cnn.sh`
   against the full dense run.
 - **Timing noise**: the machine's speed varied 2.8 times between two sessions (pilots above). The
