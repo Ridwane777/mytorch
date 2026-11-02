@@ -67,9 +67,10 @@ and rewrites only the `epochs=` key of the generated copy.
   `cnn_network.conf` is unchanged). With `patience=0` there is **no early stopping and no restore of
   the best weights**: `network.nn` is the last epoch, possibly overfitted, and the snapshots
   `network.nn.<date>-<time>.epochN.nn` (every 50 epochs) with `curve.png` are the safety net to pick an earlier
-  epoch, at a granularity of 50 epochs. The run also costs the full 200 epochs, roughly 87 hours at
-  the estimated 26 minutes per epoch (unmeasured on the instance): the maximum the user chose and,
-  with early stopping off, also the expected duration unless the run is cut by hand. `launch` prints the effective `EPOCHS`, `PATIENCE`, `PROGRESS_EVERY` and
+  epoch, at a granularity of 50 epochs (the default period is 5). A run of 200 epochs with early
+  stopping off is long: a 1 % trial measured 17.8 s per epoch on a `c7i-flex.large`, about 30 min per
+  full epoch and about 100 h for 200 epochs, scaled linearly and not measured on the larger
+  instances. `launch` prints the effective `EPOCHS`, `PATIENCE`, `PROGRESS_EVERY` and
   `MAX_MINUTES`, and a note on the early stopping.
 - ❌ If self-termination fails twice (terminate and shutdown), the instance keeps billing until
   `cleanup`: `status` must be checked after the expected duration, and the project spend limit
