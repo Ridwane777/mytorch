@@ -11,7 +11,8 @@
 #   sh scripts/aws_train.sh fetch             downloads the results into runs/aws/<name>/;
 #   sh scripts/aws_train.sh cleanup           terminates the instance if any, empties and deletes
 #                                             the bucket and the IAM role (costs stop).
-# Environment: AWS_PROFILE (default azan), INSTANCE_TYPE (default c7i.8xlarge), EPOCHS and PATIENCE
+# Environment: AWS_PROFILE (default azan), INSTANCE_TYPE (default c7i.8xlarge: refused on the
+# free plan, which accepts only small types such as c7i-flex.large), EPOCHS and PATIENCE
 # (override the epochs= and patience= of the configuration), PROGRESS_EVERY (default 5), FRACTION (default 1: the whole
 # dataset), DISK_GB (default 40), MAX_MINUTES (default: effective epochs x 40 + 60, see below),
 # RESUME_CHECKPOINT (a checkpoint.ckpt downloaded from an earlier run, uploaded to the new bucket

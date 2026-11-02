@@ -6,11 +6,12 @@
 
 ## Context
 The full-data training of the CNN ([ADR-0037](0037-convolutional-layers.md)) must not depend on a
-laptop that stays on. One epoch on the full augmented file (2,289,784 lines) is about 26 minutes
-on the laptop: an **estimate**, the 10 % pilot of
-[20-cnn.md](../performance/20-cnn.md) multiplied by 10, not a measurement, and the time on the
-rented machine is unknown. With `patience=3`, a run of about a dozen epochs (the 10 % pilot ran 12)
-would last about five hours; the configuration allows 30.
+laptop that stays on. One epoch on the full augmented file (about 2.3 million lines) takes about
+10 minutes on the laptop in its fast state, an **extrapolation** of the 58.1 s per epoch measured
+on 10 % of the data ([20-cnn.md](../performance/20-cnn.md)), and about 26 minutes in its slow state.
+A 1 % trial on a `c7i-flex.large` (2 vCPUs) measured 17.8 s per epoch, about 30 minutes per full
+epoch if scaled linearly. With `patience=3`, a run of about a dozen epochs (the 10 % pilot ran 12)
+would last several hours; the configuration allows 30.
 
 Constraints: the account is a managed AWS project with one Region (`eu-north-1`), no Spot or
 multi-Region tricks, and the people who start the run switch their computer off afterwards. The
@@ -54,6 +55,10 @@ and rewrites only the `epochs=` key of the generated copy.
   while it runs; the final `network.nn` and the checkpoint are uploaded even if the training fails.
 - ✅ No new service and no change of the library: `--progress-every` only adds a callback on
   the existing epoch hook (ADR-0035), and the training output keeps its format.
+- ❌ The default instance, `c7i.8xlarge`, is refused on the free plan (`InvalidParameterCombination`,
+  not Free Tier eligible, measured on 2026-11-02): only the small types (`c7i-flex.large`,
+  `m7i-flex.large`, `t3`, `t4g`) are accepted, so on that plan the run needs
+  `INSTANCE_TYPE=c7i-flex.large` (2 vCPUs, about 30 minutes per epoch) or the paid plan.
 - ❌ On-demand costs more than Spot (the price difference is not measured here), accepted because a
   reclaimed instance would end the run.
 - ❌ No automatic resume. After a failure the user runs `fetch` (which downloads

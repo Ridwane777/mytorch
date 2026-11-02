@@ -63,6 +63,9 @@ parallel and gathers their validation scores ([09-trials.md](performance/09-tria
 `EPOCHS` and `PATIENCE` override the `epochs=` and `patience=` of the configuration (only those keys of
 the generated copy; `PATIENCE=0` turns the early stopping off, and then the best weights are **not**
 restored: `network.nn` is the last epoch and the snapshots are the safety net), and
+`BATCH` overrides the `batch=` of the generated copy (a larger batch gives the threads more rows per
+step but fewer updates per epoch, so the result is not comparable with a run at the configuration's own
+batch size; the train line is recorded in `run.txt`; `aws_train.sh` does not pass it on), and
 `PROGRESS_EVERY` (default 5) sets the `--progress-every` of the training: the progress goes to
 `progress.log`, the checkpoint to `checkpoint.ckpt`, and running the script again with the same run
 directory and settings resumes the training. To train unattended on a temporary EC2 instance, see
