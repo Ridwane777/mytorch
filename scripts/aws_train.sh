@@ -172,7 +172,7 @@ exec > /var/log/train.log 2>&1
 shutdown -h +$MAX_MINUTES
 
 upload() {
-    aws s3 sync "/work/\$RUN" "s3://\$BUCKET/\$RUN" --only-show-errors --exclude '*' --include 'network.nn' --include 'network.nn.*.epoch*.nn' --include 'checkpoint.ckpt' --include 'progress.log' --include 'training.log' --include 'run.txt' --include 'scores.txt' --include 'predictions.txt' --include 'curve.png' --include 'confusion.png'
+    aws s3 sync "/work/\$RUN" "s3://\$BUCKET/\$RUN" --only-show-errors --exclude '*' --include 'network.nn' --include 'network.nn.*.epoch*.nn' --include 'checkpoint.ckpt' --include 'epochs.log' --include 'epochs/*' --include 'progress.log' --include 'training.log' --include 'run.txt' --include 'scores.txt' --include 'predictions.txt' --include 'curve.png' --include 'confusion.png'
     aws s3 cp /var/log/train.log "s3://\$BUCKET/train.log" --only-show-errors
 }
 

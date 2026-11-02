@@ -23,7 +23,7 @@
 # epoch and the snapshots are the safety net), PROGRESS_EVERY (default 5: every N epochs, a
 # progress line on stderr and the weights in network.nn.<date>-<time>.epochN.nn). The training
 # state is saved in checkpoint.ckpt after every epoch: running the script again with the same
-# RUN resumes it.
+# RUN resumes it. A copy of the state of every epoch is kept in RUN/epochs/ (watch_epochs.sh).
 set -eu
 export LC_ALL=C
 
@@ -97,8 +97,20 @@ if [ -n "$PATIENCE" ]; then
     sed -i "s/\([[:space:]]\)patience=[0-9]*/\1patience=$PATIENCE/" "$RUN/$NAME.conf"
 fi
 
-# 6. Generate and train.
+# 6. Generate and train. A copy of the state of every epoch is kept in $RUN/epochs/ meanwhile
+# (scripts/watch_epochs.sh), and once more when the training ends, whatever the way.
 (cd "$RUN" && "$ROOT/my_torch_generator" "$NAME.conf" 1)
+sh scripts/watch_epochs.sh "$RUN" 20 > /dev/null 2>&1 &
+WATCHER=$!
+stop_watcher() {
+    kill "$WATCHER" 2> /dev/null || true
+    sh scripts/watch_epochs.sh "$RUN" 1 once > /dev/null 2>&1 || true
+}
+trap stop_watcher EXIT
+# dash does not run the EXIT trap when a signal kills the script: turn the signals into an exit.
+trap 'exit 130' INT
+trap 'exit 143' TERM
+trap 'exit 129' HUP
 /usr/bin/time -f "%e %M" -o "$RUN/train_time.txt" \
     ./my_torch_analyzer --train --save "$RUN/network.nn" --checkpoint "$RUN/checkpoint.ckpt" \
     --progress-every "$PROGRESS_EVERY" "$RUN/${NAME}_1.nn" "$RUN/training_file.txt" \
