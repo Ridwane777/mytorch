@@ -68,7 +68,8 @@ step but fewer updates per epoch, so the result is not comparable with a run at 
 batch size; the train line is recorded in `run.txt`; `aws_train.sh` does not pass it on), and
 `PROGRESS_EVERY` (default 5) sets the `--progress-every` of the training: the progress goes to
 `progress.log`, the checkpoint to `checkpoint.ckpt`, and running the script again with the same run
-directory and settings resumes the training. Meanwhile `scripts/watch_epochs.sh` (started by
+directory and settings resumes the training (`sh scripts/resume_training.sh [CONFIG [RUN]]` does it in
+the background, with batch 384 by default, and refuses to start a run that is already going). Meanwhile `scripts/watch_epochs.sh` (started by
 `train_final.sh`) keeps a copy of the checkpoint of every epoch in `RUN/epochs/` as
 `checkpoint.<date>-<time>.epochN.ckpt`, with the epoch's measurements in `RUN/epochs.log`: a backup of
 the weights and of the training state of every epoch, from which a training can resume. To back up a
