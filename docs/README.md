@@ -7,10 +7,11 @@ Status as of 2026-10-26:
 
 | Area | Document | Status |
 | --- | --- | --- |
-| Decisions | [adr/](adr/README.md): ADRs and index, [template](adr/TEMPLATE.md) | 36 ADRs: 0001 (Python) and 0030 (search candidate) abandoned, 0034, 0035 and 0037 proposed, the 31 others accepted (0036 is on the branch docs/comparison-framework) |
+| Decisions | [adr/](adr/README.md): ADRs and index, [template](adr/TEMPLATE.md) | 37 ADRs: 0001 (Python) and 0030 (search candidate) abandoned, 0034, 0035, 0037 and 0038 proposed, the 31 others accepted (0036 is on the branch docs/comparison-framework) |
 | Data | [reading-a-fen.md](reading-a-fen.md): useful chess rules, reading a dataset line field by field, label distribution | Written |
 | Data | [verification-dataset.md](verification-dataset.md): dataset labels checked by the oracle (100% agreement) | Written |
 | Usage | [usage.md](usage.md): generate, train and predict from the command line, reproduce the final network; [configuration.md](configuration.md): every key of a configuration file; [library.md](library.md): using `my_torch` in another project | Written |
+| Usage | [adr/0038-unattended-aws-training.md](adr/0038-unattended-aws-training.md) and `scripts/aws_train.sh`: unattended training of the CNN on one on-demand EC2 instance (launch, status, fetch, cleanup), with `--progress-every` snapshots | Written; not yet run on AWS (cost estimated, [costs.md](business/costs.md)) |
 | Usage | [gui.md](gui.md): bonus chess GUI, a playable board analysed move by move by the network and the oracle (ADR-0029) | Written |
 | Architecture | [architecture.md](architecture.md): the four parts and their dependency rule, module map, main classes, generate/train/predict flows with diagrams, errors, tests | Written |
 | Performance | [performance/](performance/README.md): 14 numbered documents in reading order: data (01 dataset to 05 augmentation), training (06 initialisation to 09 trials), [10-final-network.md](performance/10-final-network.md), code performance (11 training memory, 12 matrix product, 13 network file), bonus (14 stalemate), [20-cnn.md](performance/20-cnn.md) (convolutional network against the dense network, with the [dense](performance/data/architecture_dense.png) and [convolutional](performance/data/architecture_cnn.png) architecture diagrams generated from the network files by `scripts/architecture.sh`) | Measured on test problems and on the chess dataset; the pushed network scores 0.9615 accuracy and 0.9478 macro F1 on the test split |

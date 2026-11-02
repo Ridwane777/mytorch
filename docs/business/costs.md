@@ -25,12 +25,15 @@ its method so that anyone can redo it with their own numbers.
 | Energy of the final training | between 0.03 and 0.10 kWh | Processor power between its base power (15 W) and its maximum turbo power (55 W), Intel figures for the i7-1355U, times 1.75 h. The wall power was not measured; screen and rest of the laptop not counted |
 | Electricity cost of the final training | a few cents of euro | The energy above times the user's tariff in €/kWh. With 0.25 €/kWh (an assumed tariff, to replace by the real one): 0.01 to 0.03 € |
 | Running cost for a user | none | The programs run on the user's machine: no server, no API, no subscription |
+| Unattended training of the CNN on AWS (ADR-0038) | Order of magnitude 7 to 19 USD for 5 to 13 hours, **before any run**; about 120 USD if the 200 epochs run to the end (`EPOCHS=200 PATIENCE=0`): the **upper bound** the user chose, and, since nothing stops the run earlier with early stopping off, also the expected cost unless the run is cut by hand | One on-demand `c7i.8xlarge` in `eu-north-1` at about 1.4 USD per hour (public on-demand price from memory, **to verify** on the AWS pricing page before launching) times the estimated hours: about 12 epochs (the 10 % pilot ran 12 before early stopping) to 30 epochs (the configuration's maximum) at an estimated 26 min per epoch (the 10 % pilot times 10, measured on a laptop, not on this instance); the 120 USD bound is 200 epochs, about 87 h, the 7 to 19 USD range only applies if early stopping is kept, and `MAX_MINUTES` (default 8,060 min = 134 h for 200 epochs, about 190 USD at the same price) caps a hung run. S3 (a 21 MB code and dataset archive, a 6.5 MB checkpoint and 1.6 MB snapshots, measured on a small test run, for a few days) and the transfer are negligible. These figures move to the measured table after the run |
 | Developer time | not tracked | Hours were not logged. To estimate it: hours per member times an hourly rate; the measured activity above (7 days, 121 commits) is the only reliable proxy |
 | VPS and GPU rental | not written | Their prices were not recorded in the project; a rental would only pay off for networks much larger than ours (see below) |
 
 ## 3. Reading
 - The cost of the project is almost entirely **people's time**: the compute fits on a laptop, in
   less than two hours for the final network.
+- The one exception planned is the AWS run of the CNN (ADR-0038): the only line of the project
+  that can cost real money, estimated above and not yet measured.
 - Making training cheaper in time is already done for the products (ADR-0024); the next steps and
   their limits are in [12-matmul.md](../performance/12-matmul.md). A GPU would only become worth its
   rental for networks an order of magnitude larger (ADR-0024, follow-up).
