@@ -1,6 +1,6 @@
 # Using the CNN weights (epoch 10 snapshot)
 
-`my_torch_network_cnn_epoch10.nn` holds the weights of `configs/cnn_network.conf` after **10 of at most
+`bonus/networks/my_torch_network_cnn_epoch10.nn` holds the weights of `configs/cnn_network.conf` after **10 of at most
 30 epochs** (early stopping, patience 3) of the full-dataset training (`scripts/train_final.sh`, batch 384, seed 42). The
 training was still running when it was saved: this is an **intermediate snapshot**, not the final
 network. It is the file `runs/cnn_full/network.nn.20261102-171758.epoch10.nn` written by
@@ -11,7 +11,7 @@ network. It is the file `runs/cnn_full/network.nn.20261102-171758.epoch10.nn` wr
 ```sh
 make                                              # builds ./my_torch_analyzer
 cut -d' ' -f1-6 positions.txt > boards.txt        # a FEN per line (the first six fields)
-./my_torch_analyzer --predict my_torch_network_cnn_epoch10.nn boards.txt
+./my_torch_analyzer --predict bonus/networks/my_torch_network_cnn_epoch10.nn boards.txt
 ```
 
 One line per position, in file order: `Nothing`, `Check White`, `Check Black`, `Checkmate White` or
@@ -22,14 +22,14 @@ positions with `MY_TORCH_THREADS=2` (one run, measured while another training us
 
 ```sh
 g++ -std=c++20 -O2 -pthread -Iinclude scripts/score.cpp build/libmy_torch.a -o score
-./my_torch_analyzer --predict my_torch_network_cnn_epoch10.nn boards.txt > predictions.txt
-./score my_torch_network_cnn_epoch10.nn positions_with_labels.txt predictions.txt OUT_DIRECTORY
+./my_torch_analyzer --predict bonus/networks/my_torch_network_cnn_epoch10.nn boards.txt > predictions.txt
+./score bonus/networks/my_torch_network_cnn_epoch10.nn positions_with_labels.txt predictions.txt OUT_DIRECTORY
 cat OUT_DIRECTORY/scores.txt
 ```
 
 ## Continue training from it
 
-Fine-tune with `./my_torch_analyzer --train --save NEW.nn my_torch_network_cnn_epoch10.nn TRAINING_FILE`.
+Fine-tune with `./my_torch_analyzer --train --save NEW.nn bonus/networks/my_torch_network_cnn_epoch10.nn TRAINING_FILE`.
 The training settings come from the `train` line of the `.nn` file: 30 epochs at most, batch 384, early
 stopping with patience 3, and the **last 71,558 lines** of TRAINING_FILE held out as validation. So
 TRAINING_FILE needs more than 71,558 lines (otherwise the command fails), or edit that line first.

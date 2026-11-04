@@ -10,7 +10,7 @@ Status as of 2026-10-26:
 | Decisions | [adr/](adr/README.md): ADRs and index, [template](adr/TEMPLATE.md) | 39 ADRs: 0001 (Python) and 0030 (search candidate) abandoned, 0034, 0035, 0036, 0037, 0038 and 0039 proposed, the 31 others accepted |
 | Data | [reading-a-fen.md](reading-a-fen.md): useful chess rules, reading a dataset line field by field, label distribution | Written |
 | Data | [verification-dataset.md](verification-dataset.md): dataset labels checked by the oracle (100% agreement) | Written |
-| CNN weights | [using-cnn-weights.md](using-cnn-weights.md): predict, score and continue training with `my_torch_network_cnn_epoch10.nn`, measured test results | Written |
+| CNN weights | [using-cnn-weights.md](using-cnn-weights.md): predict, score and continue training with `bonus/networks/my_torch_network_cnn_epoch10.nn`, measured test results | Written |
 | Usage | [usage.md](usage.md): generate, train and predict from the command line, reproduce the final network; [configuration.md](configuration.md): every key of a configuration file; [library.md](library.md): using `my_torch` in another project | Written |
 | Usage | [adr/0038-unattended-aws-training.md](adr/0038-unattended-aws-training.md) and `scripts/aws_train.sh`: unattended training of the CNN on one on-demand EC2 instance (launch, status, fetch, cleanup), with `--progress-every` snapshots, and `scripts/watch_epochs.sh`, a backup of the state of every epoch | Run on AWS only as a 1 % trial (full-run cost estimated, [costs.md](business/costs.md)) |
 | Usage | [gui.md](gui.md): bonus chess GUI, a playable board analysed move by move by the network and the oracle (ADR-0029) | Written |
