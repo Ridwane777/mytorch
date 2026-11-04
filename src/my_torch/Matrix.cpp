@@ -73,7 +73,8 @@ Matrix Matrix::transpose() const
     return result;
 }
 
-// Below this many multiply-adds a product stays on one thread: splitting it costs more than it saves.
+// Below this many multiply-adds a product stays on one thread: splitting it costs more than it
+// saves.
 constexpr std::size_t parallelThreshold = std::size_t{1} << 16;
 // Block sizes: a block of B (kBlock × jBlock doubles, 128 KiB) stays in the L2 cache while every
 // row of A uses it.

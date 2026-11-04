@@ -14,8 +14,7 @@ namespace {
 // Reads the settings of one component and refuses the keys nobody asked for.
 class Settings {
   public:
-    explicit Settings(const ComponentSpec &spec)
-        : _spec(spec), _used(spec.params.size(), false)
+    explicit Settings(const ComponentSpec &spec) : _spec(spec), _used(spec.params.size(), false)
     {
     }
 

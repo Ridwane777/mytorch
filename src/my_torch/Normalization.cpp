@@ -127,8 +127,8 @@ Matrix BatchNorm::backward(const Matrix &gradOutput)
             dot += d(i, j) * _normalized(i, j);
         }
         for (std::size_t i = 0; i < m; i++)
-            grad(i, j) = _inverseStd(0, j) / count *
-                         (count * d(i, j) - sum - _normalized(i, j) * dot);
+            grad(i, j) =
+                _inverseStd(0, j) / count * (count * d(i, j) - sum - _normalized(i, j) * dot);
     }
     return grad;
 }
@@ -253,8 +253,8 @@ Matrix LayerNorm::backward(const Matrix &gradOutput)
             dot += d(i, j) * _normalized(i, j);
         }
         for (std::size_t j = 0; j < n; j++)
-            grad(i, j) = _inverseStd(i, 0) / count *
-                         (count * d(i, j) - sum - _normalized(i, j) * dot);
+            grad(i, j) =
+                _inverseStd(i, 0) / count * (count * d(i, j) - sum - _normalized(i, j) * dot);
     }
     return grad;
 }

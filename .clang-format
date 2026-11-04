@@ -1,6 +1,10 @@
 BasedOnStyle: LLVM
 IndentWidth: 4
 ColumnLimit: 100
-BreakBeforeBraces: Linux
+# The style the code is written in: braces on their own line for functions only (as the Linux
+# style), but attached for namespaces, classes, structs and enums.
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterFunction: true
 AllowShortFunctionsOnASingleLine: None
 PointerAlignment: Right

@@ -29,7 +29,9 @@ struct Interrupted {};
 // the middle of an epoch, as a crash or Ctrl+C would leave it.
 class InterruptedSource : public DataSource {
   public:
-    InterruptedSource(const Dataset &data, std::size_t limit) : _source(data), _limit(limit) {}
+    InterruptedSource(const Dataset &data, std::size_t limit) : _source(data), _limit(limit)
+    {
+    }
 
     std::size_t size() const override
     {

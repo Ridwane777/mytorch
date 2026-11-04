@@ -74,8 +74,8 @@ const std::vector<std::string> boards = {
     "4r2k/8/8/8/8/8/R7/4K3 w - - 0 1",
     "4k3/8/8/8/8/8/8/4K2R w - - 0 1",
 };
-const std::vector<std::string> answers = {"Nothing",         "Check White",     "Checkmate White",
-                                          "Checkmate White", "Check Black",     "Nothing"};
+const std::vector<std::string> answers = {"Nothing",         "Check White", "Checkmate White",
+                                          "Checkmate White", "Check Black", "Nothing"};
 
 std::string chessFile(bool withAnswers)
 {
@@ -195,8 +195,7 @@ Test(cli, train_then_predict_learns_the_positions)
     cleanup();
 
     cr_assert_eq(trained.code, 0);
-    cr_assert(trained.out.find("epoch 300/300") != std::string::npos, "%s",
-              trained.out.c_str());
+    cr_assert(trained.out.find("epoch 300/300") != std::string::npos, "%s", trained.out.c_str());
     const auto out = lines(predicted.out);
     for (std::size_t i = 0; i < answers.size(); i++)
         cr_assert(out[i] == answers[i], "position %zu: %s", i, out[i].c_str());
@@ -221,8 +220,7 @@ Test(cli, a_network_without_colors_answers_without_colors)
 
 Test(cli, save_keeps_loadfile_and_no_save_overwrites_it)
 {
-    const std::string net = makeNetwork("save", fiveLabels,
-                                        "train epochs=2 batch=6 seed=3\n");
+    const std::string net = makeNetwork("save", fiveLabels, "train epochs=2 batch=6 seed=3\n");
     const std::string chess = path("save.txt");
     const std::string saved = path("saved.nn");
     write(chess, chessFile(true));
@@ -256,8 +254,7 @@ Test(cli, every_error_exits_84)
 {
     const std::string net = makeNetwork("errors", fiveLabels);
     const std::string twoLabels = makeNetwork("two", "Nothing\nCheck\n");
-    const std::string otherEncoding =
-        makeNetwork("other", fiveLabels, "", "input board-2d 768\n");
+    const std::string otherEncoding = makeNetwork("other", fiveLabels, "", "input board-2d 768\n");
     const std::string patienceOnly =
         makeNetwork("patience", fiveLabels, "train epochs=2 batch=6 seed=3 patience=2\n");
     const std::string chess = path("errors.txt");

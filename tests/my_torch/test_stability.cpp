@@ -62,7 +62,9 @@ class Spy : public Optimizer {
             for (std::size_t i = 0; i < p.grad->size(); i++)
                 received.push_back(p.grad->data()[i]);
     }
-    void setLearningRate(Scalar) override {}
+    void setLearningRate(Scalar) override
+    {
+    }
     Scalar learningRate() const override
     {
         return 0;
@@ -71,8 +73,12 @@ class Spy : public Optimizer {
     {
         return "spy";
     }
-    void saveState(std::ostream &) const override {}
-    void loadState(std::istream &) override {}
+    void saveState(std::ostream &) const override
+    {
+    }
+    void loadState(std::istream &) override
+    {
+    }
 
     std::vector<Scalar> received;
 };

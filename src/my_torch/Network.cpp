@@ -127,8 +127,8 @@ void clip(const std::vector<OwnedParameter> &params, const TrainConfig &config)
 // that a finished training can be extended, the layers and their shapes, the optimizer, and the
 // sizes of the data. The data itself is not hashed: reading it all would cost a pass over the file.
 std::uint64_t fingerprint(const std::vector<std::unique_ptr<Layer>> &layers,
-                          const Optimizer &optimizer, const TrainConfig &c,
-                          const DataSource &train, const DataSource *validation)
+                          const Optimizer &optimizer, const TrainConfig &c, const DataSource &train,
+                          const DataSource *validation)
 {
     std::ostringstream text;
     text.precision(17);
@@ -179,8 +179,7 @@ std::size_t MatrixSource::targetWidth() const
     return _data.targets.cols();
 }
 
-void MatrixSource::fill(const std::vector<std::size_t> &rows, Matrix &inputs,
-                        Matrix &targets) const
+void MatrixSource::fill(const std::vector<std::size_t> &rows, Matrix &inputs, Matrix &targets) const
 {
     for (std::size_t r = 0; r < rows.size(); r++) {
         for (std::size_t c = 0; c < inputs.cols(); c++)
@@ -526,9 +525,8 @@ History Network::fit(const DataSource &train, const DataSource *validation, Loss
                                    : chunkLoss * static_cast<Scalar>(end - begin);
                 right += countCorrect(predicted, targets);
             }
-            stats.validationLoss = total <= EVALUATION_CHUNK
-                                       ? weightedSum
-                                       : weightedSum / static_cast<Scalar>(total);
+            stats.validationLoss =
+                total <= EVALUATION_CHUNK ? weightedSum : weightedSum / static_cast<Scalar>(total);
             stats.validationAccuracy = static_cast<Scalar>(right) / static_cast<Scalar>(total);
         }
         history.push_back(stats);

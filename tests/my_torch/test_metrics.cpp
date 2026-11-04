@@ -343,14 +343,15 @@ Test(metrics, confusion_from_indices_equals_confusion_from_probabilities)
     std::vector<std::size_t> expected, predicted;
     indicesOf(cells, expected, predicted);
 
-    cr_assert(confusion(expected, predicted, 3).counts == confusion(d.probabilities, d.targets).counts);
+    cr_assert(confusion(expected, predicted, 3).counts ==
+              confusion(d.probabilities, d.targets).counts);
 }
 
 Test(metrics, report_from_confusion_equals_report_from_probabilities)
 {
     // Class 3 is never predicted and class 4 never occurs: both give 0, not a division by zero.
-    const std::vector<Cell> cells = {{0, 0, 7}, {0, 1, 2}, {1, 1, 4}, {1, 2, 1}, {2, 2, 3},
-                                     {3, 0, 2}, {3, 2, 1}, {0, 4, 1}};
+    const std::vector<Cell> cells = {{0, 0, 7}, {0, 1, 2}, {1, 1, 4}, {1, 2, 1},
+                                     {2, 2, 3}, {3, 0, 2}, {3, 2, 1}, {0, 4, 1}};
     const Data d = fromCells(cells, 5);
     std::vector<std::size_t> expected, predicted;
     indicesOf(cells, expected, predicted);
@@ -375,15 +376,12 @@ Test(metrics, report_from_confusion_equals_report_from_probabilities)
 Test(metrics, merge_into_families)
 {
     // Classes: Nothing, Check White, Check Black, Checkmate White, Checkmate Black.
-    ConfusionMatrix m{{{10, 1, 0, 0, 0},
-                       {0, 8, 0, 2, 0},
-                       {1, 0, 7, 0, 3},
-                       {0, 1, 0, 6, 0},
-                       {0, 0, 2, 0, 5}}};
+    ConfusionMatrix m{
+        {{10, 1, 0, 0, 0}, {0, 8, 0, 2, 0}, {1, 0, 7, 0, 3}, {0, 1, 0, 6, 0}, {0, 0, 2, 0, 5}}};
     const ConfusionMatrix families = merge(m, {0, 1, 1, 2, 2}, 3);
 
-    cr_assert(families.counts == (std::vector<std::vector<std::size_t>>{{10, 1, 0}, {1, 15, 5},
-                                                                        {0, 3, 11}}));
+    cr_assert(families.counts ==
+              (std::vector<std::vector<std::size_t>>{{10, 1, 0}, {1, 15, 5}, {0, 3, 11}}));
     cr_assert_eq(families.total(), m.total());
 }
 

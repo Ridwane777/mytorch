@@ -47,10 +47,10 @@ Test(factory, rejects_unknown_or_invalid_settings)
     cr_assert_throw(makeLoss({"focal", {}}), Error);
     cr_assert_throw(makeOptimizer({"lion", {}}), Error);
     cr_assert_throw(makeScheduler({"cyclic", {}}), Error);
-    cr_assert_throw(makeOptimizer({"adam", {{"ir", "0.1"}}}), Error);     // typo of lr
+    cr_assert_throw(makeOptimizer({"adam", {{"ir", "0.1"}}}), Error); // typo of lr
     cr_assert_throw(makeOptimizer({"adam", {{"lr", "fast"}}}), Error);
     cr_assert_throw(makeOptimizer({"sgd", {{"nesterov", "2"}}}), Error);
-    cr_assert_throw(makeOptimizer({"sgd", {{"lr", "-1"}}}), Error);       // constructor check
+    cr_assert_throw(makeOptimizer({"sgd", {{"lr", "-1"}}}), Error); // constructor check
     cr_assert_throw(makeLoss({"cross_entropy", {{"weights", "1,x"}}}), Error);
     cr_assert_throw(makeScheduler({"cosine", {{"epochs", "-3"}}}), Error);
     cr_assert_throw(makeScheduler({"none", {{"base", "1"}}}), Error);

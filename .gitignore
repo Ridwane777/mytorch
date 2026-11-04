@@ -13,6 +13,7 @@ build/
 
 # Python scripts (graphs, benchmarks)
 .venv/
+.venv-format/
 __pycache__/
 
 # Datasets: too large, shown during the defense (see README)

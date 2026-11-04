@@ -116,8 +116,7 @@ class Reader {
         std::size_t number; // 1-based line number in the file
     };
 
-    Reader(const std::string &path, std::vector<Line> lines)
-        : _path(path), _lines(std::move(lines))
+    Reader(const std::string &path, std::vector<Line> lines) : _path(path), _lines(std::move(lines))
     {
     }
 
@@ -215,9 +214,8 @@ class Reader {
 };
 
 // "key=value" words, from index first on.
-std::vector<std::pair<std::string, std::string>> keyValues(Reader &reader,
-                                                           const std::vector<std::string> &w,
-                                                           std::size_t first)
+std::vector<std::pair<std::string, std::string>>
+keyValues(Reader &reader, const std::vector<std::string> &w, std::size_t first)
 {
     std::vector<std::pair<std::string, std::string>> out;
     for (std::size_t i = first; i < w.size(); i++) {
@@ -349,7 +347,7 @@ std::size_t requiredCount(Reader &reader, const std::vector<std::string> &w,
 }
 
 PlaneShape readShape(Reader &reader, const std::vector<std::string> &w,
-                std::map<std::string, std::string> &settings)
+                     std::map<std::string, std::string> &settings)
 {
     return {requiredCount(reader, w, settings, "channels"),
             requiredCount(reader, w, settings, "height"),
@@ -361,15 +359,12 @@ PlaneShape readShape(Reader &reader, const std::vector<std::string> &w,
 std::unique_ptr<Layer> readConv2D(Reader &reader, const std::vector<std::string> &w,
                                   const Context &ctx)
 {
-    auto settings = layerSettings(reader, w, 1,
-                                  ctx.config ? std::vector<std::string>{"channels", "height",
-                                                                        "width", "filters",
-                                                                        "kernel", "stride",
-                                                                        "padding", "init"}
-                                             : std::vector<std::string>{"channels", "height",
-                                                                        "width", "filters",
-                                                                        "kernel", "stride",
-                                                                        "padding"});
+    auto settings = layerSettings(
+        reader, w, 1,
+        ctx.config ? std::vector<std::string>{"channels", "height", "width", "filters", "kernel",
+                                              "stride", "padding", "init"}
+                   : std::vector<std::string>{"channels", "height", "width", "filters", "kernel",
+                                              "stride", "padding"});
     const PlaneShape input = readShape(reader, w, settings);
     const std::size_t filters = requiredCount(reader, w, settings, "filters");
     const std::size_t kernel = requiredCount(reader, w, settings, "kernel");
@@ -394,8 +389,7 @@ std::unique_ptr<Layer> readConv2D(Reader &reader, const std::vector<std::string>
 
 // "max_pool2d channels=… height=… width=… size=… stride=…" and the same for avg_pool2d.
 template <typename T>
-std::unique_ptr<Layer> readPool(Reader &reader, const std::vector<std::string> &w,
-                                const Context &)
+std::unique_ptr<Layer> readPool(Reader &reader, const std::vector<std::string> &w, const Context &)
 {
     auto settings = layerSettings(reader, w, 1, {"channels", "height", "width", "size", "stride"});
     const PlaneShape input = readShape(reader, w, settings);
@@ -431,13 +425,12 @@ std::unique_ptr<Layer> readBoardPlanes(Reader &reader, const std::vector<std::st
     auto settings = layerSettings(reader, w, 1, {"inputs", "scalars", "count"});
     const std::size_t inputs = requiredCount(reader, w, settings, "inputs");
     const std::size_t scalars = requiredCount(reader, w, settings, "scalars");
-    return std::make_unique<ToPlanes>(inputs, scalars,
-                                      requiredCount(reader, w, settings, "count"), 8, 8);
+    return std::make_unique<ToPlanes>(inputs, scalars, requiredCount(reader, w, settings, "count"),
+                                      8, 8);
 }
 
 template <typename T>
-std::unique_ptr<Layer> readPlain(Reader &reader, const std::vector<std::string> &w,
-                                 const Context &)
+std::unique_ptr<Layer> readPlain(Reader &reader, const std::vector<std::string> &w, const Context &)
 {
     layerSettings(reader, w, 1, {});
     return std::make_unique<T>();
@@ -479,8 +472,8 @@ std::unique_ptr<Layer> readBatchNorm(Reader &reader, const std::vector<std::stri
         settings.count("epsilon") ? reader.number(settings["epsilon"]) : 1e-5);
     if (ctx.config)
         return layer;
-    for (Matrix *row : {&layer->gamma(), &layer->beta(), &layer->runningMean(),
-                        &layer->runningVariance()}) {
+    for (Matrix *row :
+         {&layer->gamma(), &layer->beta(), &layer->runningMean(), &layer->runningVariance()}) {
         const auto values = reader.numbers(features);
         for (std::size_t j = 0; j < features; j++)
             (*row)(0, j) = values[j];
@@ -508,8 +501,8 @@ std::unique_ptr<Layer> readLayerNorm(Reader &reader, const std::vector<std::stri
 }
 
 // One entry per layer type: adding a layer to the format is one line here plus its save().
-using LayerReader = std::function<std::unique_ptr<Layer>(
-    Reader &, const std::vector<std::string> &, const Context &)>;
+using LayerReader = std::function<std::unique_ptr<Layer>(Reader &, const std::vector<std::string> &,
+                                                         const Context &)>;
 const std::map<std::string, LayerReader> &layerReaders()
 {
     static const std::map<std::string, LayerReader> readers = {
@@ -575,8 +568,7 @@ TrainConfig readTrainConfig(Reader &reader, const std::vector<std::string> &w)
             if (!(threshold >= 0))
                 reader.fail("train: " + key + " must be positive, or 0 for no clipping");
             (key == "clip_norm" ? c.clipNorm : c.clipValue) = threshold;
-        }
-        else
+        } else
             reader.fail("train: unknown setting '" + key + "'");
     }
     if (c.validation > 0 && c.validationTail > 0)
@@ -682,8 +674,8 @@ void Network::save(const std::string &path) const
 
 void Network::saveText(const std::string &path) const
 {
-    const std::string text = magic + std::string(" ") + std::to_string(formatVersion) + "\n" +
-                             records();
+    const std::string text =
+        magic + std::string(" ") + std::to_string(formatVersion) + "\n" + records();
     writeFile(path, text + "end checksum=" + hex(fnv1a(text, text.size())) + "\n");
 }
 

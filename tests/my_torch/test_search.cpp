@@ -28,8 +28,8 @@ SearchSpace sampleSpace()
 // Known maximum at lr = 0.01, batch = 64, layers = "b".
 Scalar score(const Trial &t)
 {
-    return -std::abs(std::log10(t.number("lr")) + 2) + static_cast<Scalar>(t.integer("batch")) / 64 +
-           (t.text("layers") == "b" ? 1 : 0);
+    return -std::abs(std::log10(t.number("lr")) + 2) +
+           static_cast<Scalar>(t.integer("batch")) / 64 + (t.text("layers") == "b" ? 1 : 0);
 }
 
 std::string tempPath(const char *name)
@@ -116,7 +116,8 @@ Test(search, an_interrupted_search_resumes_from_its_log)
     cr_assert_eq(resumed.trials().size(), 12);
     for (std::size_t i = 0; i < 12; i++) {
         cr_assert_eq(resumed.trials()[i].trial.index(), fresh.trials()[i].trial.index());
-        cr_assert_eq(resumed.trials()[i].score, fresh.trials()[i].score, "scores read back exactly");
+        cr_assert_eq(resumed.trials()[i].score, fresh.trials()[i].score,
+                     "scores read back exactly");
     }
     // A log written for another space is refused.
     SearchSpace other;

@@ -6,11 +6,16 @@ on:
 
 jobs:
   build-and-test:
-    runs-on: ubuntu-latest
+    # A fixed image: ubuntu-latest moves to a new Ubuntu, and its packages, without notice.
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Install
-        run: sudo apt-get update && sudo apt-get install -y libcriterion-dev clang-format
+        # clang-format pinned through pip: the same version locally (CONTRIBUTING.md) and here.
+        run: |
+          sudo apt-get update && sudo apt-get install -y libcriterion-dev
+          pipx install clang-format==18.1.8
+          clang-format --version
       - name: Format
         run: find include src tests -name '*.[ch]pp' | xargs clang-format --dry-run --Werror
       - name: Build

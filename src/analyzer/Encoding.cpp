@@ -57,7 +57,7 @@ std::array<bool, 64> attackedBy(const Position &position, Color color)
         if (row >= 0 && row < 8 && column >= 0 && column < 8)
             attacked[static_cast<std::size_t>(row * 8 + column)] = true;
     };
-    const auto slide = [&](int row, int column, const int (&directions)[4][2]) {
+    const auto slide = [&](int row, int column, const int(&directions)[4][2]) {
         for (const auto &direction : directions) {
             int r = row + direction[0];
             int c = column + direction[1];

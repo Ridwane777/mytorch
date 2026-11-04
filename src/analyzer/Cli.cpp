@@ -196,9 +196,9 @@ int train(const Options &o)
                       << "  validation accuracy " << s.validationAccuracy << "  saved " << snapshot
                       << std::endl;
         };
-    const my_torch::History history = net.fit(trainSet, held ? &validationSet : nullptr, *loss,
-                                              *optimizer, config, scheduler.get(),
-                                              o.checkpoint.value_or(""));
+    const my_torch::History history =
+        net.fit(trainSet, held ? &validationSet : nullptr, *loss, *optimizer, config,
+                scheduler.get(), o.checkpoint.value_or(""));
 
     std::cout << std::fixed << std::setprecision(4);
     for (std::size_t e = 0; e < history.size(); e++) {
