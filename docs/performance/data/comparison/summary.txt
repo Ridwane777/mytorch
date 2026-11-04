@@ -1,0 +1,15 @@
+Logistic regression: accuracy 0.6500, file 18,695 B
+Random forest: accuracy 0.7659, file 3,427,552,688 B
+scikit-learn MLP: accuracy 0.9165, file 9,518,770 B
+LightGBM: accuracy 0.9675, file 113,404,788 B
+my_torch dense (pushed): accuracy 0.9615, file 2,123,677 B
+my_torch CNN (epoch 10): accuracy 0.9807, file 594,204 B
+Rule-based oracle: accuracy 1.0000, file 0 B
+my_torch library: 5572 lines in 43 files
+my_torch library tests: 4396 lines in 24 files
+chess analyzer (FEN, encodings, CLI): 893 lines in 9 files
+rule-based oracle: 386 lines in 3 files
+PyTorch twin (model + training): 427 lines in 2 files
+classical baselines: 129 lines in 1 files
+Python bindings: 115 lines in 1 files
+epoch seconds: {'dense my_torch': 20.9, 'dense PyTorch f64': 4.9, 'dense PyTorch f32': 3.2, 'cnn my_torch': 42.0, 'cnn PyTorch f64': 12.8, 'cnn PyTorch f32': 7.3}
