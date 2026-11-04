@@ -38,7 +38,7 @@ struct Shape {
 };
 
 // Sizes below and above the blocks and the parallel threshold, and the shapes of the network.
-const std::vector<Shape> shapes = {{1, 1, 1},     {7, 13, 5},     {3, 65, 257},
+const std::vector<Shape> shapes = {{1, 1, 1},      {7, 13, 5},     {3, 65, 257},
                                    {64, 901, 256}, {64, 256, 128}, {130, 70, 300}};
 
 } // namespace
@@ -50,8 +50,7 @@ Test(parallel, blocked_product_equals_the_plain_loop_bit_for_bit)
         for (const Shape &s : shapes) {
             const Matrix a = gradient_check::random(s.n, s.k, 1);
             const Matrix b = gradient_check::random(s.k, s.m, 2);
-            cr_assert(same(a.matmul(b), naive(a, b)), "%zu threads, %zux%zux%zu", t, s.n, s.k,
-                      s.m);
+            cr_assert(same(a.matmul(b), naive(a, b)), "%zu threads, %zux%zux%zu", t, s.n, s.k, s.m);
         }
     }
     setThreadCount(0);

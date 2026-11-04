@@ -77,20 +77,19 @@ Test(validation, cross_validate_calls_the_trainer_once_per_fold_on_complementary
     std::vector<std::size_t> calls;
     std::vector<std::size_t> held(50, 0);
 
-    const CrossValidation result =
-        crossValidate(source, 5, 11,
-                      [&](const DataSource &train, const DataSource &validation, std::size_t fold) {
-                          calls.push_back(fold);
-                          cr_assert_eq(train.size() + validation.size(), 50);
-                          cr_assert_eq(validation.size(), 10);
-                          const auto trained = rowsOf(train);
-                          for (const std::size_t id : rowsOf(validation)) {
-                              held[id]++;
-                              cr_assert(std::find(trained.begin(), trained.end(), id) ==
-                                        trained.end());
-                          }
-                          return reportFor(fold);
-                      });
+    const CrossValidation result = crossValidate(
+        source, 5, 11,
+        [&](const DataSource &train, const DataSource &validation, std::size_t fold) {
+            calls.push_back(fold);
+            cr_assert_eq(train.size() + validation.size(), 50);
+            cr_assert_eq(validation.size(), 10);
+            const auto trained = rowsOf(train);
+            for (const std::size_t id : rowsOf(validation)) {
+                held[id]++;
+                cr_assert(std::find(trained.begin(), trained.end(), id) == trained.end());
+            }
+            return reportFor(fold);
+        });
 
     cr_assert(calls == (std::vector<std::size_t>{0, 1, 2, 3, 4}));
     for (const std::size_t n : held)

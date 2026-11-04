@@ -170,9 +170,9 @@ Test(generator, help_exits_0)
 Test(generator, configuration_comments_defaults_and_order)
 {
     // Comments, blank lines, sections in any order, loss and optimizer left to their defaults.
-    const std::string conf = writeConfig(
-        "order", "# a comment\n\n" + header + "  # indented comment\ntrain epochs=3\n\n" +
-                     "scheduler none\n" + body);
+    const std::string conf = writeConfig("order", "# a comment\n\n" + header +
+                                                      "  # indented comment\ntrain epochs=3\n\n" +
+                                                      "scheduler none\n" + body);
     const my_torch::Network net = my_torch::Network::fromConfig(conf);
     cleanup("order");
 
@@ -183,8 +183,8 @@ Test(generator, configuration_comments_defaults_and_order)
 
 Test(generator, dropout_seed_is_derived_per_network)
 {
-    const std::string conf = writeConfig(
-        "drop", header + "layers 4\ndense 3 2\ndropout rate=0.5\ndense 2 2\nsoftmax\n");
+    const std::string conf =
+        writeConfig("drop", header + "layers 4\ndense 3 2\ndropout rate=0.5\ndense 2 2\nsoftmax\n");
     const auto seedOf = [&](std::uint64_t index) {
         const my_torch::Network net = my_torch::Network::fromConfig(conf, index);
         return dynamic_cast<const my_torch::Dropout *>(net.layers()[1].get())->seed();

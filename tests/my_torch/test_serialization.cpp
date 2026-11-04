@@ -1,8 +1,8 @@
 #include <criterion/criterion.h>
 
+#include <cstdint>
 #include <cstdio>
 #include <fstream>
-#include <cstdint>
 #include <memory>
 #include <sstream>
 #include <string>
@@ -148,8 +148,8 @@ Test(serialization, round_trip_keeps_settings_and_model_info)
     cr_assert(b.training.scheduler.type == "cosine" &&
               b.training.scheduler.params == a.training.scheduler.params);
     const TrainConfig &c = b.training.config;
-    cr_assert(c.epochs == 7 && c.batchSize == 3 && c.seed == 99 && !c.shuffle &&
-              c.patience == 2 && c.minDelta == 0.001 && !c.restoreBest && c.validationTail == 17);
+    cr_assert(c.epochs == 7 && c.batchSize == 3 && c.seed == 99 && !c.shuffle && c.patience == 2 &&
+              c.minDelta == 0.001 && !c.restoreBest && c.validationTail == 17);
 }
 
 Test(serialization, saving_a_loaded_network_gives_the_same_file)

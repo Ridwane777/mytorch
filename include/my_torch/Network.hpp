@@ -165,7 +165,8 @@ class Network {
     // layer, since every pass would then be the same.
     // d probability(output) / d input, one row per input row, through every layer in prediction
     // mode (saliency, ADR-0035). The last layer must output probabilities (softmax). The
-    // parameters' gradients are left as they were. Throws my_torch::Error on an output out of range.
+    // parameters' gradients are left as they were. Throws my_torch::Error on an output out of
+    // range.
     Matrix inputGradient(const Matrix &input, std::size_t output);
     UncertainPrediction predictMonteCarlo(const Matrix &input, std::size_t passes,
                                           std::uint64_t seed = 1);
@@ -184,9 +185,9 @@ class Network {
                 Optimizer &optimizer, const TrainConfig &config,
                 const Scheduler *scheduler = nullptr, const std::string &checkpoint = {});
     // Same, on matrices held in memory (wrapped in MatrixSource).
-    History fit(const Dataset &train, const Dataset *validation, Loss &loss,
-                Optimizer &optimizer, const TrainConfig &config,
-                const Scheduler *scheduler = nullptr, const std::string &checkpoint = {});
+    History fit(const Dataset &train, const Dataset *validation, Loss &loss, Optimizer &optimizer,
+                const TrainConfig &config, const Scheduler *scheduler = nullptr,
+                const std::string &checkpoint = {});
 
     std::vector<Parameter> parameters();
     const std::vector<std::unique_ptr<Layer>> &layers() const noexcept;

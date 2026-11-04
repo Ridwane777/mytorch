@@ -12,8 +12,9 @@ namespace {
 Matrix spreadWeights(std::size_t rows, std::size_t cols)
 {
     // Weights kept away from 0, where L1 is not differentiable.
-    return gradient_check::random(rows, cols, 21).map(
-        [](Scalar w) { return w + (w >= 0 ? 0.1 : -0.1); });
+    return gradient_check::random(rows, cols, 21).map([](Scalar w) {
+        return w + (w >= 0 ? 0.1 : -0.1);
+    });
 }
 
 } // namespace
@@ -52,8 +53,8 @@ Test(regularization, gradient_includes_the_penalty)
         w = saved;
         const Scalar numeric = (plus - minus) / (2 * h);
         const Scalar a = analytic.data()[i];
-        worst = std::max(worst,
-                         std::abs(a - numeric) / std::max(1.0, std::abs(a) + std::abs(numeric)));
+        worst =
+            std::max(worst, std::abs(a - numeric) / std::max(1.0, std::abs(a) + std::abs(numeric)));
     }
     cr_assert_lt(worst, gradient_check::tolerance);
 }

@@ -78,8 +78,7 @@ class PositionSource : public my_torch::DataSource {
   public:
     // Keeps references: samples, classes and encoding must outlive the source.
     PositionSource(const std::vector<Sample> &samples, const std::vector<std::size_t> &classes,
-                   std::size_t classCount, const Encoding &encoding,
-                   std::vector<std::size_t> rows);
+                   std::size_t classCount, const Encoding &encoding, std::vector<std::size_t> rows);
 
     std::size_t size() const override;
     std::size_t inputWidth() const override;

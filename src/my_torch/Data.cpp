@@ -59,8 +59,9 @@ std::vector<std::vector<std::size_t>> stratifiedSplit(const std::vector<std::siz
         }
         std::vector<std::size_t> order(parts);
         std::iota(order.begin(), order.end(), 0);
-        std::stable_sort(order.begin(), order.end(),
-                         [&](std::size_t a, std::size_t b) { return remainders[a] > remainders[b]; });
+        std::stable_sort(order.begin(), order.end(), [&](std::size_t a, std::size_t b) {
+            return remainders[a] > remainders[b];
+        });
         for (std::size_t r = 0; given < n; r++, given++)
             sizes[order[r % parts]]++;
         std::size_t next = 0;
@@ -117,8 +118,7 @@ std::size_t SubsetSource::targetWidth() const
     return _source.targetWidth();
 }
 
-void SubsetSource::fill(const std::vector<std::size_t> &rows, Matrix &inputs,
-                        Matrix &targets) const
+void SubsetSource::fill(const std::vector<std::size_t> &rows, Matrix &inputs, Matrix &targets) const
 {
     std::vector<std::size_t> mapped(rows.size());
     for (std::size_t r = 0; r < rows.size(); r++) {

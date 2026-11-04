@@ -28,7 +28,15 @@ One approval is enough, then the author merges. Short branches: one PR = one ide
 ```bash
 make re
 make tests_run
-find include src tests -name '*.[ch]pp' | xargs clang-format --dry-run --Werror
+find include src tests -name '*.[ch]pp' | xargs .venv-format/bin/clang-format --dry-run --Werror
+```
+
+The formatter is pinned: clang-format **18.1.8**, the version of the CI. Two versions do not format
+the same way, so use this one, installed once in a git-ignored virtualenv:
+
+```bash
+python3 -m venv .venv-format && .venv-format/bin/pip install clang-format==18.1.8
+find include src tests -name '*.[ch]pp' | xargs .venv-format/bin/clang-format -i   # to fix
 ```
 
 The CI (`.github/workflows/ci.yml`) runs the same checks. A red PR is not merged.

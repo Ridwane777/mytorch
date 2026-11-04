@@ -20,11 +20,11 @@ std::vector<std::size_t> sampleClasses()
     return classes;
 }
 
-std::size_t countOf(const std::vector<std::size_t> &indices, const std::vector<std::size_t> &classes,
-                    std::size_t c)
+std::size_t countOf(const std::vector<std::size_t> &indices,
+                    const std::vector<std::size_t> &classes, std::size_t c)
 {
-    return static_cast<std::size_t>(
-        std::count_if(indices.begin(), indices.end(), [&](std::size_t i) { return classes[i] == c; }));
+    return static_cast<std::size_t>(std::count_if(indices.begin(), indices.end(),
+                                                  [&](std::size_t i) { return classes[i] == c; }));
 }
 
 std::size_t totalOf(const std::vector<std::size_t> &classes, std::size_t c)

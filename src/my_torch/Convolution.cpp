@@ -203,10 +203,11 @@ void im2col(const Scalar *sample, const PlaneShape &in, const PlaneShape &out, s
                         const long x = w.left + static_cast<long>(kx);
                         const bool inside = y >= 0 && x >= 0 && y < static_cast<long>(in.height) &&
                                             x < static_cast<long>(in.width);
-                        *row++ = inside ? sample[(c * in.height + static_cast<std::size_t>(y)) *
-                                                     in.width +
-                                                 static_cast<std::size_t>(x)]
-                                        : 0;
+                        *row++ =
+                            inside
+                                ? sample[(c * in.height + static_cast<std::size_t>(y)) * in.width +
+                                         static_cast<std::size_t>(x)]
+                                : 0;
                     }
         }
 }
@@ -271,8 +272,8 @@ Matrix Conv2D::forward(const Matrix &input, bool /*training*/)
         Matrix cols(n * positions, patch);
         parallelFor(n, [&](std::size_t begin, std::size_t end) {
             for (std::size_t s = begin; s < end; s++)
-                im2col(input.data() + (first + s) * input.cols(), _input, _output, _kernel,
-                       _stride, _padding, cols.data() + s * positions * patch);
+                im2col(input.data() + (first + s) * input.cols(), _input, _output, _kernel, _stride,
+                       _padding, cols.data() + s * positions * patch);
         });
         const Matrix product = cols.matmulTranspose(_weights).addRowVector(_bias);
         parallelFor(n, [&](std::size_t begin, std::size_t end) {
@@ -418,8 +419,8 @@ Matrix MaxPool2D::forward(const Matrix &input, bool /*training*/)
             for (std::size_t c = 0; c < _input.channels; c++)
                 for (std::size_t oy = 0; oy < _output.height; oy++)
                     for (std::size_t ox = 0; ox < _output.width; ox++, cell++) {
-                        std::size_t best = (c * _input.height + oy * _stride) * _input.width +
-                                           ox * _stride;
+                        std::size_t best =
+                            (c * _input.height + oy * _stride) * _input.width + ox * _stride;
                         for (std::size_t ky = 0; ky < _size; ky++)
                             for (std::size_t kx = 0; kx < _size; kx++) {
                                 const std::size_t at =

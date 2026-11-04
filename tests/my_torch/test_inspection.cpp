@@ -11,8 +11,8 @@ using namespace my_torch;
 
 namespace {
 
-// Dense 4 -> 6, BatchNorm, Tanh (smooth, unlike ReLU, for finite differences), Dropout, Dense 6 -> 3,
-// Softmax; trained a little so that the BatchNorm running averages are not their initial values.
+// Dense 4 -> 6, BatchNorm, Tanh (smooth, unlike ReLU, for finite differences), Dropout, Dense 6 ->
+// 3, Softmax; trained a little so that the BatchNorm running averages are not their initial values.
 Network network()
 {
     Network net;

@@ -31,9 +31,9 @@ struct PlaneShape {
 // by ADR-0041). The input row holds `inputs` columns: planes of height·width columns (index
 // plane·height·width + cell), except for `count` scalars that start at column `scalars`, on a plane
 // boundary. The output is channels × height × width with the planes in their order, then one more
-// plane per scalar, the scalar repeated on every cell. In backward, a cell receives its own gradient
-// and a scalar the sum over its plane. The layer knows nothing of what the planes hold: the
-// configuration gives the layout of its encoding.
+// plane per scalar, the scalar repeated on every cell. In backward, a cell receives its own
+// gradient and a scalar the sum over its plane. The layer knows nothing of what the planes hold:
+// the configuration gives the layout of its encoding.
 class ToPlanes : public Layer {
   public:
     // Throws my_torch::Error unless height and width are positive, count > 0, scalars is a

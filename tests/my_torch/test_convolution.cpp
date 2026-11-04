@@ -150,8 +150,8 @@ Test(conv2d, large_batches_are_processed_by_blocks_with_the_same_result)
 Test(max_pool2d, forward_takes_the_maximum_of_each_window_per_channel)
 {
     MaxPool2D pool({2, 4, 4}, 2, 2);
-    const Matrix input = row({1, 3, 2, 4, 5, 6, 8, 7, 9, 12, 10, 11, 15, 13, 14, 16, //
-                              16, 14, 15, 13, 12, 11, 9, 10, 8, 5, 7, 6, 2, 4, 3, 1});
+    const Matrix input = row({1,  3,  2,  4,  5,  6,  8, 7,  9, 12, 10, 11, 15, 13, 14, 16, //
+                              16, 14, 15, 13, 12, 11, 9, 10, 8, 5,  7,  6,  2,  4,  3,  1});
     const Matrix out = pool.forward(input, false);
     const std::vector<Scalar> expected = {6, 8, 15, 16, 16, 15, 8, 7};
 
@@ -234,10 +234,10 @@ Test(to_planes, forward_maps_the_fen_attacks_901_layout)
     cr_assert_eq(planes.outputShape().channels, 19);
     cr_assert_eq(out.cols(), 19 * 64);
     for (std::size_t s = 0; s < 64; s++) {
-        cr_assert_eq(out(0, 0 * 64 + s), static_cast<Scalar>(s));             // first piece plane
-        cr_assert_eq(out(0, 11 * 64 + s), static_cast<Scalar>(704 + s));      // last piece plane
-        cr_assert_eq(out(0, 12 * 64 + s), static_cast<Scalar>(773 + s));      // white attacks
-        cr_assert_eq(out(0, 13 * 64 + s), static_cast<Scalar>(837 + s));      // black attacks
+        cr_assert_eq(out(0, 0 * 64 + s), static_cast<Scalar>(s));        // first piece plane
+        cr_assert_eq(out(0, 11 * 64 + s), static_cast<Scalar>(704 + s)); // last piece plane
+        cr_assert_eq(out(0, 12 * 64 + s), static_cast<Scalar>(773 + s)); // white attacks
+        cr_assert_eq(out(0, 13 * 64 + s), static_cast<Scalar>(837 + s)); // black attacks
         for (std::size_t j = 0; j < 5; j++)
             cr_assert_eq(out(0, (14 + j) * 64 + s), static_cast<Scalar>(768 + j)); // broadcast
         cr_assert_eq(out(1, 13 * 64 + s), -static_cast<Scalar>(837 + s));
@@ -337,21 +337,20 @@ Test(conv2d, gradients_accumulate_across_backward_calls)
 
 Test(max_pool2d, gradients_match_finite_differences)
 {
-    for (const Geometry &g : std::vector<Geometry>{{{2, 4, 4}, 0, 2, 2, 0}, {{1, 4, 4}, 0, 2, 1, 0},
-                                                    {{2, 5, 5}, 0, 3, 2, 0}}) {
+    for (const Geometry &g : std::vector<Geometry>{
+             {{2, 4, 4}, 0, 2, 2, 0}, {{1, 4, 4}, 0, 2, 1, 0}, {{2, 5, 5}, 0, 3, 2, 0}}) {
         MaxPool2D pool(g.input, g.kernel, g.stride);
         const Matrix input = separated(2, g.input.size());
 
-        cr_assert_lt(
-            gradient_check::inputError(pool, input, pool.outputShape().size()),
-            gradient_check::tolerance);
+        cr_assert_lt(gradient_check::inputError(pool, input, pool.outputShape().size()),
+                     gradient_check::tolerance);
     }
 }
 
 Test(avg_pool2d, gradients_match_finite_differences)
 {
-    for (const Geometry &g : std::vector<Geometry>{{{2, 4, 4}, 0, 2, 2, 0}, {{1, 4, 4}, 0, 2, 1, 0},
-                                                    {{2, 5, 5}, 0, 3, 2, 0}}) {
+    for (const Geometry &g : std::vector<Geometry>{
+             {{2, 4, 4}, 0, 2, 2, 0}, {{1, 4, 4}, 0, 2, 1, 0}, {{2, 5, 5}, 0, 3, 2, 0}}) {
         AvgPool2D pool(g.input, g.kernel, g.stride);
 
         cr_assert_lt(gradient_check::inputError(pool, gradient_check::random(2, g.input.size(), 4),
@@ -403,11 +402,11 @@ Test(convolution, a_small_cnn_matches_finite_differences_end_to_end)
 
 Test(convolution, layers_reject_out_of_range_geometry)
 {
-    cr_assert_throw(Conv2D({0, 3, 3}, 1, 2, 1, 0), Error);   // no channel
-    cr_assert_throw(Conv2D({1, 3, 3}, 0, 2, 1, 0), Error);   // no filter
-    cr_assert_throw(Conv2D({1, 3, 3}, 1, 0, 1, 0), Error);   // empty kernel
-    cr_assert_throw(Conv2D({1, 3, 3}, 1, 2, 0, 0), Error);   // stride 0
-    cr_assert_throw(Conv2D({1, 3, 3}, 1, 4, 1, 0), Error);   // kernel larger than the input
+    cr_assert_throw(Conv2D({0, 3, 3}, 1, 2, 1, 0), Error);    // no channel
+    cr_assert_throw(Conv2D({1, 3, 3}, 0, 2, 1, 0), Error);    // no filter
+    cr_assert_throw(Conv2D({1, 3, 3}, 1, 0, 1, 0), Error);    // empty kernel
+    cr_assert_throw(Conv2D({1, 3, 3}, 1, 2, 0, 0), Error);    // stride 0
+    cr_assert_throw(Conv2D({1, 3, 3}, 1, 4, 1, 0), Error);    // kernel larger than the input
     cr_assert_no_throw(Conv2D({1, 3, 3}, 1, 5, 1, 1), Error); // ... unless padding makes room
     cr_assert_throw(MaxPool2D({1, 3, 3}, 0, 1), Error);
     cr_assert_throw(MaxPool2D({1, 3, 3}, 2, 0), Error);
@@ -417,12 +416,12 @@ Test(convolution, layers_reject_out_of_range_geometry)
     cr_assert_throw(AvgPool2D({1, 3, 3}, 2, 0), Error);
     cr_assert_throw(AvgPool2D({1, 3, 3}, 4, 1), Error);
     cr_assert_throw(GlobalAvgPool({1, 0, 3}), Error);
-    cr_assert_throw(ToPlanes(901, 768, 0, 8, 8), Error);   // no scalar
-    cr_assert_throw(ToPlanes(901, 700, 5, 8, 8), Error);   // scalars not on a plane boundary
-    cr_assert_throw(ToPlanes(901, 768, 6, 8, 8), Error);   // 895 is not a multiple of 64
-    cr_assert_throw(ToPlanes(900, 896, 5, 8, 8), Error);   // scalars do not fit
-    cr_assert_throw(ToPlanes(5, 0, 5, 8, 8), Error);       // no square plane
-    cr_assert_throw(ToPlanes(17, 0, 1, 0, 4), Error);      // empty plane
+    cr_assert_throw(ToPlanes(901, 768, 0, 8, 8), Error); // no scalar
+    cr_assert_throw(ToPlanes(901, 700, 5, 8, 8), Error); // scalars not on a plane boundary
+    cr_assert_throw(ToPlanes(901, 768, 6, 8, 8), Error); // 895 is not a multiple of 64
+    cr_assert_throw(ToPlanes(900, 896, 5, 8, 8), Error); // scalars do not fit
+    cr_assert_throw(ToPlanes(5, 0, 5, 8, 8), Error);     // no square plane
+    cr_assert_throw(ToPlanes(17, 0, 1, 0, 4), Error);    // empty plane
 }
 
 Test(convolution, layers_reject_an_input_of_another_width)

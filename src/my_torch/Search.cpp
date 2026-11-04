@@ -67,8 +67,8 @@ std::map<std::size_t, Scalar> readLog(const std::string &path, const SearchSpace
     if (!std::getline(in, line))
         return done;
     if (line != header(space))
-        throw Error("search: '" + path + "' was written for another search space (header '" +
-                    line + "')");
+        throw Error("search: '" + path + "' was written for another search space (header '" + line +
+                    "')");
     for (std::size_t number = 2; std::getline(in, line); number++) {
         if (line.empty())
             continue;
@@ -77,7 +77,8 @@ std::map<std::size_t, Scalar> readLog(const std::string &path, const SearchSpace
         if (cells.size() != space.size() + 2)
             throw Error("search: " + where + ": " + std::to_string(cells.size()) + " cells");
         std::size_t index = 0;
-        const auto parsed = std::from_chars(cells[0].data(), cells[0].data() + cells[0].size(), index);
+        const auto parsed =
+            std::from_chars(cells[0].data(), cells[0].data() + cells[0].size(), index);
         if (parsed.ec != std::errc{} || parsed.ptr != cells[0].data() + cells[0].size())
             throw Error("search: " + where + ": bad index '" + cells[0] + "'");
         const Trial trial = combination(space, index);
@@ -254,8 +255,8 @@ SearchResult SearchStrategy::run(const SearchSpace &space, const Objective &obje
     std::ofstream log;
 
     if (!logPath.empty()) {
-        const bool fresh = !std::ifstream(logPath).good() || std::ifstream(logPath).peek() ==
-                                                                 std::ifstream::traits_type::eof();
+        const bool fresh = !std::ifstream(logPath).good() ||
+                           std::ifstream(logPath).peek() == std::ifstream::traits_type::eof();
         log.open(logPath, std::ios::app);
         if (!log)
             throw Error("cannot write '" + logPath + "'");

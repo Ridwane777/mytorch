@@ -84,8 +84,9 @@ Network cnn()
 Test(convolution_config, every_type_is_read_from_a_configuration)
 {
     Network net = cnn();
-    const std::vector<std::string> types = {"to_planes", "conv2d", "relu", "max_pool2d",
-                                            "avg_pool2d", "conv2d", "global_avg_pool", "softmax"};
+    const std::vector<std::string> types = {"to_planes",       "conv2d",     "relu",
+                                            "max_pool2d",      "avg_pool2d", "conv2d",
+                                            "global_avg_pool", "softmax"};
 
     cr_assert_eq(net.layers().size(), types.size());
     for (std::size_t i = 0; i < types.size(); i++)
@@ -142,10 +143,10 @@ Test(convolution_config, model_summary_follows_the_widths_and_counts_the_paramet
     }
     // index, type, output width, parameters; 4·27 + 4 = 112 and 3·16 + 3 = 51
     const std::vector<std::vector<std::string>> expected = {
-        {"1", "to_planes", "192", "0"},      {"2", "conv2d", "256", "112"},
-        {"3", "relu", "256", "0"},           {"4", "max_pool2d", "64", "0"},
-        {"5", "avg_pool2d", "16", "0"},      {"6", "conv2d", "3", "51"},
-        {"7", "global_avg_pool", "3", "0"},  {"8", "softmax", "3", "0"},
+        {"1", "to_planes", "192", "0"},     {"2", "conv2d", "256", "112"},
+        {"3", "relu", "256", "0"},          {"4", "max_pool2d", "64", "0"},
+        {"5", "avg_pool2d", "16", "0"},     {"6", "conv2d", "3", "51"},
+        {"7", "global_avg_pool", "3", "0"}, {"8", "softmax", "3", "0"},
         {"total", "parameters:", "163"},
     };
     cr_assert_eq(table.size(), expected.size());
@@ -163,9 +164,10 @@ Test(convolution_config, widths_that_do_not_chain_are_rejected)
                   std::string::npos,
               "%s", message.c_str());
     // to_planes on an input of another width.
-    message = configError("input raw 900\nlabels 2\nA\nB\nlayers 3\n"
-                          "to_planes inputs=901 scalars=768 count=5 height=8 width=8\ndense 1216 2\n"
-                          "softmax\n");
+    message =
+        configError("input raw 900\nlabels 2\nA\nB\nlayers 3\n"
+                    "to_planes inputs=901 scalars=768 count=5 height=8 width=8\ndense 1216 2\n"
+                    "softmax\n");
     cr_assert(message.find("layer 1 to_planes expects 901 inputs but receives 900") !=
                   std::string::npos,
               "%s", message.c_str());
@@ -233,9 +235,10 @@ Test(convolution_config, a_network_file_refuses_the_configuration_only_init_key)
 Test(convolution_config, the_former_board_planes_name_is_read_as_to_planes_on_8_by_8)
 {
     // Files written before ADR-0041 (the epoch-10 CNN snapshot) name the layer board_planes.
-    const std::string path = writeFile(file + ".conf", "input raw 901\nlabels 2\nA\nB\nlayers 3\n"
-                                                       "board_planes inputs=901 scalars=768 count=5\n"
-                                                       "dense 1216 2\nsoftmax\n");
+    const std::string path =
+        writeFile(file + ".conf", "input raw 901\nlabels 2\nA\nB\nlayers 3\n"
+                                  "board_planes inputs=901 scalars=768 count=5\n"
+                                  "dense 1216 2\nsoftmax\n");
     Network net = Network::fromConfig(path);
     std::remove(path.c_str());
     const auto *planes = dynamic_cast<const ToPlanes *>(net.layers()[0].get());

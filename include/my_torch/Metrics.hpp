@@ -80,7 +80,7 @@ struct CalibrationBin {
 };
 
 struct Calibration {
-    std::vector<CalibrationBin> bins; // equal-width bins of the top probability over [0, 1]
+    std::vector<CalibrationBin> bins;    // equal-width bins of the top probability over [0, 1]
     Scalar expectedCalibrationError = 0; // Σ (count / total)·|accuracy - confidence|
 };
 

@@ -126,8 +126,8 @@ void saveCheckpoint(const std::string &path, std::uint64_t fingerprint, const Tr
     writeBlock(body, state.shuffle);
     body << "history " << state.history.size() << '\n';
     for (const EpochStats &s : state.history)
-        body << s.trainLoss << ' ' << s.validationLoss << ' ' << s.penalty << ' '
-             << s.trainAccuracy << ' ' << s.validationAccuracy << '\n';
+        body << s.trainLoss << ' ' << s.validationLoss << ' ' << s.penalty << ' ' << s.trainAccuracy
+             << ' ' << s.validationAccuracy << '\n';
     body << "early " << state.best << ' ' << state.sinceBest << '\n';
     body << "best_weights\n";
     writeMatrices(body, state.bestWeights);

@@ -14,7 +14,9 @@ namespace {
 // kind of source the analyzer uses. Row i of example k is derived from k only.
 class FormulaSource : public DataSource {
   public:
-    FormulaSource(std::size_t count, std::size_t first) : _count(count), _first(first) {}
+    FormulaSource(std::size_t count, std::size_t first) : _count(count), _first(first)
+    {
+    }
 
     std::size_t size() const override
     {

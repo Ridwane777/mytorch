@@ -110,8 +110,8 @@ ConfusionMatrix confusion(const Matrix &probabilities, const Matrix &targets)
     const std::size_t classes = std::max<std::size_t>(probabilities.cols(), 2);
     const auto predicted = classesOf(probabilities);
     const auto expected = classesOf(targets);
-    ConfusionMatrix matrix{std::vector<std::vector<std::size_t>>(
-        classes, std::vector<std::size_t>(classes, 0))};
+    ConfusionMatrix matrix{
+        std::vector<std::vector<std::size_t>>(classes, std::vector<std::size_t>(classes, 0))};
 
     for (std::size_t r = 0; r < predicted.size(); r++)
         matrix.counts[expected[r]][predicted[r]]++;
@@ -126,8 +126,8 @@ ConfusionMatrix confusion(const std::vector<std::size_t> &expected,
                     std::to_string(predicted.size()) + " predictions");
     if (expected.empty() || classes == 0)
         throw Error("confusion: empty input");
-    ConfusionMatrix matrix{std::vector<std::vector<std::size_t>>(
-        classes, std::vector<std::size_t>(classes, 0))};
+    ConfusionMatrix matrix{
+        std::vector<std::vector<std::size_t>>(classes, std::vector<std::size_t>(classes, 0))};
 
     for (std::size_t r = 0; r < expected.size(); r++) {
         if (expected[r] >= classes || predicted[r] >= classes)
@@ -143,8 +143,8 @@ ConfusionMatrix merge(const ConfusionMatrix &confusion, const std::vector<std::s
     if (groupOf.size() != confusion.classes())
         throw Error("merge: " + std::to_string(groupOf.size()) + " groups given for " +
                     std::to_string(confusion.classes()) + " classes");
-    ConfusionMatrix merged{std::vector<std::vector<std::size_t>>(
-        groups, std::vector<std::size_t>(groups, 0))};
+    ConfusionMatrix merged{
+        std::vector<std::vector<std::size_t>>(groups, std::vector<std::size_t>(groups, 0))};
 
     for (std::size_t c = 0; c < groupOf.size(); c++)
         if (groupOf[c] >= groups)
@@ -179,9 +179,8 @@ ClassificationReport report(const ConfusionMatrix &confusion)
         }
         m.precision = ratio(hits, m.predicted);
         m.recall = ratio(hits, m.support);
-        m.f1 = m.precision + m.recall == 0
-                   ? 0
-                   : 2 * m.precision * m.recall / (m.precision + m.recall);
+        m.f1 =
+            m.precision + m.recall == 0 ? 0 : 2 * m.precision * m.recall / (m.precision + m.recall);
         correct += hits;
         const Scalar weight = static_cast<Scalar>(m.support) / static_cast<Scalar>(total);
         rep.macroPrecision += m.precision / static_cast<Scalar>(classes);
