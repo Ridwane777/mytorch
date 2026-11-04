@@ -42,7 +42,7 @@ as possible, and to measure what remains.
    loss and the output probabilities are held to the same bound. Done in float64 (our `Scalar`,
    gating) at the initial weights and after 100 Adam steps (non-zero biases, ReLUs in both states),
    and in float32 for information.
-4. **Three PyTorch variants against ours**, same data, same optimizer (Adam, same learning rate,
+4. **Four PyTorch variants against ours**, same data, same optimizer (Adam, same learning rate,
    betas and epsilon), same batch size and number of epochs, scored on the whole validation split
    (the test split is not read by this work):
    - *shared*, float64: our initial weights and our batch order replayed. The difference to our
@@ -51,7 +51,12 @@ as possible, and to measure what remains.
      starting point and the order, i.e. the seed-to-seed spread plus the initialisation scheme
      (listed in the document);
    - *native*, float32: PyTorch's default precision, the realistic cost.
-   Several seeds for our side and for the native float64 variant, to say whether a gap is larger
+   - *scheme*, float64: our initialisation distributions (dense U(±sqrt(1 / fan_in)), convolution
+     He normal, zero biases) drawn by PyTorch's generator, PyTorch's shuffling. It separates the
+     initialisation scheme from the seed: the difference between *native* and *scheme* is the scheme
+     (two things at once: convolution weight variance and biases), the one between *scheme* and our
+     result is the draws;
+   Several seeds for our side and for the native and scheme float64 variants, to say whether a gap is larger
    than the spread between seeds.
 5. **Benchmarks on one machine.** Time per epoch (training pass only, scoring excluded, on both
    sides) and the peak memory of the whole process (GNU time), each implementation at its best
