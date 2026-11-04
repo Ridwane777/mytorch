@@ -89,7 +89,8 @@ Test(convolution_config, every_type_is_read_from_a_configuration)
 
     cr_assert_eq(net.layers().size(), types.size());
     for (std::size_t i = 0; i < types.size(); i++)
-        cr_assert_str_eq(net.layers()[i]->type().c_str(), types[i].c_str());
+        cr_assert(net.layers()[i]->type() == types[i], "layer %zu: expected %s", i,
+                  types[i].c_str());
     const auto *conv = dynamic_cast<const Conv2D *>(net.layers()[1].get());
     cr_assert_not_null(conv);
     cr_assert_eq(conv->weights().rows(), 4);
