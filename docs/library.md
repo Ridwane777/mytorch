@@ -110,6 +110,20 @@ for (const my_torch::Fold &fold : folds) {
 }
 ```
 
+`crossValidate` is that loop with the summary of the metrics: the callback trains a fresh model on
+`train` and returns its `ClassificationReport` on `validation`.
+
+```cpp
+const my_torch::CrossValidation cv = my_torch::crossValidate(
+    source, 5, 42,
+    [&](const my_torch::DataSource &train, const my_torch::DataSource &validation, std::size_t fold) {
+        my_torch::Network net = my_torch::Network::fromConfig("configs/final_network.conf", 0);
+        // net.fit(train, nullptr, loss, optimizer, config); then score it on validation
+        return scoreOf(net, validation); // a my_torch::ClassificationReport
+    });
+// cv.accuracy.mean, cv.accuracy.std (sample standard deviation), cv.macroF1.values, cv.folds[i]
+```
+
 ## Hyperparameter search
 
 ```cpp
