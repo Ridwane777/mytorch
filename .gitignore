@@ -39,3 +39,4 @@ my_torch-project.pdf
 # Training runs (scripts/train_final.sh): large, reproducible
 /runs/
 /bonus/my_torch_eda
+.aws_train_state

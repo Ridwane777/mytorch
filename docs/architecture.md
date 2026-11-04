@@ -52,7 +52,7 @@ and the main code never includes `bonus/`.
 | --- | --- | --- |
 | `Fen` | `parseFen`, `parseLine`, `parseFile`: a FEN line into a `Position` (64 squares, side to move, castling, en passant, counters) and an optional `Label` | ADR-0005 |
 | `Encoding` | The `Encoding` interface, the table of encodings looked up by name (`fen-onehot-768`, `fen-onehot-773`, `fen-signed-385`, `fen-attacks-901`), and `PositionSource`, which encodes training positions batch by batch | ADR-0014, ADR-0016, ADR-0021 |
-| `Cli` | `analyzer::run`: argument parsing, `--predict`, `--train`, `--save`, `--checkpoint` | ADR-0014, ADR-0032 |
+| `Cli` | `analyzer::run`: argument parsing, `--predict`, `--train`, `--save`, `--checkpoint`, `--progress-every` | ADR-0014, ADR-0032, ADR-0038 |
 | `main.cpp` | Calls `run`, turns any exception into a message on standard error and exit code 84 | ADR-0004 |
 
 ### Generator (`src/generator/`) and bonus (`bonus/`)

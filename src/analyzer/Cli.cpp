@@ -1,5 +1,6 @@
 #include "Cli.hpp"
 
+#include <ctime>
 #include <iomanip>
 #include <iostream>
 #include <numeric>
@@ -34,12 +35,16 @@ constexpr const char *usage =
     "\n"
     "EXTRA OPTION\n"
     "    --checkpoint FILE  In train mode, save the training state into FILE after every\n"
-    "                epoch; if FILE exists, resume the training from it.\n";
+    "                epoch; if FILE exists, resume the training from it.\n"
+    "    --progress-every N  In train mode, every N epochs print the epoch's measurements on\n"
+    "                stderr and save the weights into\n"
+    "                SAVEFILE.YYYYMMDD-HHMMSS.epochN.nn (the time of the save).\n";
 
 struct Options {
     bool train = false;
     std::optional<std::string> save;
     std::optional<std::string> checkpoint;
+    std::size_t progressEvery = 0;
     std::string network;
     std::string chessboards;
 };
@@ -64,6 +69,14 @@ Options parseArguments(const std::vector<std::string> &args)
             if (o.checkpoint || i + 1 >= args.size())
                 throw Error("--checkpoint needs exactly one FILE");
             o.checkpoint = args[++i];
+        } else if (a == "--progress-every") {
+            if (o.progressEvery != 0 || i + 1 >= args.size())
+                throw Error("--progress-every needs exactly one positive number");
+            const std::string &value = args[++i];
+            if (value.find_first_not_of("0123456789") != std::string::npos || value.empty() ||
+                value.size() > 9 || std::stoul(value) == 0)
+                throw Error("--progress-every needs exactly one positive number");
+            o.progressEvery = std::stoul(value);
         } else if (a.size() > 1 && a[0] == '-') {
             throw Error("unknown option '" + a + "'");
         } else {
@@ -76,6 +89,8 @@ Options parseArguments(const std::vector<std::string> &args)
         throw Error("--save only works with --train");
     if (o.checkpoint && !o.train)
         throw Error("--checkpoint only works with --train");
+    if (o.progressEvery != 0 && !o.train)
+        throw Error("--progress-every only works with --train");
     if (files.size() != 2)
         throw Error("expected LOADFILE and CHESSFILE");
     o.network = files[0];
@@ -159,8 +174,30 @@ int train(const Options &o)
     const auto loss = my_torch::makeLoss(spec.loss);
     const auto optimizer = my_torch::makeOptimizer(spec.optimizer);
     const auto scheduler = my_torch::makeScheduler(spec.scheduler);
+    // Progress every N epochs (on stderr, so that the training log on stdout keeps its format),
+    // with a snapshot of the weights: the parameters then hold the weights of that epoch.
+    my_torch::TrainConfig config = spec.config;
+    if (o.progressEvery != 0)
+        config.onEpoch = [&](std::size_t epoch, const my_torch::EpochStats &s) {
+            const std::size_t finished = epoch + 1;
+            if (finished % o.progressEvery != 0)
+                return;
+            // The time of the save is in the name, so that no snapshot replaces another, even
+            // from an earlier run.
+            char stamp[32];
+            const std::time_t now = std::time(nullptr);
+            std::strftime(stamp, sizeof stamp, "%Y%m%d-%H%M%S", std::localtime(&now));
+            const std::string snapshot = (o.save ? *o.save : o.network) + "." + stamp + ".epoch" +
+                                         std::to_string(finished) + ".nn";
+            net.save(snapshot);
+            std::cerr << std::fixed << std::setprecision(4) << "epoch " << finished << "/"
+                      << config.epochs << "  loss " << s.trainLoss << "  accuracy "
+                      << s.trainAccuracy << "  validation loss " << s.validationLoss
+                      << "  validation accuracy " << s.validationAccuracy << "  saved " << snapshot
+                      << std::endl;
+        };
     const my_torch::History history = net.fit(trainSet, held ? &validationSet : nullptr, *loss,
-                                              *optimizer, spec.config, scheduler.get(),
+                                              *optimizer, config, scheduler.get(),
                                               o.checkpoint.value_or(""));
 
     std::cout << std::fixed << std::setprecision(4);

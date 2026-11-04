@@ -47,7 +47,7 @@ On error, the message goes to standard error and the program exits with code 84.
 | `tests/` | Criterion tests, same subfolders as `src/` |
 | `my_torch_network_final.nn` | Pre-trained network evaluated by the autograder: 96.2 % accuracy on 71,555 unseen positions ([measure](docs/performance/10-final-network.md)) |
 | `configs/` | Generator configurations ([format](docs/configuration.md)) |
-| `scripts/` | Training, benchmarks and graphs, to reproduce our results |
+| `scripts/` | Training (a backup of every epoch in `runs/<name>/epochs/`), unattended training on AWS, benchmarks and graphs, to reproduce our results |
 | `bonus/` | Bonuses, with their own Makefile (required by the subject): the rule-based chess oracle, the stalemate position generator and a chess GUI that analyses each move with the network ([guide](docs/gui.md)) |
 | `docs/` | Project file: decisions, performance, legal, business, retrospective. Map: [docs/README.md](docs/README.md) |
 

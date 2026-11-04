@@ -406,3 +406,51 @@ Test(cli, checkpoint_only_works_with_train)
     }
     cr_assert_eq(runCli({"--train", "--checkpoint"}).code, analyzer::EXIT_ERROR);
 }
+
+Test(cli, progress_every_logs_and_saves_the_weights_every_n_epochs)
+{
+    const std::string training = "optimizer adam lr=0.01\ntrain epochs=4 batch=6 seed=3\n";
+    const std::string net = makeNetwork("progress", fiveLabels, training);
+    const std::string chess = path("progress.txt");
+    const std::string saved = path("progress.nn");
+    write(chess, chessFile(true));
+
+    const Result r = runCli({"--train", "--save", saved, "--progress-every", "2", net, chess});
+    // Snapshots are named <save>.<YYYYMMDD>-<HHMMSS>.epoch<N>.nn.
+    std::vector<std::string> snapshots;
+    const fs::path directory =
+        fs::path(saved).parent_path().empty() ? fs::path(".") : fs::path(saved).parent_path();
+    for (const auto &entry : fs::directory_iterator(directory)) {
+        const std::string name = entry.path().filename().string();
+        const std::string prefix = fs::path(saved).filename().string() + ".";
+        if (name.rfind(prefix, 0) == 0 && name.find(".epoch") != std::string::npos)
+            snapshots.push_back(entry.path().string());
+    }
+    const auto ends = [&](const std::string &suffix) {
+        std::size_t n = 0;
+        for (const std::string &name : snapshots)
+            n += name.size() >= suffix.size() &&
+                 name.compare(name.size() - suffix.size(), suffix.size(), suffix) == 0;
+        return n;
+    };
+    const bool second = ends(".epoch2.nn") == 1;
+    const bool fourth = ends(".epoch4.nn") == 1;
+    const bool third = ends(".epoch3.nn") != 0;
+    for (const std::string &name : snapshots)
+        std::remove(name.c_str());
+    cleanup();
+
+    cr_assert_eq(r.code, 0);
+    cr_assert(second && fourth && !third, "snapshots are written every 2 epochs");
+}
+
+Test(cli, progress_every_only_works_with_train)
+{
+    try {
+        analyzer::run({"--predict", "--progress-every", "2", "a.nn", "b.txt"});
+        cr_assert_fail("--progress-every was accepted with --predict");
+    } catch (const my_torch::Error &e) {
+        cr_assert(std::string(e.what()).find("--progress-every only works with --train") !=
+                  std::string::npos);
+    }
+}

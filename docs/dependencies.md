@@ -24,9 +24,12 @@ Tested versions come from the two development machines (2026-10-24, updated 2026
 benchmark documents state which machine produced each measurement.
 
 ## Services, secrets, quotas
-None. The programs and the scripts call no external API, need no account, key or token, and have no
+None for the programs and for the scripts run on a laptop: they call no external API, need no account, key or token, and have no
 quota. The only external services are GitHub (repository, issues, pull requests) and, for some
 measurements, a shared VPS whose access is personal and never written in the repository.
+Optionally, `scripts/aws_train.sh` ([ADR-0038](adr/0038-unattended-aws-training.md)) uses an AWS
+project (EC2, S3, IAM) through the AWS CLI profile of the person who launches it; no key is
+written in the repository.
 
 ## Licenses
 Each license and its constraint on our code: [legal/licenses.md](legal/licenses.md). None of them

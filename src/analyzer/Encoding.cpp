@@ -6,6 +6,7 @@
 #include <string_view>
 
 #include "my_torch/Error.hpp"
+#include "my_torch/Parallel.hpp"
 
 namespace analyzer {
 
@@ -246,11 +247,16 @@ std::size_t PositionSource::targetWidth() const
 void PositionSource::fill(const std::vector<std::size_t> &rows, my_torch::Matrix &inputs,
                           my_torch::Matrix &targets) const
 {
-    for (std::size_t r = 0; r < rows.size(); r++) {
-        const std::size_t sample = _rows[rows[r]];
-        _encoding.encode(_samples[sample].position, inputs.data() + r * inputs.cols());
-        targets(r, _classes[sample]) = 1;
-    }
+    // Each batch row is encoded on its own: encoding is pure and every row writes only its own
+    // part of the matrices, so the rows are spread over the threads of the library (the encoding
+    // of the attack planes would otherwise run on one thread while the others wait).
+    my_torch::parallelFor(rows.size(), [&](std::size_t begin, std::size_t end) {
+        for (std::size_t r = begin; r < end; r++) {
+            const std::size_t sample = _rows[rows[r]];
+            _encoding.encode(_samples[sample].position, inputs.data() + r * inputs.cols());
+            targets(r, _classes[sample]) = 1;
+        }
+    });
 }
 
 } // namespace analyzer
