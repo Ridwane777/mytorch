@@ -1,0 +1,2 @@
+model,setting,test_accuracy,test_macro_f1,train_seconds,predict_seconds,model_bytes
+lightgbm,leaves=255 lr=0.1 rounds<=2000,0.9675,0.9539,360.7,9.11,113404788

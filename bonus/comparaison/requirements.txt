@@ -8,3 +8,6 @@
 # Versions measured in docs/performance/22-pytorch-reference.md.
 torch==2.15.0
 numpy==2.5.4
+# Classical baselines (#43, ADR-0043, scripts/bench_baselines.sh); they do not need torch.
+scikit-learn==1.9.1
+lightgbm==4.7.0

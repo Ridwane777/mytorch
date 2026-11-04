@@ -1,0 +1,7 @@
+model,kind,setting,accuracy,macro_f1,Nothing,Check White,Check Black,Checkmate White,Checkmate Black,train_seconds,train_note,predict_seconds,model_bytes,peak_mb
+Logistic regression,baseline,C=10.0,0.65,0.6232,0.7317,0.552,0.5359,0.6456,0.6509,246.7,"this machine, chosen setting only",0.12,18695,2897
+Random forest,baseline,trees=100 min_leaf=1,0.7659,0.7346,0.8351,0.7097,0.672,0.7278,0.7284,66.0,"this machine, chosen setting only",0.9,3427552688,7323
+scikit-learn MLP,baseline,"hidden=512,256 lr=0.001 epochs=15",0.9165,0.8917,0.9771,0.886,0.8818,0.858,0.8555,1486.0,"this machine, chosen setting only",2.7,9518770,2893
+LightGBM,baseline,leaves=255 lr=0.1 rounds<=2000,0.9675,0.9539,0.9998,0.9546,0.9505,0.9352,0.9297,360.7,"this machine, chosen setting only",9.11,113404788,3310
+my_torch dense (pushed),ours,my_torch_network_final,0.9615,0.9478,0.9958,0.9427,0.947,0.9224,0.9309,6285.07,"from its run.txt, another machine",2.28,5406172,149
+my_torch CNN (epoch 10),ours,my_torch_network_cnn_epoch10,0.9807,0.9729,0.9999,0.9701,0.9738,0.9578,0.963,,not measured for this snapshot,9.87,1543067,416

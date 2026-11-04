@@ -34,6 +34,7 @@ performance of the code itself.
 | 19 | [19-inspection.md](19-inspection.md) | What the network learned: summary, weight and gradient histograms, which squares decide its answer | #36 |
 | **Comparison** | | | |
 | 22 | [22-pytorch-reference.md](22-pytorch-reference.md) | Same architectures in PyTorch (`bonus/comparaison/`): gradients against autograd, our weights and batches replayed, time per epoch, memory and accuracy after an equal budget | #42 |
+| 23 | [23-baselines.md](23-baselines.md) | Classical baselines on the same split and encoding: logistic regression 65 %, random forest 77 %, scikit-learn MLP 91.7 %, LightGBM 96.75 %, against our dense 96.15 % and CNN 98.07 % | #43 |
 | **Bonus** | | | |
 | 14 | [14-stalemate.md](14-stalemate.md) | Stalemate: generated positions and a six-class network | #24 |
 

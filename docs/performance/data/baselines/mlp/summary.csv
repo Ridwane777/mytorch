@@ -1,0 +1,2 @@
+model,setting,test_accuracy,test_macro_f1,train_seconds,predict_seconds,model_bytes
+mlp,"hidden=512,256 lr=0.001 epochs=15",0.9165,0.8917,1486.0,2.70,9518770

@@ -1,0 +1,4 @@
+model,setting,valid_accuracy,valid_macro_f1,train_seconds
+forest,trees=100 min_leaf=1,0.7633,0.7314,66.0
+forest,trees=100 min_leaf=5,0.7381,0.7028,63.8
+forest,trees=100 min_leaf=20,0.6932,0.6488,61.4
