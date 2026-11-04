@@ -214,7 +214,7 @@ Test(convolution_config, malformed_lines_are_reported_with_their_line)
 Test(convolution_config, a_network_file_refuses_the_configuration_only_init_key)
 {
     Network net = cnn();
-    net.save(file + ".nn");
+    net.saveText(file + ".nn");
     std::ifstream in(file + ".nn");
     std::string text((std::istreambuf_iterator<char>(in)), std::istreambuf_iterator<char>());
     in.close();

@@ -17,10 +17,13 @@ GUI		=	my_torch_gui
 LIB		=	../build/libmy_torch.a
 GUI_SRC		=	gui/Analysis.cpp gui/Saliency.cpp ../src/analyzer/Encoding.cpp $(ORACLE_SRC)
 
+# Network files are binary (ADR-0042): this prints one as text.
+NN_DUMP		=	my_torch_nn_dump
+
 TESTS		=	unit_tests
 TESTS_SRC	=	$(wildcard tests/*.cpp)
 
-all:	$(ORACLE) $(POSITIONS) $(EDA) $(GUI)
+all:	$(ORACLE) $(POSITIONS) $(EDA) $(GUI) $(NN_DUMP)
 
 $(ORACLE):	oracle/main.cpp $(ORACLE_SRC) oracle/Oracle.hpp ../src/analyzer/Fen.hpp
 	$(CXX) $(CXXFLAGS) $(RELEASE) -o $@ oracle/main.cpp $(ORACLE_SRC) $(LDFLAGS)
@@ -37,6 +40,9 @@ $(LIB):
 $(GUI):	gui/main.cpp $(GUI_SRC) gui/Analysis.hpp gui/Saliency.hpp $(LIB)
 	$(CXX) $(CXXFLAGS) $(RELEASE) -pthread -o $@ gui/main.cpp $(GUI_SRC) $(LIB) $(LDFLAGS)
 
+$(NN_DUMP):	nn_dump/main.cpp $(LIB)
+	$(CXX) $(CXXFLAGS) $(RELEASE) -pthread -o $@ nn_dump/main.cpp $(LIB) $(LDFLAGS)
+
 tests_run:	$(LIB)
 	$(CXX) $(CXXFLAGS) -O2 -pthread -o $(TESTS) $(TESTS_SRC) $(POSITIONS_SRC) gui/Analysis.cpp gui/Saliency.cpp \
 		../src/analyzer/Encoding.cpp $(LIB) -lcriterion $(LDFLAGS)
@@ -46,7 +52,7 @@ clean:
 	rm -f *.gcda *.gcno
 
 fclean:	clean
-	rm -f $(ORACLE) $(POSITIONS) $(EDA) $(GUI) $(TESTS)
+	rm -f $(ORACLE) $(POSITIONS) $(EDA) $(GUI) $(NN_DUMP) $(TESTS)
 
 re:	fclean all
 

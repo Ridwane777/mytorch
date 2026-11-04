@@ -1,0 +1,5 @@
+date: 2026-11-04T17:21:43Z
+commit: 1444c8c (uncommitted changes)
+machine: 13th Gen Intel(R) Core(TM) i7-1355U, 12 threads, Linux 7.0.0-38-generic
+compiler: g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0
+timings: median of 9 runs, file on the local disk (page cache warm after the first run)

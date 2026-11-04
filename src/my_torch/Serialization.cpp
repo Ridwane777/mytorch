@@ -1,4 +1,8 @@
-// Network file, format version 1 (ADR-0012):
+// Network files. Network::save writes the binary format version 2 (ADR-0042, BinaryFormat.hpp):
+// the records below, each encoded as typed binary tokens. Network::saveText writes them as text,
+// format version 1 (ADR-0012), and Network::load reads both, telling them by their first bytes.
+//
+// Text format, version 1:
 //
 //   my_torch 1
 //   input <encoding> <inputs>
@@ -22,6 +26,7 @@
 #include <map>
 #include <sstream>
 
+#include "BinaryFormat.hpp"
 #include "my_torch/Activations.hpp"
 #include "my_torch/Convolution.hpp"
 #include "my_torch/Dense.hpp"
@@ -636,12 +641,26 @@ const ModelInfo &Network::info() const noexcept
     return _info;
 }
 
-void Network::save(const std::string &path) const
+namespace {
+
+void writeFile(const std::string &path, const std::string &bytes)
+{
+    std::ofstream out(path, std::ios::binary);
+    if (!out)
+        throw Error("cannot write '" + path + "'");
+    out << bytes;
+    if (!out)
+        throw Error("failed to write '" + path + "'");
+}
+
+} // namespace
+
+// The records of a network file, from "input" to the last layer.
+std::string Network::records() const
 {
     checkConsistency(_info, _layers);
     std::ostringstream body;
     body.precision(17); // shortest precision that reads back every double exactly
-    body << magic << ' ' << formatVersion << '\n';
     body << "input " << _info.encoding << ' ' << _info.inputs << '\n';
     body << "labels " << _info.labels.size() << '\n';
     for (const std::string &label : _info.labels)
@@ -653,19 +672,26 @@ void Network::save(const std::string &path) const
     body << "layers " << _layers.size() << '\n';
     for (const auto &layer : _layers)
         layer->save(body);
-    const std::string text = body.str();
+    return body.str();
+}
 
-    std::ofstream out(path, std::ios::binary);
-    if (!out)
-        throw Error("cannot write '" + path + "'");
-    out << text << "end checksum=" << hex(fnv1a(text, text.size())) << '\n';
-    if (!out)
-        throw Error("failed to write '" + path + "'");
+void Network::save(const std::string &path) const
+{
+    writeFile(path, binary_format::encode(records()));
+}
+
+void Network::saveText(const std::string &path) const
+{
+    const std::string text = magic + std::string(" ") + std::to_string(formatVersion) + "\n" +
+                             records();
+    writeFile(path, text + "end checksum=" + hex(fnv1a(text, text.size())) + "\n");
 }
 
 Network Network::parse(const std::string &path, bool config, std::uint64_t index)
 {
-    const std::string text = readFile(path);
+    std::string text = readFile(path);
+    if (!config && binary_format::isBinary(text))
+        text = binary_format::decode(text, path); // checked there: its records, as text
     Reader reader(path, splitLines(text, config));
     Network net;
     ModelInfo &info = net._info;
