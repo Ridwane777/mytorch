@@ -8,7 +8,7 @@ The executables have no runtime dependency other than the C++ standard library.
 | g++ (C++20) | Compilation (ADR-0002) | 13.3.0 and 15.2.0 | GPL v3 with runtime exception | clang++ (21.1.8 builds the project and passes every test) |
 | GNU make | Compilation (required by the subject) | — | GPL v3 | — |
 | Criterion | Unit tests (dev only) | 2.4.1 and 2.4.2 | MIT | GoogleTest, Catch2 |
-| clang-format | Code formatting (dev only) | 21.1.8 (not installed on every machine) | Apache 2.0 with LLVM exception | Manual review against `.clang-format` |
+| clang-format | Code formatting (dev only) | 18.1.8, pinned: installed with pip in `.venv-format/` locally and with pipx in the CI (CONTRIBUTING.md) | Apache 2.0 with LLVM exception | Manual review against `.clang-format`; another version formats differently, so the CI check would fail |
 | GNU time (`/usr/bin/time`) | Time and peak memory in the benchmark and training scripts (dev only) | — | GPL v3 | `getrusage` in a small wrapper |
 | git | Version control; `train_final.sh` writes the commit into `run.txt`, `bench_training_memory.sh` builds an older commit | — | GPL v2 | — |
 | Python 3 and matplotlib | Graphs of the benchmarks in `scripts/`, the architecture diagrams (`scripts/plot_architecture.py`, boxes drawn with matplotlib patches, ADR-0037) and data preparation (`scripts/dataset_split.py`, standard library only); never in the executables, and never computes a published metric: scores come from `scripts/score.cpp` and the library (ADR-0026) | Python 3.12.3 and 3.14.4, matplotlib 3.10.7 and 3.11.0 | PSF, matplotlib license (BSD-style) | Any plotting tool reading the CSV files |
