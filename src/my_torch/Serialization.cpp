@@ -23,6 +23,7 @@
 #include <sstream>
 
 #include "my_torch/Activations.hpp"
+#include "my_torch/Convolution.hpp"
 #include "my_torch/Dense.hpp"
 #include "my_torch/Dropout.hpp"
 #include "my_torch/Error.hpp"
@@ -87,15 +88,13 @@ void checkConsistency(const ModelInfo &info, const std::vector<std::unique_ptr<L
             throw Error("network file: layer " + std::to_string(i + 1) + " normalizes " +
                         std::to_string(normalized) + " features but receives " +
                         std::to_string(width));
-        const auto *dense = dynamic_cast<const Dense *>(layers[i].get());
-        if (!dense)
-            continue;
-        const Matrix &w = dense->weights();
-        if (w.rows() != width)
-            throw Error("network file: layer " + std::to_string(i + 1) + " expects " +
-                        std::to_string(w.rows()) + " inputs but receives " +
-                        std::to_string(width));
-        width = w.cols();
+        // Every layer says what width it needs and gives (ADR-0037); dense, convolution and
+        // pooling layers refuse an input of another width.
+        try {
+            width = layers[i]->outputWidth(width);
+        } catch (const Error &error) {
+            throw Error("network file: layer " + std::to_string(i + 1) + " " + error.what());
+        }
     }
     if (width != info.labels.size())
         throw Error("network file: the network has " + std::to_string(width) + " outputs for " +
@@ -288,7 +287,7 @@ constexpr InitName initNames[] = {
     {"orthogonal", Init::Orthogonal},
 };
 
-Init readInit(Reader &reader, const std::string &name)
+Init readInit(Reader &reader, const std::string &name, const char *layer = "dense")
 {
     std::string available;
 
@@ -297,7 +296,8 @@ Init readInit(Reader &reader, const std::string &name)
             return entry.init;
         available += (available.empty() ? "" : ", ") + std::string(entry.name);
     }
-    reader.fail("dense: unknown init '" + name + "' (available: " + available + ")");
+    reader.fail(std::string(layer) + ": unknown init '" + name + "' (available: " + available +
+                ")");
 }
 
 std::unique_ptr<Layer> readDense(Reader &reader, const std::vector<std::string> &w,
@@ -331,6 +331,89 @@ std::unique_ptr<Layer> readDense(Reader &reader, const std::vector<std::string> 
     for (std::size_t c = 0; c < outputs; c++)
         dense->bias()(0, c) = bias[c];
     return dense;
+}
+
+// Value of a required "key=value" setting of a convolutional layer line, as a count.
+std::size_t requiredCount(Reader &reader, const std::vector<std::string> &w,
+                          std::map<std::string, std::string> &settings, const char *key)
+{
+    const auto found = settings.find(key);
+    if (found == settings.end())
+        reader.fail(w[0] + ": missing " + key);
+    return reader.count(found->second);
+}
+
+PlaneShape readShape(Reader &reader, const std::vector<std::string> &w,
+                std::map<std::string, std::string> &settings)
+{
+    return {requiredCount(reader, w, settings, "channels"),
+            requiredCount(reader, w, settings, "height"),
+            requiredCount(reader, w, settings, "width")};
+}
+
+// "conv2d channels=… height=… width=… filters=… kernel=… stride=… padding=… [init=…]" (ADR-0037);
+// in a network file, one line of weights per filter and the line of biases follow.
+std::unique_ptr<Layer> readConv2D(Reader &reader, const std::vector<std::string> &w,
+                                  const Context &ctx)
+{
+    auto settings = layerSettings(reader, w, 1,
+                                  ctx.config ? std::vector<std::string>{"channels", "height",
+                                                                        "width", "filters",
+                                                                        "kernel", "stride",
+                                                                        "padding", "init"}
+                                             : std::vector<std::string>{"channels", "height",
+                                                                        "width", "filters",
+                                                                        "kernel", "stride",
+                                                                        "padding"});
+    const PlaneShape input = readShape(reader, w, settings);
+    const std::size_t filters = requiredCount(reader, w, settings, "filters");
+    const std::size_t kernel = requiredCount(reader, w, settings, "kernel");
+    const std::size_t stride = requiredCount(reader, w, settings, "stride");
+    const std::size_t padding = requiredCount(reader, w, settings, "padding");
+    const Init init =
+        settings.count("init") ? readInit(reader, settings["init"], "conv2d") : Init::HeNormal;
+    auto conv = std::make_unique<Conv2D>(input, filters, kernel, stride, padding,
+                                         static_cast<std::uint32_t>(ctx.layerSeed()), init);
+    if (ctx.config)
+        return conv;
+    for (std::size_t f = 0; f < filters; f++) {
+        const auto row = reader.numbers(conv->weights().cols());
+        for (std::size_t c = 0; c < row.size(); c++)
+            conv->weights()(f, c) = row[c];
+    }
+    const auto bias = reader.numbers(filters);
+    for (std::size_t f = 0; f < filters; f++)
+        conv->bias()(0, f) = bias[f];
+    return conv;
+}
+
+// "max_pool2d channels=… height=… width=… size=… stride=…" and the same for avg_pool2d.
+template <typename T>
+std::unique_ptr<Layer> readPool(Reader &reader, const std::vector<std::string> &w,
+                                const Context &)
+{
+    auto settings = layerSettings(reader, w, 1, {"channels", "height", "width", "size", "stride"});
+    const PlaneShape input = readShape(reader, w, settings);
+    const std::size_t size = requiredCount(reader, w, settings, "size");
+    return std::make_unique<T>(input, size, requiredCount(reader, w, settings, "stride"));
+}
+
+std::unique_ptr<Layer> readGlobalAvgPool(Reader &reader, const std::vector<std::string> &w,
+                                         const Context &)
+{
+    auto settings = layerSettings(reader, w, 1, {"channels", "height", "width"});
+    return std::make_unique<GlobalAvgPool>(readShape(reader, w, settings));
+}
+
+// "board_planes inputs=… scalars=… count=…" (ADR-0037).
+std::unique_ptr<Layer> readBoardPlanes(Reader &reader, const std::vector<std::string> &w,
+                                       const Context &)
+{
+    auto settings = layerSettings(reader, w, 1, {"inputs", "scalars", "count"});
+    const std::size_t inputs = requiredCount(reader, w, settings, "inputs");
+    const std::size_t scalars = requiredCount(reader, w, settings, "scalars");
+    return std::make_unique<BoardPlanes>(inputs, scalars,
+                                         requiredCount(reader, w, settings, "count"));
 }
 
 template <typename T>
@@ -420,6 +503,11 @@ const std::map<std::string, LayerReader> &layerReaders()
         {"dropout", readDropout},
         {"batch_norm", readBatchNorm},
         {"layer_norm", readLayerNorm},
+        {"board_planes", readBoardPlanes},
+        {"conv2d", readConv2D},
+        {"max_pool2d", readPool<MaxPool2D>},
+        {"avg_pool2d", readPool<AvgPool2D>},
+        {"global_avg_pool", readGlobalAvgPool},
     };
     return readers;
 }

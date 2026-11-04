@@ -251,8 +251,7 @@ std::string modelSummary(Network &network)
         std::size_t count = 0;
         for (const Parameter &p : layer.parameters())
             count += p.value->size();
-        if (const auto *dense = dynamic_cast<const Dense *>(&layer))
-            width = dense->weights().cols();
+        width = layer.outputWidth(width);
         total += count;
         char line[96];
         std::snprintf(line, sizeof line, "%-3zu %-14s %6zu  %10zu\n", i + 1, layer.type().c_str(),

@@ -11,10 +11,14 @@ The executables have no runtime dependency other than the C++ standard library.
 | clang-format | Code formatting (dev only) | 21.1.8 (not installed on every machine) | Apache 2.0 with LLVM exception | Manual review against `.clang-format` |
 | GNU time (`/usr/bin/time`) | Time and peak memory in the benchmark and training scripts (dev only) | — | GPL v3 | `getrusage` in a small wrapper |
 | git | Version control; `train_final.sh` writes the commit into `run.txt`, `bench_training_memory.sh` builds an older commit | — | GPL v2 | — |
-| Python 3 and matplotlib | Graphs of the benchmarks in `scripts/` and data preparation (`scripts/dataset_split.py`, standard library only); never in the executables, and never computes a published metric: scores come from `scripts/score.cpp` and the library (ADR-0026) | Python 3.12.3 and 3.14.4, matplotlib 3.10.7 and 3.11.0 | PSF, matplotlib license (BSD-style) | Any plotting tool reading the CSV files |
+| Python 3 and matplotlib | Graphs of the benchmarks in `scripts/`, the architecture diagrams (`scripts/plot_architecture.py`, boxes drawn with matplotlib patches, ADR-0037) and data preparation (`scripts/dataset_split.py`, standard library only); never in the executables, and never computes a published metric: scores come from `scripts/score.cpp` and the library (ADR-0026) | Python 3.12.3 and 3.14.4, matplotlib 3.10.7 and 3.11.0 | PSF, matplotlib license (BSD-style) | Any plotting tool reading the CSV files |
 | chess.js 0.10.3, chessboard.js 1.0.0, jQuery 3.7.1 | Bonus chess GUI only (ADR-0029): legal moves and board drawing in the page; copied into `bonus/gui/web/vendor/`, so no network access is needed | 0.10.3, 1.0.0, 3.7.1 | BSD-2-Clause, MIT, MIT | The page can be rewritten with our own board; the server and the analysis do not depend on them |
 | Wikipedia chess pieces (Cburnett) | Piece images of the GUI | — | CC BY-SA 3.0 | Any other piece set, or Unicode symbols |
 | A web browser | Opening the GUI page | Chrome 2026 (headless screenshot) | — | Any recent browser |
+
+Graphviz (`dot`) was considered for the architecture diagrams of `scripts/architecture.sh`: it is not
+installed on the development machines and is not needed, matplotlib (already required) draws the
+boxes and arrows, so the project gains no dependency.
 
 Tested versions come from the two development machines (2026-10-24, updated 2026-10-27); the
 benchmark documents state which machine produced each measurement.

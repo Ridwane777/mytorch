@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstddef>
 #include <istream>
 #include <ostream>
 #include <string>
@@ -47,6 +48,15 @@ class Layer {
     // saveState wrote and throws my_torch::Error on malformed text.
     virtual void saveState(std::ostream &) const {}
     virtual void loadState(std::istream &) {}
+    // Width of the output rows for input rows of `inputWidth` columns (ADR-0037). The network file
+    // and modelSummary follow the widths through the layers with it. Layers that keep the width
+    // (activations, dropout, normalizations) keep this default; a layer that needs a fixed input
+    // width (dense, convolution, pooling) throws my_torch::Error ("expects N inputs but receives
+    // M") when it differs.
+    virtual std::size_t outputWidth(std::size_t inputWidth) const
+    {
+        return inputWidth;
+    }
     // Stable name written in the network file (#8), for example "dense" or "relu".
     virtual std::string type() const = 0;
 };

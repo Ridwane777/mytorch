@@ -263,7 +263,7 @@ Test(serialization, rejects_malformed_files)
         {"not a my_torch network file", replace(good, "my_torch 1", "hello 1")},
         {"format version 2", replace(good, "my_torch 1", "my_torch 2")},
         {"expected 'labels'", replace(good, "labels 2", "classes 2")},
-        {"unknown layer type 'conv2d'", replace(good, "\nrelu\n", "\nconv2d\n")},
+        {"unknown layer type 'conv9d'", replace(good, "\nrelu\n", "\nconv9d\n")},
         {"unexpected end of file", good.substr(0, good.find("softmax"))},
         {"unexpected data after 'end'", good + "garbage\n"},
         {"checksum mismatch", replace(good, "l2=0.02", "l2=0.03")},

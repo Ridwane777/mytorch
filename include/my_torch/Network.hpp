@@ -145,7 +145,7 @@ struct UncertainPrediction {
 class Network;
 
 // Table of the layers (ADR-0035), as Keras' summary(): index, type, output width and number of
-// trained parameters per layer, then the total. Widths follow the Dense layers from the input
+// trained parameters per layer, then the total. Widths follow Layer::outputWidth from the input
 // width of the network's info.
 std::string modelSummary(Network &network);
 

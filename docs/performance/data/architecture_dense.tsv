@@ -1,0 +1,9 @@
+index	type	settings	output	parameters
+0	input	fen-attacks-901	901	0
+1	dense	901 256 l1=0 l2=0	256	230912
+2	relu		256	0
+3	dense	256 128 l1=0 l2=0	128	32896
+4	relu		128	0
+5	dense	128 5 l1=0 l2=0	5	645
+6	softmax		5	0
+total			5	264453

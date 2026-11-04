@@ -45,6 +45,8 @@ class Dense : public Layer {
     Matrix backward(const Matrix &gradOutput) override;
     std::vector<Parameter> parameters() override;
     std::string type() const override;
+    // `neurons` columns; throws my_torch::Error if the input is not `inputs` wide.
+    std::size_t outputWidth(std::size_t inputWidth) const override;
     // l1·Σ|w| + l2·Σw²; backward adds l1·sign(w) + 2·l2·w to dW.
     Scalar penalty() const override;
     // "dense <inputs> <outputs> l1=… l2=…", then one line of weights per input, then the biases.

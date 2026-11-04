@@ -1,0 +1,12 @@
+# Pushed network, scored on the same 7,155 test positions as the 10 % benchmark (first 10 % of the seed-42 test split, never trained on)
+# Command (from the repository root, after scripts/train_final.sh made runs/final_10pct):
+#   ./my_torch_analyzer --predict my_torch_network_final.nn runs/final_10pct/test_boards.txt > predictions.txt
+#   runs/final_10pct/score my_torch_network_final.nn runs/final_10pct/test.txt predictions.txt OUT_DIRECTORY   (scripts/score.cpp)
+positions scored: 7155
+accuracy: 0.9589
+macro F1: 0.9459
+Nothing: precision 0.9935, recall 0.9929, F1 0.9932, support 2944
+Check White: precision 0.9419, recall 0.9310, F1 0.9364, support 1305
+Check Black: precision 0.9523, recall 0.9425, F1 0.9474, support 1165
+Checkmate White: precision 0.9123, recall 0.9266, F1 0.9194, support 954
+Checkmate Black: precision 0.9251, recall 0.9416, F1 0.9332, support 787

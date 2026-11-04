@@ -1,0 +1,13 @@
+index	type	settings	output	parameters
+0	input	fen-attacks-901	901	0
+1	board_planes	inputs=901 scalars=768 count=5	19x8x8	0
+2	conv2d	channels=19 height=8 width=8 filters=16 kernel=3 stride=1 padding=1	16x8x8	2752
+3	relu		16x8x8	0
+4	conv2d	channels=16 height=8 width=8 filters=32 kernel=3 stride=1 padding=1	32x8x8	4640
+5	relu		32x8x8	0
+6	max_pool2d	channels=32 height=8 width=8 size=2 stride=2	32x4x4	0
+7	dense	512 128 l1=0 l2=0	128	65664
+8	relu		128	0
+9	dense	128 5 l1=0 l2=0	5	645
+10	softmax		5	0
+total			5	73701
