@@ -1,8 +1,8 @@
 # ADR-0039: Cross-validation helper
 
-- **Status**: Proposed
+- **Status**: Accepted (2026-11-04)
 - **Date**: 2026-11-04
-- **Deciders**: to be decided by the pair
+- **Deciders**: Meric-Gbemetonou, approved by Ridwane777
 
 ## Context
 Every number published so far comes from one split and one training ([20-cnn.md](../performance/20-cnn.md),

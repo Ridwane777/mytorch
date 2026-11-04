@@ -1,8 +1,8 @@
 # ADR-0035: Network inspection and saliency per square
 
-- **Status**: Proposed
+- **Status**: Accepted (2026-11-04)
 - **Date**: 2026-10-29
-- **Deciders**: Ridwane777 (issue #36)
+- **Deciders**: Ridwane777 (issue #36), approved by Meric-BG
 
 ## Context
 Issue #36 asks for a model summary, weight and gradient histograms per epoch, and a saliency map

@@ -1,8 +1,8 @@
 # ADR-0040: PyTorch reference: same weights, same batches, same gradients
 
-- **Status**: Proposed (like ADR-0036, until the teaching staff approve the use of PyTorch in `bonus/comparaison/`)
+- **Status**: Accepted (2026-11-04)
 - **Date**: 2026-11-04
-- **Deciders**: Meric-Gbemetonou (issue #42)
+- **Deciders**: Meric-Gbemetonou (issue #42), approved by Ridwane777; use of the libraries in `bonus/comparaison/` approved by the teaching staff as a bonus beyond the subject
 
 ## Context
 ADR-0036 allows PyTorch under `bonus/comparaison/` only. Issue #42 asks what to build with it: the same

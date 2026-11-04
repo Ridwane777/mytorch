@@ -1,8 +1,8 @@
 # ADR-0038: Unattended training of the CNN on one on-demand AWS instance
 
-- **Status**: Proposed
+- **Status**: Accepted (2026-11-04)
 - **Date**: 2026-11-02
-- **Deciders**: to be decided by the pair
+- **Deciders**: Meric-Gbemetonou, approved by Ridwane777
 
 ## Context
 The full-data training of the CNN ([ADR-0037](0037-convolutional-layers.md)) must not depend on a
