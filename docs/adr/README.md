@@ -15,7 +15,7 @@ One file per decision, based on [TEMPLATE.md](TEMPLATE.md). An accepted ADR is n
 | [0009](0009-training-loop.md) | Training loop, scheduler parameter and portable shuffling | Accepted | 2026-10-24 |
 | [0010](0010-overfitting-remedies.md) | Overfitting remedies: per-layer L1/L2, dropout layer and early stopping in fit | Accepted | 2026-10-24 |
 | [0011](0011-classification-metrics.md) | Classification metrics in the library, conventions and export formats | Accepted | 2026-10-24 |
-| [0012](0012-network-file-format.md) | Network file format: versioned self-describing text with a checksum | Accepted | 2026-10-24 |
+| [0012](0012-network-file-format.md) | Network file format: versioned self-describing text with a checksum | Superseded by ADR-0042 | 2026-10-24 |
 | [0013](0013-configuration-format.md) | Generator configuration in the network file syntax, seeded and checked before writing | Accepted | 2026-10-24 |
 | [0014](0014-analyzer-command-line.md) | Analyzer command line, encoding table, label matching and validation hold-out | Accepted | 2026-10-24 |
 | [0015](0015-stalemate-positions.md) | Stalemate bonus: generated sparse positions with generated negatives | Accepted | 2026-10-24 |
@@ -44,4 +44,6 @@ One file per decision, based on [TEMPLATE.md](TEMPLATE.md). An accepted ADR is n
 | [0038](0038-unattended-aws-training.md) | Unattended training of the CNN on one on-demand AWS instance (`scripts/aws_train.sh`, S3, scoped role, self-termination), `--progress-every` snapshots and the refusal to launch when the epochs are below the progress interval | Accepted | 2026-11-02 |
 | [0039](0039-cross-validation.md) | Cross-validation helper: `crossValidate` calls a trainer per stratified fold and reports each metric as mean ± sample standard deviation; fixed epochs, no early stopping and no augmentation inside the folds | Accepted | 2026-11-04 |
 | [0040](0040-pytorch-reference.md) | PyTorch reference in `bonus/comparaison/`: architecture read from the configuration, our weights and batches replayed in PyTorch, gradients checked against autograd to 1e-5, float64 for the equivalence and float32 for the realistic cost; approved by the teaching staff with ADR-0036 | Accepted | 2026-11-04 |
-| [0043](0043-classical-baselines.md) | Classical baselines (logistic regression, random forest, scikit-learn MLP, LightGBM): a small grid each, chosen on validation, test read once, no augmentation | Proposed | 2026-11-04 |
+| [0041](0041-generic-planes-layer.md) | Generic `to_planes` layer (height and width in its line) instead of the chess-specific `board_planes`, so that the library knows nothing about chess; the old name is still read | Accepted | 2026-11-04 |
+| [0042](0042-binary-network-file-format.md) | Binary network file format: signature, version, typed binary tokens (keyword codes, LEB128 integers, binary64 reals) and a checksum; text still read, `saveText` and `my_torch_nn_dump` for inspection | Accepted | 2026-11-04 |
+| [0043](0043-classical-baselines.md) | Classical baselines (logistic regression, random forest, scikit-learn MLP, LightGBM): a small grid each, chosen on validation, test read once, no augmentation | Accepted | 2026-11-04 |

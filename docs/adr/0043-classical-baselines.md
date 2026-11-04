@@ -1,8 +1,8 @@
 # ADR-0043: Classical baselines, which models and how they are chosen
 
-- **Status**: Proposed
+- **Status**: Accepted (2026-11-04)
 - **Date**: 2026-11-04
-- **Deciders**: Ridwane777 (issue #43); review by Meric-BG
+- **Deciders**: Ridwane777 (issue #43); accepted by the pair
 - **Issue**: #43
 
 ## Context

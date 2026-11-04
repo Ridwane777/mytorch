@@ -62,7 +62,7 @@ Built outside the repository against `build/libmy_torch.a` only, it printed (202
 | Need | API | Details |
 | --- | --- | --- |
 | Layers | `Dense` (with L1/L2 and a choice of initialisation), `ReLU`, `LeakyReLU`, `Sigmoid`, `Tanh`, `Softmax`, `Dropout` | ADR-0004, ADR-0010, ADR-0020 |
-| Convolution | `BoardPlanes` (901 inputs to 19 planes of 8 × 8), `Conv2D` (im2col), `MaxPool2D`, `AvgPool2D`, `GlobalAvgPool`; rows are channel-major `channels × height × width`; `Layer::outputWidth` follows the widths | ADR-0037 |
+| Convolution | `ToPlanes` (a flat row to planes of height × width, ADR-0041), `Conv2D` (im2col), `MaxPool2D`, `AvgPool2D`, `GlobalAvgPool`; rows are channel-major `channels × height × width`; `Layer::outputWidth` follows the widths | ADR-0037 |
 | Inspection | `modelSummary(network)` (layers, widths, parameters), `TrainConfig::onEpoch` (called after each epoch, to read weights and gradients), `inputGradient(input, output)` (saliency) | ADR-0035 |
 | Uncertainty | `predictMonteCarlo(input, passes, seed)`: mean of several predictions with only the dropout layers active, with the entropy, mutual information and disagreement of each row | ADR-0034 |
 | Normalization | `BatchNorm` (batch statistics in training, running averages in prediction) and `LayerNorm` (per example), with trained gamma and beta, between a `Dense` and its activation | ADR-0033 |
@@ -76,7 +76,7 @@ Built outside the repository against `build/libmy_torch.a` only, it printed (202
 | Data that does not fit in memory | Implement `DataSource` (`size`, `inputWidth`, `targetWidth`, `fill`) and pass it to `fit`: only one batch is built at a time | ADR-0021 |
 | Evaluation | `report` from probabilities or from a confusion matrix (accuracy, precision, recall, F1), `confusion` from probabilities or from class indices, `merge` of classes into groups, `rocAuc`, `calibration`, CSV/JSON export | ADR-0011, ADR-0026 |
 | Hyperparameter search | `SearchSpace`, `GridSearch`, `RandomSearch(count, seed)`: the library chooses the combinations, your objective trains and scores each one; a CSV log makes a long search resumable | ADR-0028 |
-| Saving | `Network::save`, `Network::load`, `Network::fromConfig` (versioned text file with a checksum) | ADR-0012, ADR-0013 |
+| Saving | `Network::save` (binary file with a signature, a version and a checksum), `Network::saveText` (the same as readable text), `Network::load` (reads both), `Network::fromConfig` | ADR-0012, ADR-0013, ADR-0042 |
 
 ## A data source of your own
 

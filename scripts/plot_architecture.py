@@ -15,6 +15,7 @@ from matplotlib.patches import FancyBboxPatch
 
 COLORS = {
     "input": "#d9d9d9",
+    "to_planes": "#e6d5f0",
     "board_planes": "#e6d5f0",
     "conv2d": "#9ecae1",
     "max_pool2d": "#a1d99b",

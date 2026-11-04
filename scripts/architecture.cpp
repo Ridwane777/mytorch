@@ -28,7 +28,7 @@ std::string shapeText(const PlaneShape &shape)
 // Planes produced by the layer, if it is one of the layers that give a shape.
 std::optional<PlaneShape> planesOf(const my_torch::Layer &layer)
 {
-    if (const auto *l = dynamic_cast<const my_torch::BoardPlanes *>(&layer))
+    if (const auto *l = dynamic_cast<const my_torch::ToPlanes *>(&layer))
         return l->outputShape();
     if (const auto *l = dynamic_cast<const my_torch::Conv2D *>(&layer))
         return l->outputShape();

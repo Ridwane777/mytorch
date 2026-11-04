@@ -35,6 +35,7 @@ performance of the code itself.
 | **Comparison** | | | |
 | 22 | [22-pytorch-reference.md](22-pytorch-reference.md) | Same architectures in PyTorch (`bonus/comparaison/`): gradients against autograd, our weights and batches replayed, time per epoch, memory and accuracy after an equal budget | #42 |
 | 23 | [23-baselines.md](23-baselines.md) | Classical baselines on the same split and encoding: logistic regression 65 %, random forest 77 %, scikit-learn MLP 91.7 %, LightGBM 96.75 %, against our dense 96.15 % and CNN 98.07 % | #43 |
+| 24 | [24-binary-format.md](24-binary-format.md) | Binary network file (ADR-0042) against text: size ÷ 2.55, save and load about 2 times slower, identical predictions on the test split | defense |
 | **Bonus** | | | |
 | 14 | [14-stalemate.md](14-stalemate.md) | Stalemate: generated positions and a six-class network | #24 |
 

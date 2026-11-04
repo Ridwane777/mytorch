@@ -34,7 +34,7 @@ and the main code never includes `bonus/`.
 | `Parallel` | Persistent thread pool: `parallelFor`, `threadCount`, `setThreadCount` (default: hardware threads or `MY_TORCH_THREADS`) | ADR-0024 |
 | `Error` | `my_torch::Error`, the only exception type thrown by the project | ADR-0004 |
 | `Layer`, `Dense`, `Activations`, `Dropout`, `Normalization` | The `Layer` interface (`forward`, `backward`, `parameters`, `penalty`, `save`, `saveState`, `outputWidth`, `type`) and its layers: `Dense` (with L1/L2), `ReLU`, `LeakyReLU`, `Sigmoid`, `Tanh`, `Softmax`, `Dropout`, `BatchNorm`, `LayerNorm` | ADR-0004, ADR-0010, ADR-0033 |
-| `Convolution` | `BoardPlanes`, `Conv2D`, `MaxPool2D`, `AvgPool2D`, `GlobalAvgPool`: the spatial layers (channel-major rows), `Layer::outputWidth` tells the width each layer needs and gives | ADR-0037 |
+| `Convolution` | `ToPlanes`, `Conv2D`, `MaxPool2D`, `AvgPool2D`, `GlobalAvgPool`: the spatial layers (channel-major rows), `Layer::outputWidth` tells the width each layer needs and gives | ADR-0037, ADR-0041 |
 | `Loss`, `Losses` | The `Loss` interface (`value`, `gradient`, `fusesSoftmax`) and `MSE`, `MAE`, `Huber`, `BinaryCrossEntropy`, `CrossEntropy` | ADR-0007 |
 | `Optimizer`, `Optimizers` | The `Optimizer` interface (`step`, `setLearningRate`) and `SGD` (momentum, Nesterov), `Adam`, `AdamW`, `RMSProp`, `Adagrad` | ADR-0008 |
 | `Schedulers` | `ConstantRate`, `StepDecay`, `ExponentialDecay`, `CosineAnnealing`, `Warmup` | ADR-0008 |
@@ -44,7 +44,7 @@ and the main code never includes `bonus/`.
 | `Checkpoint` | `saveCheckpoint`, `loadCheckpoint`, `TrainingState`; atomic text file with a checksum and a fingerprint of the training | ADR-0032 |
 | `Search` | `SearchSpace`, `Trial`, `SearchStrategy` with `GridSearch` and `RandomSearch`, `SearchResult`; resumable CSV log | ADR-0028 |
 | `Factory` | `makeLoss`, `makeOptimizer`, `makeScheduler`: build the training objects from their description in a file | ADR-0012 |
-| `Serialization.cpp` | Reader and writer of network files and configuration files | ADR-0012, ADR-0013 |
+| `Serialization.cpp`, `BinaryFormat.cpp` | Reader and writer of network files (binary, and text for inspection) and configuration files | ADR-0012, ADR-0013, ADR-0042 |
 
 ### Analyzer (`src/analyzer/`)
 
@@ -190,10 +190,13 @@ sequenceDiagram
 
 ## 5. The network file
 
-A network lives in one text file (ADR-0012), written by the generator, read and rewritten by the
-analyzer, and pushed as `my_torch_network_*.nn` for the autograder. It holds the input encoding
-name, the labels in order, the training settings and every layer with its weights, and ends with a
-checksum. A configuration file (ADR-0013) uses the same syntax without the weights.
+A network lives in one binary file (ADR-0042), written by the generator, read and rewritten by the
+analyzer, and pushed as `my_torch_network_*.nn` for the autograder. It starts with a signature and
+a format version, holds the input encoding name, the labels in order, the training settings and
+every layer with its weights (keywords as one-byte codes, integers and reals in binary), and ends
+with a checksum. `Network::saveText` writes the same content as text (the format of ADR-0012, which
+`load` still reads), and `bonus/my_torch_nn_dump` prints a network file that way. A configuration
+file (ADR-0013) is text, written by hand, in the text syntax without the weights.
 
 ## 6. Errors
 

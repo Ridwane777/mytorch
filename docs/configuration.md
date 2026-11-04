@@ -12,7 +12,7 @@ written: on an error nothing is written, the message goes to standard error and 
 
 ## Syntax
 
-A configuration is a [network file](adr/0012-network-file-format.md) without weights:
+A configuration is a [network file in its text form](adr/0012-network-file-format.md) without weights (network files themselves are binary since [ADR-0042](adr/0042-binary-network-file-format.md); configurations stay text, to be written by hand):
 
 - the same keywords and the same `type key=value` settings;
 - no `my_torch 1` header and no `end checksum=…` line;
@@ -65,7 +65,7 @@ softmax
 | `dropout` | `rate` (required, 0 ≤ rate < 1), `seed` (derived from the network seed when omitted) |
 | `batch_norm <features>` | `momentum` (0.1) of the running averages used in prediction, `epsilon` (1e-5); placed after a `dense`, `<features>` = its outputs (ADR-0033) |
 | `layer_norm <features>` | `epsilon` (1e-5); same placement (ADR-0033) |
-| `board_planes inputs=… scalars=… count=…` | Reshape of the `fen-attacks-901` row into 19 planes of 8 × 8: `scalars` is the column of the first of the `count` game-state scalars (768 and 5), each repeated on the 64 squares. Parameter-free (ADR-0037) |
+| `to_planes inputs=… scalars=… count=… height=… width=…` | Reshape of a flat row into planes of `height` × `width`: `scalars` is the column of the first of the `count` scalars, each repeated on a plane of its own. For `fen-attacks-901`: `inputs=901 scalars=768 count=5 height=8 width=8`, 19 planes of 8 × 8. Parameter-free (ADR-0037, ADR-0041). The former name `board_planes inputs=… scalars=… count=…` is still read, as 8 × 8 |
 | `conv2d channels=… height=… width=… filters=… kernel=… stride=… padding=…` | 2D convolution on a channel-major `channels × height × width` row; `init` (`he_normal`): same names as for `dense`, configurations only (ADR-0037) |
 | `max_pool2d channels=… height=… width=… size=… stride=…`, `avg_pool2d …` | Pooling over `size × size` windows, no padding, output size rounded down (ADR-0037) |
 | `global_avg_pool channels=… height=… width=…` | Mean of each channel, `channels` outputs (ADR-0037) |
@@ -93,7 +93,7 @@ below; biases start at zero. Design choices and measurements:
 The normal forms are not truncated. A name that is not in the table is an error that lists them.
 
 The first layer takes `<width>` inputs, each layer takes the outputs of the previous one (`dense`,
-`conv2d`, the pooling layers and `board_planes` say how many they need and give), and the last one
+`conv2d`, the pooling layers and `to_planes` say how many they need and give), and the last one
 has one output per label; the generator refuses any other combination.
 
 ### Training (stored in the network, used by `my_torch_analyzer --train`)

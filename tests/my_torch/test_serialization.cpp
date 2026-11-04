@@ -2,6 +2,7 @@
 
 #include <cstdio>
 #include <fstream>
+#include <cstdint>
 #include <memory>
 #include <sstream>
 #include <string>
@@ -76,10 +77,10 @@ std::string loadError(const std::string &text)
     return message;
 }
 
-// A valid file of every layer type, as text.
+// A valid file of every layer type, in the text format (ADR-0012).
 std::string savedText()
 {
-    everyLayer().save(file);
+    everyLayer().saveText(file);
     const std::string text = readText(file);
     std::remove(file.c_str());
     return text;
@@ -155,7 +156,7 @@ Test(serialization, saving_a_loaded_network_gives_the_same_file)
 {
     const std::string first = savedText();
     writeText(file, first);
-    Network::load(file).save(file);
+    Network::load(file).saveText(file);
     const std::string second = readText(file);
     std::remove(file.c_str());
     cr_assert(first == second);
@@ -338,4 +339,120 @@ Test(serialization, save_refuses_an_incomplete_model)
     net.info() = {"raw", 2, {"out"}, {}};
     cr_assert_throw(net.save("/nonexistent/dir/net.nn"), Error);
     cr_assert_throw(Network::load("/nonexistent/net.nn"), Error);
+}
+
+// ---- binary format (ADR-0042) ------------------------------------------------------------------
+
+namespace {
+
+std::string savedBinary(const Network &net)
+{
+    net.save(file);
+    const std::string bytes = readText(file);
+    std::remove(file.c_str());
+    return bytes;
+}
+
+std::uint64_t little(const std::string &bytes, std::size_t at, int count)
+{
+    std::uint64_t value = 0;
+    for (int i = 0; i < count; i++)
+        value |= static_cast<std::uint64_t>(static_cast<unsigned char>(bytes[at + i])) << (8 * i);
+    return value;
+}
+
+} // namespace
+
+Test(binary_format, save_writes_binary_with_no_text_record)
+{
+    const std::string bytes = savedBinary(everyLayer());
+
+    cr_assert(bytes.compare(0, 8, std::string("MYTORCH\0", 8)) == 0, "no signature");
+    cr_assert_eq(little(bytes, 8, 4), 2, "version");
+    cr_assert_eq(little(bytes, 12, 8), bytes.size() - 28, "payload length");
+    // Keywords are one-byte codes and numbers binary: no record survives as text.
+    for (const char *text : {"my_torch 1", "dense", "relu", "epochs", "checksum", "beta1"})
+        cr_assert(bytes.find(text) == std::string::npos, "'%s' written as text", text);
+}
+
+Test(binary_format, round_trip_keeps_every_bit_and_setting)
+{
+    const Network original = everyLayer();
+    original.save(file);
+    Network::load(file).saveText(file);
+    const std::string again = readText(file);
+    std::remove(file.c_str());
+
+    cr_assert(again == savedText(), "the text of the reloaded network differs");
+}
+
+Test(binary_format, is_smaller_than_the_text_format)
+{
+    Network net;
+    net.add(std::make_unique<Dense>(64, 64, 4));
+    net.add(std::make_unique<Softmax>());
+    net.info().encoding = "raw";
+    net.info().inputs = 64;
+    net.info().labels.resize(64, "x");
+    net.saveText(file);
+    const std::size_t text = readText(file).size();
+
+    cr_assert_lt(savedBinary(net).size() * 2, text, "binary %zu, text %zu", savedBinary(net).size(),
+                 text);
+}
+
+Test(binary_format, labels_with_any_spacing_come_back_unchanged)
+{
+    Network net;
+    net.add(std::make_unique<Dense>(2, 3, 1));
+    net.add(std::make_unique<Softmax>());
+    net.info().encoding = "my-encoding";
+    net.info().inputs = 2;
+    net.info().labels = {"Check  White", " leading", "é unicode"};
+    net.save(file);
+    const Network loaded = Network::load(file);
+    std::remove(file.c_str());
+
+    cr_assert(loaded.info().labels == net.info().labels);
+    cr_assert(loaded.info().encoding == "my-encoding");
+}
+
+Test(binary_format, rejects_corrupted_truncated_and_unknown_files)
+{
+    const std::string good = savedBinary(everyLayer());
+    std::string flipped = good;
+    flipped[40] = static_cast<char>(flipped[40] ^ 0x01);
+    std::string newer = good;
+    newer[8] = 3;
+    struct Case {
+        const char *what;
+        std::string bytes;
+    };
+    const std::vector<Case> cases = {
+        {"checksum mismatch", flipped},
+        {"truncated", good.substr(0, good.size() - 5)},
+        {"truncated", good.substr(0, 12)},
+        {"truncated or has extra data", good + "x"},
+        {"binary format version 3 is not supported", newer},
+    };
+    for (const Case &c : cases) {
+        const std::string message = loadError(c.bytes);
+        cr_assert(message.find(c.what) != std::string::npos, "%s -> %s", c.what, message.c_str());
+        cr_assert(message.find(file + ":") == 0, "no file name: %s", message.c_str());
+    }
+}
+
+Test(binary_format, text_files_written_before_still_load)
+{
+    writeText(file, savedText());
+    Network fromText = Network::load(file);
+    fromText.save(file);
+    Network fromBinary = Network::load(file);
+    std::remove(file.c_str());
+    const Matrix x = gradient_check::random(4, 3, 11);
+    const Matrix a = fromText.predict(x);
+    const Matrix b = fromBinary.predict(x);
+
+    for (std::size_t i = 0; i < a.size(); i++)
+        cr_assert_eq(a.data()[i], b.data()[i], "value %zu differs", i);
 }

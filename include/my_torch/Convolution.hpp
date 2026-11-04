@@ -27,24 +27,26 @@ struct PlaneShape {
     }
 };
 
-// Parameter-free reshape from the fen-attacks-901 layout to image planes (ADR-0037). The input row
-// holds `inputs` columns: square planes of 64 columns (index plane·64 + square) except for `count`
-// scalars that start at column `scalars` (fen-attacks-901: 14 planes of 64 squares and the 5
-// game-state scalars after the 12 piece planes: inputs = 901, scalars = 768, count = 5). The output
-// is channels × 8 × 8 with the square planes in their order, then one more plane per scalar, the
-// scalar repeated on the 64 squares. In backward, a square receives its own gradient and a scalar
-// the sum over its plane.
-class BoardPlanes : public Layer {
+// Parameter-free reshape of a flat row into image planes of height × width (ADR-0037, made generic
+// by ADR-0041). The input row holds `inputs` columns: planes of height·width columns (index
+// plane·height·width + cell), except for `count` scalars that start at column `scalars`, on a plane
+// boundary. The output is channels × height × width with the planes in their order, then one more
+// plane per scalar, the scalar repeated on every cell. In backward, a cell receives its own gradient
+// and a scalar the sum over its plane. The layer knows nothing of what the planes hold: the
+// configuration gives the layout of its encoding.
+class ToPlanes : public Layer {
   public:
-    // Throws my_torch::Error unless count > 0, scalars is a multiple of 64 and
-    // scalars + count <= inputs, and inputs - count is a positive multiple of 64.
-    BoardPlanes(std::size_t inputs, std::size_t scalars, std::size_t count);
+    // Throws my_torch::Error unless height and width are positive, count > 0, scalars is a
+    // multiple of height·width, scalars + count <= inputs, and inputs - count is a positive
+    // multiple of height·width.
+    ToPlanes(std::size_t inputs, std::size_t scalars, std::size_t count, std::size_t height,
+             std::size_t width);
 
     Matrix forward(const Matrix &input, bool training) override;
     Matrix backward(const Matrix &gradOutput) override;
     std::size_t outputWidth(std::size_t inputWidth) const override;
     std::string type() const override;
-    // "board_planes inputs=… scalars=… count=…"
+    // "to_planes inputs=… scalars=… count=… height=… width=…"
     void save(std::ostream &out) const override;
 
     std::size_t inputs() const noexcept;
@@ -56,7 +58,9 @@ class BoardPlanes : public Layer {
     std::size_t _inputs;
     std::size_t _scalars;
     std::size_t _count;
-    std::size_t _squarePlanes;
+    std::size_t _height;
+    std::size_t _width;
+    std::size_t _planes;
 };
 
 // 2D convolution (cross-correlation, as in every library): `filters` kernels of channels × k × k
