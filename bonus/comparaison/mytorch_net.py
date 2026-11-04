@@ -91,23 +91,28 @@ def read_config(path: str | Path) -> Config:
     return Config(**cfg)  # type: ignore[arg-type]
 
 
-class BoardPlanes(nn.Module):
-    """board_planes (include/my_torch/Convolution.hpp): 901 inputs -> 19 planes of 8 x 8.
+class ToPlanes(nn.Module):
+    """to_planes (include/my_torch/Convolution.hpp, ADR-0041): a row -> planes of height x width;
+    board_planes, its former name, is the same layer on 8 x 8.
 
-    The square planes (64 columns each) keep their order, skipping the `count` scalars that start
-    at column `scalars`; each scalar then becomes one more plane, repeated on the 64 squares.
+    The planes (height x width columns each) keep their order, skipping the `count` scalars that
+    start at column `scalars`; each scalar then becomes one more plane, repeated on every cell.
     """
 
-    def __init__(self, inputs: int, scalars: int, count: int):
+    def __init__(self, inputs: int, scalars: int, count: int, height: int = 8, width: int = 8):
         super().__init__()
         self.inputs, self.scalars, self.count = inputs, scalars, count
-        self.square_planes = (inputs - count) // 64
+        self.cells = height * width
+        self.square_planes = (inputs - count) // self.cells
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         squares = torch.cat([x[:, : self.scalars], x[:, self.scalars + self.count :]], dim=1)
         scalars = x[:, self.scalars : self.scalars + self.count]
         planes = torch.cat(
-            [squares.reshape(-1, self.square_planes, 64), scalars.unsqueeze(2).expand(-1, -1, 64)],
+            [
+                squares.reshape(-1, self.square_planes, self.cells),
+                scalars.unsqueeze(2).expand(-1, -1, self.cells),
+            ],
             dim=1,
         )
         return planes.reshape(x.shape[0], -1)
@@ -166,8 +171,14 @@ class Net(nn.Module):
                 self._register(i, "dense", layer)
             elif kind == "relu":
                 layer = nn.ReLU()
-            elif kind == "board_planes":
-                layer = BoardPlanes(int(named["inputs"]), int(named["scalars"]), int(named["count"]))
+            elif kind in ("to_planes", "board_planes"):
+                layer = ToPlanes(
+                    int(named["inputs"]),
+                    int(named["scalars"]),
+                    int(named["count"]),
+                    int(named.get("height", 8)),
+                    int(named.get("width", 8)),
+                )
             elif kind == "conv2d":
                 conv = nn.Conv2d(
                     int(named["channels"]),

@@ -29,7 +29,7 @@ struct Dataset {
 };
 
 // Where fit takes its examples (ADR-0021). fit asks for one batch at a time, so a source can build
-// its rows on demand (the analyzer encodes chess positions batch by batch) instead of holding every
+// its rows on demand (e.g. by encoding raw records batch by batch) instead of holding every
 // example as a matrix in memory.
 class DataSource {
   public:
@@ -121,7 +121,8 @@ struct TrainingSpec {
     TrainConfig config;
 };
 
-// What the analyzer needs to use the network, stored in the network file with the layers.
+// What a program needs to use the network, stored in the network file with the layers: the
+// library only stores these values, the program gives them their meaning.
 struct ModelInfo {
     std::string encoding;            // name of the input encoding (#14), one word
     std::size_t inputs = 0;          // width of an input row
