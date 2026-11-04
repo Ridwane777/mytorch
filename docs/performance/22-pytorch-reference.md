@@ -25,10 +25,14 @@ and where does an accuracy gap, if any, come from?
 - **Accuracy after the same budget** (10 % of the training split, 10 epochs, validation split, no
   early stopping): dense 0.7664 ± 0.0012 (5 seeds) for us against 0.7638 ± 0.0025 for PyTorch
   float64; CNN 0.9438 ± 0.0041 (3 seeds) against 0.9518 ± 0.0048. **The arithmetic explains none of
-  the gap** (the previous point); it comes from the draws and, for the CNN, partly from the
-  initialisation scheme. On the dense network the gap (0.26 points) is about two standard errors:
-  not established. On the CNN it is 0.80 points, and PyTorch with *our* initialisation scheme closes
-  about half of it (0.38 points left, 1.2 standard errors). Details and limits below.
+  the gap** (the previous point). The accuracy gaps are suggestive at best, not established: dense
+  0.26 points (about 2.1 standard errors, 5 seeds), CNN 0.80 points (2.2 standard errors, 3 seeds).
+  The stronger evidence is the CNN's validation loss (0.1470 against 0.1187, 4.2 standard errors).
+  PyTorch drawing *our* initialisation scheme lands between the two (0.9476 accuracy, 0.1358 loss),
+  but its difference to native PyTorch (0.42 points of accuracy, 1.2 standard errors) is itself not
+  established. What is left, and not ruled out, is the draws (which initial weights and batch order
+  a seed gives); the initialisation scheme is a candidate cause that was not demonstrated. Details
+  and limits below.
 
 ## Method
 
@@ -210,25 +214,33 @@ split, trained on all the data, augmented, with early stopping, [10-final-networ
    predictions (section 2). A systematic difference between the libraries, for these two architectures,
    would have shown there.
 2. **Not the numeric precision.** Float32 (0.7668, 0.9492, one seed) is inside the float64 spread.
-3. **The draws, i.e. which random initial weights and which batch order a seed gives.** Every other
-   difference between the columns is a different sample of the same distributions, and the spread
-   between seeds is 0.12 to 0.30 points of accuracy (dense) and 0.36 to 0.48 (CNN). The dense gap of
-   0.26 points to the native variant (0.38 to the scheme variant) is 2.1 (2.6) standard errors of the
-   difference of two means of 5; with the comparisons made here, I **do not claim** that it is real,
-   nor that it is not. It is not explained by the initialisation scheme: PyTorch with our scheme is
-   no closer to us than PyTorch with its own.
-4. **The initialisation scheme, for the CNN.** The gap of 0.80 points of accuracy (2.2 standard
-   errors) and 0.0283 of validation loss (4.2 standard errors) to native PyTorch shrinks to 0.38 points
-   (1.2 standard errors) and 0.0112 of loss (1.8 standard errors) when PyTorch draws our distributions:
-   the scheme accounts for about half of the accuracy gap and 60 % of the loss gap. The two schemes
-   differ for the convolutions by a standard deviation of the weights 2.4 times larger in ours
-   (He normal, N(0, 2 / fan_in), against U(±1 / sqrt(fan_in)), variance 1 / (3 fan_in)) and by the
-   biases (zero against uniform); this experiment does not separate these two. The remainder
-   is within the seed spread with 3 seeds each.
+3. **The draws, i.e. which random initial weights and which batch order a seed gives: the explanation
+   left once the others are excluded, not a measured cause.** Every other difference between the
+   columns is a different sample of the same distributions, and the spread between seeds is 0.12 to
+   0.30 points of accuracy (dense) and 0.36 to 0.48 (CNN). The dense gap of 0.26 points to the native
+   variant (0.38 to the scheme variant) is 2.1 (2.6) standard errors of the difference of two means
+   of 5; with the comparisons made here, I **do not claim** that it is real, nor that it is not. The
+   CNN accuracy gap of 0.80 points to the native variant (2.2 standard errors, means of 3) is
+   suggestive and **not established either**, at the same standard.
+4. **The initialisation scheme, for the CNN: a candidate, not shown.** The CNN's validation loss gives
+   the clearest signal: 0.1470 for us against 0.1187 for native PyTorch (difference 0.0283, 4.2
+   standard errors, 3 seeds each). With PyTorch drawing our distributions the loss is 0.1358: 0.0112
+   below ours (1.8 standard errors) and 0.0171 above native PyTorch. The
+   scheme variant therefore sits between the two, and the point estimate would attribute about 60 %
+   of the loss gap and about half of the accuracy gap (0.80 to 0.38 points) to the scheme. **That
+   attribution is not established**: the difference between native and scheme PyTorch is 0.0042 of
+   accuracy (about 1.2 standard errors) and the loss difference 0.0171 is of the same order as the
+   seed spread, with 3 seeds each. The two schemes differ for the convolutions by a standard
+   deviation of the weights 2.4 times larger in ours (He normal, N(0, 2 / fan_in), against
+   U(±1 / sqrt(fan_in)), variance 1 / (3 fan_in)) and by the biases (zero against uniform); this
+   experiment does not separate these two, and no mechanism was tested.
 
-What I conclude: our trainer is equivalent to PyTorch's for these two networks; at this budget
-PyTorch's default initialisation gives the CNN a better validation score than ours, by about
-0.8 points of accuracy, of which about half is the initialisation scheme; no gap is established on the dense
+What I conclude: our trainer is equivalent to PyTorch's for these two networks (same start and
+batches, same predictions). At this budget the CNN scores somewhat worse than PyTorch's default
+initialisation in the runs made here (validation loss 0.1470 against 0.1187, 4.2 standard errors;
+accuracy 0.9438 against 0.9518, 2.2 standard errors, suggestive only). The data do not establish
+why: the draws are the explanation not excluded, and the initialisation scheme is a candidate that
+the scheme variant neither confirms nor rules out. No accuracy gap is established on the dense
 network.
 
 ## Weaknesses
