@@ -1,8 +1,8 @@
 # ADR-0044: Python bindings of the library with pybind11
 
-- **Status**: Proposed
+- **Status**: Accepted (2026-11-04)
 - **Date**: 2026-11-04
-- **Deciders**: Ridwane777 (question raised after the first defense); to be accepted by the pair
+- **Deciders**: Ridwane777 (question raised after the first defense); accepted by the pair
 
 ## Context
 After the first defense, we were asked whether the library can be used from another language,
