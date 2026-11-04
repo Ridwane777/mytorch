@@ -22,6 +22,7 @@
 #include "my_torch/Parallel.hpp"
 #include "my_torch/Schedulers.hpp"
 #include "my_torch/Search.hpp"
+#include "my_torch/Validation.hpp"
 
 namespace my_torch {
 
