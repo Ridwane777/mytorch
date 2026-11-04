@@ -1,8 +1,8 @@
 # ADR-0036: Comparison framework with existing networks
 
-- **Status**: Proposed (until the teaching staff approve; see Follow-up)
+- **Status**: Accepted (2026-11-04)
 - **Date**: 2026-10-29
-- **Deciders**: Meric-Gbemetonou (issue #41)
+- **Deciders**: Meric-Gbemetonou (issue #41), approved by Ridwane777; use of the libraries in `bonus/comparaison/` approved by the teaching staff as a bonus beyond the subject
 
 ## Context
 Issue #41 asks to compare our network with existing ones, to know whether 0.9615 accuracy and
@@ -82,8 +82,8 @@ approval is an explicit open item below and this ADR stays Proposed until it is 
   It looks at `*.py *.cpp *.hpp *.h *.sh`, `Makefile` and `requirements*.txt`, and does not catch
   an indirect use (a library called through a subprocess or a dynamic import).
 - Follow-up:
-  - **Open: approval of the teaching staff** before any code using these libraries is pushed;
-    the ADR moves to Accepted (or is abandoned) with their answer.
+  - **Done (2026-11-04): approved by the teaching staff** as a bonus beyond the subject, kept in
+    `bonus/comparaison/`, away from the autograder; the ADR is Accepted.
   - Run `scripts/check_comparison_isolation.sh` before each pull request, and in the CI if one
     exists.
   - The implementation of the comparison itself is separate work, outside this ADR.

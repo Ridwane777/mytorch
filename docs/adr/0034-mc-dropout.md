@@ -1,8 +1,8 @@
 # ADR-0034: Uncertainty by Monte Carlo dropout
 
-- **Status**: Proposed
+- **Status**: Accepted (2026-11-04)
 - **Date**: 2026-10-29
-- **Deciders**: Ridwane777 (issue #26)
+- **Deciders**: Ridwane777 (issue #26), approved by Meric-BG
 
 ## Context
 Issue #26 asks for predictions with dropout active over N passes, an uncertainty measure, and an

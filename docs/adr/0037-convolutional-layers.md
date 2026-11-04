@@ -1,8 +1,8 @@
 # ADR-0037: Convolutional layers and CNN for the chessboard
 
-- **Status**: Proposed
+- **Status**: Accepted (2026-11-04)
 - **Date**: 2026-10-29
-- **Deciders**: to be decided by the pair (issue #29)
+- **Deciders**: Meric-Gbemetonou (issue #29), approved by Ridwane777
 
 > Numbering: ADR-0036 (comparison framework) exists on the unmerged branch
 > `docs/comparison-framework`; this ADR was written from `main`, where 0036 is free. The number may
