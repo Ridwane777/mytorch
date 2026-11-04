@@ -1,0 +1,8 @@
+date: 2026-11-04T09:15:11Z
+commit: f0713ab (uncommitted changes)
+machine: 12th Gen Intel(R) Core(TM) i5-12450H, 12 threads
+folds: 5, fold seed: 42, training split seed: 42
+training part of the split: 572446 lines (the validation and test parts are not read)
+dense: fraction 0.05, 28622 rows, 5 epochs per fold, wall time 194 s
+cnn: fraction 0.01, 5724 rows, 2 epochs per fold, wall time 34 s
+per fold: fresh network, no early stopping (patience 0), no augmentation

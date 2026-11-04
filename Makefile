@@ -21,6 +21,8 @@ TESTS_SRC	=	$(wildcard tests/*/*.cpp)
 
 all:	$(ANALYZER) $(GENERATOR)
 
+mytorch:	$(LIB)
+
 $(LIB):	$(LIB_OBJ)
 	ar rcs $@ $^
 
@@ -53,4 +55,4 @@ re:	fclean all
 
 -include $(shell find $(BUILD) -name '*.d' 2>/dev/null)
 
-.PHONY: all debug tests_run clean fclean re
+.PHONY: all mytorch debug tests_run clean fclean re
