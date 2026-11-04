@@ -1,0 +1,2 @@
+my_torch_network_final: 71555 positions, predictions identical
+my_torch_network_cnn_epoch10: 71555 positions, predictions identical

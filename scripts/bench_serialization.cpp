@@ -71,7 +71,7 @@ int main(int argc, char **argv)
             parameters += p.value->size();
         std::vector<double> save, load;
         for (int r = 0; r < runs; r++) {
-            save.push_back(millis([&] { net.save(tmp); }));
+            save.push_back(millis([&] { net.saveText(tmp); })); // the text format (ADR-0012)
             load.push_back(millis([&] { Network::load(tmp); }));
         }
         std::string name;

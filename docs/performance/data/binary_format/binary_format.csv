@@ -1,0 +1,5 @@
+network,parameters,format,file_bytes,save_ms,load_ms
+my_torch_network_final.nn,264453,text,5406197,112.144,63.1099
+my_torch_network_final.nn,264453,binary,2123677,210.907,136.764
+my_torch_network_cnn_epoch10.nn,73701,text,1543081,30.7253,17.0287
+my_torch_network_cnn_epoch10.nn,73701,binary,594204,61.3542,39.9031

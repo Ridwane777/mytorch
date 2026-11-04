@@ -194,10 +194,14 @@ class Network {
     ModelInfo &info() noexcept;
     const ModelInfo &info() const noexcept;
 
-    // Versioned text file with a checksum (ADR-0012). Both check that the info and the layers are
-    // consistent (input width, layer widths, one output per label) and throw my_torch::Error
-    // otherwise; load also reports the line of a malformed or corrupted file.
+    // save writes the binary format (ADR-0042): every number in binary, every value exact, with a
+    // signature, a version and a checksum. saveText writes the same content as readable text, the
+    // format of ADR-0012, for inspection. load reads both, telling them by their first bytes. All
+    // three check that the info and the layers are consistent (input width, layer widths, one
+    // output per label) and throw my_torch::Error otherwise; load also reports a malformed,
+    // truncated or corrupted file.
     void save(const std::string &path) const;
+    void saveText(const std::string &path) const;
     static Network load(const std::string &path);
     // Builds an untrained network from a configuration file (ADR-0013): the network file syntax
     // without weights or checksum, with comments, optional sections and "init seed=…". Weights
@@ -207,6 +211,7 @@ class Network {
 
   private:
     static Network parse(const std::string &path, bool config, std::uint64_t index);
+    std::string records() const;
 
     std::vector<std::unique_ptr<Layer>> _layers;
     ModelInfo _info;

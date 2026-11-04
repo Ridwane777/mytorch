@@ -76,7 +76,7 @@ Built outside the repository against `build/libmy_torch.a` only, it printed (202
 | Data that does not fit in memory | Implement `DataSource` (`size`, `inputWidth`, `targetWidth`, `fill`) and pass it to `fit`: only one batch is built at a time | ADR-0021 |
 | Evaluation | `report` from probabilities or from a confusion matrix (accuracy, precision, recall, F1), `confusion` from probabilities or from class indices, `merge` of classes into groups, `rocAuc`, `calibration`, CSV/JSON export | ADR-0011, ADR-0026 |
 | Hyperparameter search | `SearchSpace`, `GridSearch`, `RandomSearch(count, seed)`: the library chooses the combinations, your objective trains and scores each one; a CSV log makes a long search resumable | ADR-0028 |
-| Saving | `Network::save`, `Network::load`, `Network::fromConfig` (versioned text file with a checksum) | ADR-0012, ADR-0013 |
+| Saving | `Network::save` (binary file with a signature, a version and a checksum), `Network::saveText` (the same as readable text), `Network::load` (reads both), `Network::fromConfig` | ADR-0012, ADR-0013, ADR-0042 |
 
 ## A data source of your own
 

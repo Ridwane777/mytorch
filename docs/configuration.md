@@ -12,7 +12,7 @@ written: on an error nothing is written, the message goes to standard error and 
 
 ## Syntax
 
-A configuration is a [network file](adr/0012-network-file-format.md) without weights:
+A configuration is a [network file in its text form](adr/0012-network-file-format.md) without weights (network files themselves are binary since [ADR-0042](adr/0042-binary-network-file-format.md); configurations stay text, to be written by hand):
 
 - the same keywords and the same `type key=value` settings;
 - no `my_torch 1` header and no `end checksum=…` line;
