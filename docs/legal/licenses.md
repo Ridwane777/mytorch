@@ -17,7 +17,7 @@ Every other tool is used to build, test or draw graphs, and never ships in the e
 | clang-format | Formatting only | Apache 2.0 with LLVM exception | None |
 | Python 3 | Scripts in `scripts/` and `bonus/` | PSF License | None |
 | matplotlib | Graphs of the scripts | matplotlib license (PSF-based, BSD-style) | None |
-| PyTorch (CPU wheel) and NumPy | Reference implementation of `comparison/` only (ADR-0036, ADR-0040), in `comparison/.venv`; never built into, linked to or called by the project | BSD-3-Clause style licenses | None for the executables (not linked, not distributed); the subject's ban on neural-network libraries is the real constraint, see ADR-0036 |
+| PyTorch (CPU wheel) and NumPy | Reference implementation of `bonus/comparaison/` only (ADR-0036, ADR-0040), in `bonus/comparaison/.venv`; never built into, linked to or called by the project | BSD-3-Clause style licenses | None for the executables (not linked, not distributed); the subject's ban on neural-network libraries is the real constraint, see ADR-0036 |
 | chess.js 0.10.3 | Rules of the game in the bonus GUI page (`bonus/gui/web/vendor/`) | BSD-2-Clause | Keep its copyright notice, which is in the copied file |
 | chessboard.js 1.0.0, jQuery 3.7.1 | Board drawing in the bonus GUI page | MIT | Keep the copyright notice, which is in each copied file |
 | Chess piece images (Cburnett, Wikimedia Commons) | Pieces of the bonus GUI | CC BY-SA 3.0 | Credit the author and keep the license: stated in the page footer and here; the images are shared under the same license |

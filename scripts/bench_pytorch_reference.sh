@@ -1,9 +1,9 @@
 #!/bin/sh
 # my_torch against PyTorch, same architecture, same data, same machine (#42, ADR-0040,
-# docs/performance/22-pytorch-reference.md). Needs comparison/.venv (see comparison/README.md):
+# docs/performance/22-pytorch-reference.md). Needs bonus/comparaison/.venv (see bonus/comparaison/README.md):
 # PyTorch lives only there, never in the library or in what the Makefile builds (ADR-0036).
 #   gradient  one batch with identical weights: our gradients against autograd, at the initial
-#             weights and after WARMUP Adam steps (comparison/gradient_check.py);
+#             weights and after WARMUP Adam steps (bonus/comparaison/gradient_check.py);
 #   sweep     seconds per epoch against the number of threads, to give each implementation its best
 #             thread count (the machine is shared with a desktop: 12 threads is not always best);
 #   train     both configurations, FRACTION of the training part, EPOCHS epochs, scored on the whole
@@ -41,7 +41,7 @@ VALID_ROWS="${VALID_ROWS:-0}"
 GRAD_ROWS="${GRAD_ROWS:-64}"
 WARMUP="${WARMUP:-100}"
 MODELS="${MODELS:-dense cnn}"
-PY=comparison/.venv/bin/python
+PY=bonus/comparaison/.venv/bin/python
 HELPER="$RUN/bin/pytorch_reference"
 
 fail() {
@@ -58,7 +58,7 @@ timed() { # file, command...: GNU time writes "seconds peak_kilobytes" to file
 }
 
 mkdir -p "$RUN" "$OUT" "$RUN/data"
-[ -x "$PY" ] || fail "$PY not found: create the virtualenv first (comparison/README.md)"
+[ -x "$PY" ] || fail "$PY not found: create the virtualenv first (bonus/comparaison/README.md)"
 
 # 1. Build the my_torch side.
 make -s build/libmy_torch.a
@@ -97,7 +97,7 @@ if wants gradient; then
             mkdir -p "$dir"
             if [ "$state" = warm ]; then steps="$WARMUP"; else steps=0; fi
             "$HELPER" gradient "$(config "$model")" "$RUN/data/train.txt" "$GRAD_ROWS" "$dir" "$steps"
-            "$PY" -W ignore comparison/gradient_check.py "$(config "$model")" "$dir" \
+            "$PY" -W ignore bonus/comparaison/gradient_check.py "$(config "$model")" "$dir" \
                 "$dir/check.csv" "${model}_$state" | tee -a "$RUN/gradient_check.log"
         done
     done
@@ -115,7 +115,7 @@ if wants sweep; then
             for dtype in float64 float32; do
                 d="$RUN/sweep/$model/torch_${dtype}_$t"
                 mkdir -p "$d"
-                "$PY" comparison/train_reference.py --config "$(config "$model")" \
+                "$PY" bonus/comparaison/train_reference.py --config "$(config "$model")" \
                     --train "$RUN/data/sweep_train" --valid "$RUN/data/sweep_valid" \
                     --epochs "$SWEEP_EPOCHS" --variant sweep --model "$model" --dtype "$dtype" \
                     --init native --order native --threads "$t" --out-dir "$d" 2> /dev/null
@@ -150,7 +150,7 @@ if wants train; then
                 mkdir -p "$v"
                 cp /proc/loadavg "$v/load.txt"
                 echo "threads $t_f64" > "$v/threads.txt"
-                timed "$v/time.txt" "$PY" comparison/train_reference.py --config "$cfg" \
+                timed "$v/time.txt" "$PY" bonus/comparaison/train_reference.py --config "$cfg" \
                     --train "$RUN/data/train" --valid "$RUN/data/valid" --epochs "$EPOCHS" \
                     --variant torch_shared_float64 --model "$model" --dtype float64 --init shared \
                     --order shared --threads "$t_f64" --out-dir "$v" --reference "$d" 2> "$v/log.txt"
@@ -160,7 +160,7 @@ if wants train; then
                 mkdir -p "$v"
                 cp /proc/loadavg "$v/load.txt"
                 echo "threads $t_f32" > "$v/threads.txt"
-                timed "$v/time.txt" "$PY" comparison/train_reference.py --config "$cfg" \
+                timed "$v/time.txt" "$PY" bonus/comparaison/train_reference.py --config "$cfg" \
                     --train "$RUN/data/train" --valid "$RUN/data/valid" --epochs "$EPOCHS" \
                     --variant torch_native_float32 --model "$model" --dtype float32 --init native \
                     --order native --threads "$t_f32" --out-dir "$v" 2> "$v/log.txt"
@@ -171,7 +171,7 @@ if wants train; then
             mkdir -p "$v"
             cp /proc/loadavg "$v/load.txt"
             echo "threads $t_f64" > "$v/threads.txt"
-            timed "$v/time.txt" "$PY" comparison/train_reference.py --config "$cfg" \
+            timed "$v/time.txt" "$PY" bonus/comparaison/train_reference.py --config "$cfg" \
                 --train "$RUN/data/train" --valid "$RUN/data/valid" --epochs "$EPOCHS" \
                 --variant torch_native_float64 --model "$model" --dtype float64 --init native \
                 --order native --threads "$t_f64" --out-dir "$v" --seed-index "$k" 2> "$v/log.txt"
@@ -194,7 +194,7 @@ if wants scheme; then
             mkdir -p "$v"
             cp /proc/loadavg "$v/load.txt"
             echo "threads $t_f64" > "$v/threads.txt"
-            timed "$v/time.txt" "$PY" comparison/train_reference.py --config "$cfg" \
+            timed "$v/time.txt" "$PY" bonus/comparaison/train_reference.py --config "$cfg" \
                 --train "$RUN/data/train" --valid "$RUN/data/valid" --epochs "$EPOCHS" \
                 --variant torch_scheme_float64 --model "$model" --dtype float64 --init scheme \
                 --order native --threads "$t_f64" --out-dir "$v" --seed-index "$k" 2> "$v/log.txt"
