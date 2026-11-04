@@ -1,6 +1,6 @@
 // The my_torch side of the PyTorch reference (#42, ADR-0040,
 // docs/performance/22-pytorch-reference.md).
-// Three commands, each writing plain binary files that comparison/*.py reads (numpy, no
+// Three commands, each writing plain binary files that bonus/comparaison/*.py reads (numpy, no
 // serialization format of the other library): they let PyTorch start from exactly our weights, see
 // exactly our batches, and be compared with exactly our gradients. Only the my_torch headers and
 // the analyzer's position reader are used here; nothing of PyTorch is.

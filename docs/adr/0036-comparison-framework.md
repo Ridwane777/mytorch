@@ -17,11 +17,11 @@ tools to use, but where they may live without touching the deliverable: `my_torc
 | Option | Pros | Cons |
 | --- | --- | --- |
 | Published results only | No library in the repository; no risk with the subject | No comparison on our data and our split: numbers from other datasets prove nothing |
-| **Separate `comparison/` + its own virtualenv (chosen)** | Same data, split, encoding and metrics on both sides; nothing in the deliverable depends on it; one script can check the isolation | A second toolchain (Python and its packages); the directory still holds code that uses forbidden libraries |
+| **Separate `bonus/comparaison/` + its own virtualenv (chosen)** | Same data, split, encoding and metrics on both sides; nothing in the deliverable depends on it; one script can check the isolation | A second toolchain (Python and its packages); the directory still holds code that uses forbidden libraries |
 | Put it in `bonus/` | Bonuses are already a place for extra work | `bonus/` is built by the project and graded as ours; a forbidden library there is much harder to defend |
 | Drop the comparison | No risk at all | Nothing tells us whether our network is close to what a library gets; the "decision-making" criteria lose their reference |
 
-Tools, all used only under `comparison/`:
+Tools, all used only under `bonus/comparaison/`:
 
 | Tool | Role |
 | --- | --- |
@@ -31,11 +31,11 @@ Tools, all used only under `comparison/`:
 | LightGBM | Gradient-boosted trees baseline, faster to train than XGBoost on 901 features |
 
 ## Decision
-The comparison lives in `comparison/`, with a virtualenv `comparison/.venv` (git-ignored) and a
-requirements file in `comparison/`. Nothing in `comparison/` is linked into, built by or called
+The comparison lives in `bonus/comparaison/`, with a virtualenv `bonus/comparaison/.venv` (git-ignored) and a
+requirements file in `bonus/comparaison/`. Nothing in `bonus/comparaison/` is linked into, built by or called
 from the Makefile or any executable; the deliverable does not need it to build, run or test.
 `scripts/check_comparison_isolation.sh` fails when PyTorch, TensorFlow, Keras, scikit-learn,
-XGBoost, LightGBM or JAX is imported outside `comparison/`.
+XGBoost, LightGBM or JAX is imported outside `bonus/comparaison/`.
 
 Every model is compared under the same protocol, so that a difference comes from the model and
 not from the setup:
@@ -68,13 +68,13 @@ approval is an explicit open item below and this ADR stays Proposed until it is 
 ## Consequences
 - ✅ We learn how our network stands against a mature implementation with the same architecture
   and against classical models, on our data and our split.
-- ✅ The deliverable is independent from the comparison: removing `comparison/` changes nothing in
+- ✅ The deliverable is independent from the comparison: removing `bonus/comparaison/` changes nothing in
   the build, the tests or the pushed network.
 - ✅ The isolation is checked by a command, not by promise:
   `scripts/check_comparison_isolation.sh` (exit 0 when clean, exit 1 with the offending lines on
   stderr otherwise).
 - ❌ The staff may refuse any use of these libraries in the repository; in that case
-  `comparison/` is not pushed and the comparison falls back to published results only.
+  `bonus/comparaison/` is not pushed and the comparison falls back to published results only.
 - ❌ A second toolchain to install and keep working (Python, a virtualenv, four large packages).
 - ❌ Results depend on the library versions and on the machine; they must be re-measured, not
   copied, when either changes.

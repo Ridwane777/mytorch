@@ -1,11 +1,11 @@
 # ADR-0040: PyTorch reference: same weights, same batches, same gradients
 
-- **Status**: Proposed (like ADR-0036, until the teaching staff approve the use of PyTorch in `comparison/`)
+- **Status**: Proposed (like ADR-0036, until the teaching staff approve the use of PyTorch in `bonus/comparaison/`)
 - **Date**: 2026-11-04
 - **Deciders**: Meric-Gbemetonou (issue #42)
 
 ## Context
-ADR-0036 allows PyTorch under `comparison/` only. Issue #42 asks what to build with it: the same
+ADR-0036 allows PyTorch under `bonus/comparaison/` only. Issue #42 asks what to build with it: the same
 architectures (the dense network and the CNN), the same hyperparameters, and three checks: our
 gradients against autograd on the same initial weights (identical within 1e-5 on one batch), time
 per epoch and memory, and an explanation of any accuracy gap.
@@ -26,7 +26,7 @@ as possible, and to measure what remains.
 | Check gradients with finite differences only (already done by the unit tests) | No second library | Not independent of our own formulas: autograd is computed by other code from the forward pass alone |
 
 ## Decision
-1. **Architecture from the configuration.** `comparison/mytorch_net.py` reads `configs/final_network.conf`
+1. **Architecture from the configuration.** `bonus/comparaison/mytorch_net.py` reads `configs/final_network.conf`
    and `configs/cnn_network.conf` and builds the PyTorch network from their `layers` lines
    (`dense`, `relu`, `board_planes`, `conv2d`, `max_pool2d`, final `softmax` left to the loss). Nothing
    is typed twice.

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Tables and graphs of scripts/bench_pytorch_reference.sh (docs/performance/22-pytorch-reference.md,
 ADR-0040). Reads CSV and text files only: it does not import PyTorch (ADR-0036), and the scores it
-tabulates come from the training programs (scripts/pytorch_reference.cpp, comparison/train_reference.py).
+tabulates come from the training programs (scripts/pytorch_reference.cpp, bonus/comparaison/train_reference.py).
 
 Usage:
   plot_pytorch_reference.py gradient RUN OUT MODEL...   gradient_check.csv, gradient_check.png
@@ -144,7 +144,7 @@ def read_run(d):
     info["load1"] = float(Path(d, "load.txt").read_text().split()[0])
     info["epochs"] = epoch_rows(Path(d, "epochs.csv"))
     info["import_mb"] = info["input_mb"] = ""
-    if Path(d, "run.txt").exists():  # written by comparison/train_reference.py only
+    if Path(d, "run.txt").exists():  # written by bonus/comparaison/train_reference.py only
         values = dict(line.split()[-2:] for line in Path(d, "run.txt").read_text().splitlines()[1:])
         # train_reference.py writes decimal megabytes; GNU time's kilobytes are divided by 1024
         # above, so convert to the same unit (MiB) for the table.

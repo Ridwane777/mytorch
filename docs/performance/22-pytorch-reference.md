@@ -39,7 +39,7 @@ and where does an accuracy gap, if any, come from?
 ### What is compared
 | | Ours | PyTorch |
 | --- | --- | --- |
-| Architecture | `configs/final_network.conf` (901-256-128-5, ReLU, softmax) and `configs/cnn_network.conf` (board_planes, two 3x3 convolutions with 16 and 32 filters, 2x2 max pooling, 512-128-5) | built by `comparison/mytorch_net.py` from the same two files (the `layers` lines are parsed, nothing is typed twice); the final softmax is left to `cross_entropy` |
+| Architecture | `configs/final_network.conf` (901-256-128-5, ReLU, softmax) and `configs/cnn_network.conf` (board_planes, two 3x3 convolutions with 16 and 32 filters, 2x2 max pooling, 512-128-5) | built by `bonus/comparaison/mytorch_net.py` from the same two files (the `layers` lines are parsed, nothing is typed twice); the final softmax is left to `cross_entropy` |
 | Data | the library's encoder (`fen-attacks-901`, ADR-0016), batch by batch | **the same encoder**: `pytorch_reference export` writes the 901 values of every position as bytes (each checked to be 0 or 1) and PyTorch reads that array |
 | Loss, optimizer | cross-entropy fused with softmax (ADR-0007), Adam lr 0.001, betas 0.9 and 0.999, epsilon 1e-8 (outside the root) | `F.cross_entropy` (mean over the batch), `torch.optim.Adam` with the same values; same formulas |
 | Batches | 64, one shuffle per epoch (portable Fisher-Yates over `std::mt19937_64`, ADR-0009); 57,244 positions = 894 batches of 64 and one of 28, loss averaged with the batch size as weight | 64; the same batches (variant *shared*) or `torch.randperm` |
@@ -77,7 +77,7 @@ The three PyTorch variants and their purpose (ADR-0040):
   PyTorch 2 (dense) and 8 (CNN) in both precisions.
 - **Gradient check**: `pytorch_reference gradient` runs one forward and backward pass on the first 64
   positions as `Network::fit` does and writes the weights, the gradients, the loss and the
-  probabilities; `comparison/gradient_check.py` loads the same weights into the PyTorch twin and
+  probabilities; `bonus/comparaison/gradient_check.py` loads the same weights into the PyTorch twin and
   compares with autograd. A tensor passes when **both** the largest absolute difference and that
   difference divided by the largest absolute gradient of the tensor are at most **1e-5**. Done at the
   initial weights and after 100 Adam steps on the following 100 batches (biases then non-zero), in
@@ -285,16 +285,16 @@ network.
 
 ## Reproduction
 ```bash
-python3 -m venv comparison/.venv        # git-ignored; torch CPU wheel, see comparison/README.md
-comparison/.venv/bin/pip install -r comparison/requirements.txt \
+python3 -m venv bonus/comparaison/.venv        # git-ignored; torch CPU wheel, see bonus/comparaison/README.md
+bonus/comparaison/.venv/bin/pip install -r bonus/comparaison/requirements.txt \
     --index-url https://download.pytorch.org/whl/cpu --extra-index-url https://pypi.org/simple
 make mytorch
 sh scripts/bench_pytorch_reference.sh              # gradient, sweep, train, scheme, collect: about 2 hours
 STEPS=gradient sh scripts/bench_pytorch_reference.sh   # the gradient check alone, about a minute
-scripts/check_comparison_isolation.sh              # no ML library outside comparison/ (ADR-0036)
+scripts/check_comparison_isolation.sh              # no ML library outside bonus/comparaison/ (ADR-0036)
 ```
 The script prints its variables (budget, seeds, thread counts, directories). Large intermediate
 files go to `runs/pytorch_reference/` (git-ignored). Decisions: [ADR-0040](../adr/0040-pytorch-reference.md)
 (protocol) and [ADR-0036](../adr/0036-comparison-framework.md) (isolation, awaiting the teaching
 staff's approval). Code: `scripts/pytorch_reference.cpp` (our side, library headers only),
-`comparison/` (PyTorch), `scripts/plot_pytorch_reference.py` (tables and graphs, no PyTorch).
+`bonus/comparaison/` (PyTorch), `scripts/plot_pytorch_reference.py` (tables and graphs, no PyTorch).

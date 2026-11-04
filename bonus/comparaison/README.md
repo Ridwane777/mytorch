@@ -1,8 +1,8 @@
-# comparison/: reference implementations (ADR-0036, ADR-0040)
+# bonus/comparaison/: reference implementations (ADR-0036, ADR-0040)
 
 Everything under this directory may use PyTorch, which the subject forbids in the project. It is
 never built, called or tested by the Makefile, and `scripts/check_comparison_isolation.sh` fails if
-a machine-learning library is imported anywhere else. Removing `comparison/` changes nothing in the
+a machine-learning library is imported anywhere else. Removing `bonus/comparaison/` changes nothing in the
 build, the tests or the pushed network.
 
 | File | Role |
@@ -14,13 +14,13 @@ build, the tests or the pushed network.
 
 The my_torch side, plot and orchestration are in `scripts/` (`pytorch_reference.cpp`,
 `bench_pytorch_reference.sh`, `plot_pytorch_reference.py`): they include no PyTorch header and
-import no PyTorch module. Results: [`docs/performance/22-pytorch-reference.md`](../docs/performance/22-pytorch-reference.md).
+import no PyTorch module. Results: [`docs/performance/22-pytorch-reference.md`](../../docs/performance/22-pytorch-reference.md).
 
 ## Setup
 
 ```bash
-python3 -m venv comparison/.venv        # git-ignored
-comparison/.venv/bin/pip install -r comparison/requirements.txt \
+python3 -m venv bonus/comparaison/.venv        # git-ignored
+bonus/comparaison/.venv/bin/pip install -r bonus/comparaison/requirements.txt \
     --index-url https://download.pytorch.org/whl/cpu --extra-index-url https://pypi.org/simple
 ```
 

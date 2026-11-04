@@ -11,7 +11,7 @@ Layout conventions, from include/my_torch/Dense.hpp and Convolution.hpp:
     (filters, channels, k, k) flattened;
   - a sample is a flat row, images are channel-major (channels x height x width), like torch's NCHW.
 
-This file is used only under comparison/ (ADR-0036).
+This file is used only under bonus/comparaison/ (ADR-0036).
 """
 
 from __future__ import annotations
