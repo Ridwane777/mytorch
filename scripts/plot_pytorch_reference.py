@@ -119,6 +119,9 @@ def sweep(run, out, models):
                    if r["model"] == model and r["implementation"] == impl]
             ax.plot(*zip(*pts), marker="o", color=color, label=impl)
         ax.set_xscale("log", base=2)
+        ax.set_xticks(sorted({r["threads"] for r in rows}))
+        ax.set_xticklabels([str(t) for t in sorted({r["threads"] for r in rows})])
+        ax.minorticks_off()
         ax.set_yscale("log")
         ax.set_xlabel("threads")
         ax.set_ylabel("seconds per epoch")
@@ -143,8 +146,10 @@ def read_run(d):
     info["import_mb"] = info["input_mb"] = ""
     if Path(d, "run.txt").exists():  # written by comparison/train_reference.py only
         values = dict(line.split()[-2:] for line in Path(d, "run.txt").read_text().splitlines()[1:])
-        info["import_mb"] = values["rss_after_import_mb"]
-        info["input_mb"] = values["input_bytes_mb"]
+        # train_reference.py writes decimal megabytes; GNU time's kilobytes are divided by 1024
+        # above, so convert to the same unit (MiB) for the table.
+        info["import_mb"] = f"{float(values['rss_after_import_mb']) * 1e6 / 1048576:.1f}"
+        info["input_mb"] = f"{float(values['input_bytes_mb']) * 1e6 / 1048576:.1f}"
     return info
 
 
@@ -180,9 +185,9 @@ def collect(run, out, models):
                     "max_epoch_s": f"{max(seconds):.3f}",
                     "train_s": f"{sum(seconds):.1f}",
                     "wall_s": f"{info['wall_s']:.1f}",
-                    "peak_rss_mb": f"{info['peak_rss_mb']:.0f}",
-                    "rss_after_import_mb": info["import_mb"],
-                    "input_bytes_mb": info["input_mb"],
+                    "peak_rss_mib": f"{info['peak_rss_mb']:.0f}",
+                    "rss_after_import_mib": info["import_mb"],
+                    "input_bytes_mib": info["input_mb"],
                     "load1_at_start": f"{info['load1']:.2f}",
                     "final_train_loss": f"{float(last['train_loss']):.4f}",
                     "final_val_loss": f"{float(last['val_loss']):.4f}",
@@ -251,7 +256,7 @@ def time_memory(summary, out, models):
     fig, axes = plt.subplots(1, 2, figsize=(12, 4.6))
     width = 0.16
     for k, (variant, label, color) in enumerate(VARIANTS):
-        for ax, key, err in ((axes[0], "median_epoch_s", True), (axes[1], "peak_rss_mb", False)):
+        for ax, key, err in ((axes[0], "median_epoch_s", True), (axes[1], "peak_rss_mib", False)):
             xs, ys, lows, highs = [], [], [], []
             for i, model in enumerate(models):
                 rows = [r for r in summary if r["model"] == model and r["variant"] == variant and r["seed"] == "0"]
@@ -264,13 +269,13 @@ def time_memory(summary, out, models):
             ax.bar(xs, ys, width, color=color, label=label,
                    yerr=[lows, highs] if err else None, capsize=2)
     for ax, title in ((axes[0], "median seconds per epoch (bars: min and max epoch)"),
-                      (axes[1], "peak resident memory of the process (MB)")):
+                      (axes[1], "peak resident memory of the process (MiB)")):
         ax.set_xticks(range(len(models)))
         ax.set_xticklabels([NAMES[m] for m in models])
         ax.set_title(title, fontsize=10)
         ax.grid(axis="y", alpha=0.3)
-    axes[0].legend(fontsize=7)
-    fig.tight_layout()
+    fig.legend(*axes[0].get_legend_handles_labels(), loc="lower center", ncol=3, fontsize=7)
+    fig.tight_layout(rect=(0, 0.09, 1, 1))
     fig.savefig(out / "time_memory.png", dpi=130)
 
 
