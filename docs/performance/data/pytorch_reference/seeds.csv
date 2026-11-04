@@ -1,0 +1,11 @@
+model,variant,seeds,val_accuracy_mean,val_accuracy_std,val_accuracy_min,val_accuracy_max,val_loss_mean,val_loss_std
+dense,my_torch,5,0.7664,0.0012,0.7648,0.7678,1.0325,0.0253
+dense,torch_shared_float64,1,0.7678,,0.7678,0.7678,1.0457,
+dense,torch_native_float64,5,0.7638,0.0025,0.7596,0.7658,1.0515,0.0265
+dense,torch_native_float32,1,0.7668,,0.7668,0.7668,0.9626,
+dense,torch_scheme_float64,5,0.7626,0.0030,0.7585,0.7660,1.0430,0.0446
+cnn,my_torch,3,0.9438,0.0041,0.9401,0.9483,0.1470,0.0087
+cnn,torch_shared_float64,1,0.9401,,0.9401,0.9401,0.1550,
+cnn,torch_native_float64,3,0.9518,0.0048,0.9489,0.9573,0.1187,0.0079
+cnn,torch_native_float32,1,0.9492,,0.9492,0.9492,0.1229,
+cnn,torch_scheme_float64,3,0.9476,0.0036,0.9453,0.9517,0.1358,0.0065

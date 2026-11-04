@@ -1,0 +1,11 @@
+date: 2026-11-04T11:40:09Z
+commit: 4ed0574
+machine: 12th Gen Intel(R) Core(TM) i5-12450H, 12 threads, 15655 MB RAM
+kernel: Linux 6.8.0-90-generic
+compiler: g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0
+python: Python 3.12.3, torch 2.15.0+cpu, numpy 2.5.4
+split seed: 42, training part: 572446 lines, kept: 57244 (0.1), validation: 71558 lines, test split not read
+epochs: 10, seeds: dense 5, cnn 3, gradient batch: 64 rows, warm-up: 100 steps
+sweep: 4000 rows, 3 epochs, threads 1 2 4 6 8 12
+first training run: 2026-11-04T09:58:16Z, last: 2026-11-04T11:36:05Z
+load average (1, 5, 15 min) when collecting: 0.83 4.55 6.97

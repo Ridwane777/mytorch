@@ -32,6 +32,8 @@ performance of the code itself.
 | 17 | [17-normalization.md](17-normalization.md) | BatchNorm and LayerNorm against no normalization, on the final architecture and a deep network | #30 |
 | 18 | [18-uncertainty.md](18-uncertainty.md) | MC dropout: are the errors the uncertain predictions, and does it beat the plain confidence? | #26 |
 | 19 | [19-inspection.md](19-inspection.md) | What the network learned: summary, weight and gradient histograms, which squares decide its answer | #36 |
+| **Comparison** | | | |
+| 22 | [22-pytorch-reference.md](22-pytorch-reference.md) | Same architectures in PyTorch (`comparison/`): gradients against autograd, our weights and batches replayed, time per epoch, memory and accuracy after an equal budget | #42 |
 | **Bonus** | | | |
 | 14 | [14-stalemate.md](14-stalemate.md) | Stalemate: generated positions and a six-class network | #24 |
 
