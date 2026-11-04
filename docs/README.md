@@ -7,7 +7,7 @@ Status as of 2026-10-26:
 
 | Area | Document | Status |
 | --- | --- | --- |
-| Decisions | [adr/](adr/README.md): ADRs and index, [template](adr/TEMPLATE.md) | 43 ADRs: 0001 (Python) and 0030 (search candidate) abandoned, 0012 (text network file) superseded by 0042, the 40 others accepted |
+| Decisions | [adr/](adr/README.md): ADRs and index, [template](adr/TEMPLATE.md) | 44 ADRs: 0001 (Python) and 0030 (search candidate) abandoned, 0012 (text network file) superseded by 0042, the 41 others accepted |
 | Data | [reading-a-fen.md](reading-a-fen.md): useful chess rules, reading a dataset line field by field, label distribution | Written |
 | Data | [verification-dataset.md](verification-dataset.md): dataset labels checked by the oracle (100% agreement) | Written |
 | CNN weights | [using-cnn-weights.md](using-cnn-weights.md): predict, score and continue training with `bonus/networks/my_torch_network_cnn_epoch10.nn`, measured test results | Written |

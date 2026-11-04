@@ -20,6 +20,12 @@ GUI_SRC		=	gui/Analysis.cpp gui/Saliency.cpp ../src/analyzer/Encoding.cpp $(ORAC
 # Network files are binary (ADR-0042): this prints one as text.
 NN_DUMP		=	my_torch_nn_dump
 
+# Python module (ADR-0044): the library compiled position-independent with the pybind11 bindings.
+# Not part of all: it needs pybind11, installed in python/.venv (see python/README.md).
+PYTHON		?=	python/.venv/bin/python
+PYMODULE	=	python/my_torch$(shell $(PYTHON) -c "import sysconfig; print(sysconfig.get_config_var('EXT_SUFFIX'))" 2>/dev/null)
+PY_SRC		=	python/bindings.cpp $(wildcard ../src/my_torch/*.cpp)
+
 TESTS		=	unit_tests
 TESTS_SRC	=	$(wildcard tests/*.cpp)
 
@@ -43,6 +49,17 @@ $(GUI):	gui/main.cpp $(GUI_SRC) gui/Analysis.hpp gui/Saliency.hpp $(LIB)
 $(NN_DUMP):	nn_dump/main.cpp $(LIB)
 	$(CXX) $(CXXFLAGS) $(RELEASE) -pthread -o $@ nn_dump/main.cpp $(LIB) $(LDFLAGS)
 
+python:	$(PYMODULE)
+
+# pybind11's headers are system headers here, so that -Werror applies to our code only.
+$(PYMODULE):	$(PY_SRC) $(wildcard ../include/my_torch/*.hpp)
+	$(CXX) $(CXXFLAGS) $(RELEASE) -pthread -fPIC -shared -fvisibility=hidden \
+		$(subst -I,-isystem ,$(shell $(PYTHON) -m pybind11 --includes)) -I../src/my_torch \
+		-o $@ $(PY_SRC) $(LDFLAGS)
+
+python_tests:	$(PYMODULE)
+	$(PYTHON) -m unittest discover -s python -v
+
 tests_run:	$(LIB)
 	$(CXX) $(CXXFLAGS) -O2 -pthread -o $(TESTS) $(TESTS_SRC) $(POSITIONS_SRC) gui/Analysis.cpp gui/Saliency.cpp \
 		../src/analyzer/Encoding.cpp $(LIB) -lcriterion $(LDFLAGS)
@@ -52,8 +69,8 @@ clean:
 	rm -f *.gcda *.gcno
 
 fclean:	clean
-	rm -f $(ORACLE) $(POSITIONS) $(EDA) $(GUI) $(NN_DUMP) $(TESTS)
+	rm -f $(ORACLE) $(POSITIONS) $(EDA) $(GUI) $(NN_DUMP) $(TESTS) python/my_torch*.so
 
 re:	fclean all
 
-.PHONY: all tests_run clean fclean re $(LIB)
+.PHONY: all python python_tests tests_run clean fclean re $(LIB)
