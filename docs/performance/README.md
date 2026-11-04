@@ -37,6 +37,7 @@ performance of the code itself.
 | 23 | [23-baselines.md](23-baselines.md) | Classical baselines on the same split and encoding: logistic regression 65 %, random forest 77 %, scikit-learn MLP 91.7 %, LightGBM 96.75 %, against our dense 96.15 % and CNN 98.07 % | #43 |
 | 24 | [24-binary-format.md](24-binary-format.md) | Binary network file (ADR-0042) against text: size ÷ 2.55, save and load about 2 times slower, identical predictions on the test split | defense |
 | 25 | [25-python-bindings.md](25-python-bindings.md) | Python module (ADR-0044) against the C++ library: probabilities identical bit for bit and every label the analyzer's on the test split, prediction 12 % slower because of the NumPy copies | defense |
+| 26 | [26-comparison.md](26-comparison.md) | Final comparison (#44): rule-based oracle 100 %, our CNN 98.07 % first among learned models, LightGBM 96.75 %, our dense 96.15 %; same results as PyTorch, 3 to 6 times slower to train, 2 to 3 times less memory; lines of code | #44 |
 | **Bonus** | | | |
 | 14 | [14-stalemate.md](14-stalemate.md) | Stalemate: generated positions and a six-class network | #24 |
 

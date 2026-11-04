@@ -12,6 +12,7 @@ build, the tests or the pushed network.
 | `gradient_check.py` | our gradients against autograd on one batch with identical weights (criterion 1e-5) |
 | `train_reference.py` | trains the PyTorch twin on the same data, same optimizer, batch size and epochs |
 | `baselines.py` | classical baselines (logistic regression, random forest, scikit-learn MLP, LightGBM) on the same data, chosen on validation, scored once on test (#43, ADR-0043); `sh scripts/bench_baselines.sh`, results in [`docs/performance/23-baselines.md`](../../docs/performance/23-baselines.md) |
+| `comparison_report.sh`, `report.py` | final comparison report (#44): the oracle on the test split, the results of 22 and 23 in one table, file sizes and lines of code; matplotlib only (no PyTorch or scikit-learn needed); results in [`docs/performance/26-comparison.md`](../../docs/performance/26-comparison.md) |
 
 The my_torch side, plot and orchestration are in `scripts/` (`pytorch_reference.cpp`,
 `bench_pytorch_reference.sh`, `plot_pytorch_reference.py`): they include no PyTorch header and

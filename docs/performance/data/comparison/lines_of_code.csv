@@ -1,0 +1,8 @@
+part,lines,files
+my_torch library,5572,43
+my_torch library tests,4396,24
+"chess analyzer (FEN, encodings, CLI)",893,9
+rule-based oracle,386,3
+PyTorch twin (model + training),427,2
+classical baselines,129,1
+Python bindings,115,1
