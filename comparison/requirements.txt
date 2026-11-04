@@ -1,0 +1,10 @@
+# Reference implementations for the comparison (ADR-0036, ADR-0040). Installed only in
+# comparison/.venv, never needed to build, run or test the project.
+# PyTorch: the CPU-only wheel, from its own index (the default PyPI wheel pulls about 2 GB of CUDA
+# libraries the machine cannot use):
+#   python3 -m venv comparison/.venv
+#   comparison/.venv/bin/pip install -r comparison/requirements.txt \
+#       --index-url https://download.pytorch.org/whl/cpu --extra-index-url https://pypi.org/simple
+# Versions measured in docs/performance/22-pytorch-reference.md.
+torch==2.15.0
+numpy==2.5.4
