@@ -223,7 +223,7 @@ Test(global_avg_pool, forward_and_backward_match_hand_computation)
 
 Test(to_planes, forward_maps_the_fen_attacks_901_layout)
 {
-    BoardPlanes planes(901, 768, 5);
+    ToPlanes planes(901, 768, 5, 8, 8);
     Matrix input(2, 901);
     for (std::size_t c = 0; c < 901; c++) {
         input(0, c) = static_cast<Scalar>(c);
@@ -268,7 +268,7 @@ Test(to_planes, any_plane_geometry_is_accepted)
 
 Test(to_planes, backward_scatters_squares_and_sums_scalars)
 {
-    BoardPlanes planes(129, 64, 1); // 64 squares, 1 scalar, 64 squares
+    ToPlanes planes(129, 64, 1, 8, 8); // 64 squares, 1 scalar, 64 squares
     Matrix grad(1, 3 * 64);
     for (std::size_t c = 0; c < grad.cols(); c++)
         grad(0, c) = static_cast<Scalar>(c);
@@ -372,7 +372,7 @@ Test(to_planes, gradients_match_finite_differences)
 {
     for (const auto &[inputs, scalars, count] :
          std::vector<std::array<std::size_t, 3>>{{901, 768, 5}, {129, 64, 1}, {132, 0, 4}}) {
-        BoardPlanes planes(inputs, scalars, count);
+        ToPlanes planes(inputs, scalars, count, 8, 8);
 
         cr_assert_lt(gradient_check::inputError(planes, gradient_check::random(2, inputs, 6),
                                                 planes.outputShape().size()),
@@ -431,7 +431,7 @@ Test(convolution, layers_reject_an_input_of_another_width)
     MaxPool2D max({1, 4, 4}, 2, 2);
     AvgPool2D avg({1, 4, 4}, 2, 2);
     GlobalAvgPool global({1, 4, 4});
-    BoardPlanes planes(129, 64, 1);
+    ToPlanes planes(129, 64, 1, 8, 8);
 
     cr_assert_throw(conv.forward(Matrix(1, 8), false), Error);
     cr_assert_throw(max.forward(Matrix(1, 15), false), Error);
