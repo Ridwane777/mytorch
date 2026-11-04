@@ -1,0 +1,4 @@
+model,setting,valid_accuracy,valid_macro_f1,train_seconds
+logreg,C=0.1,0.6474,0.6183,291.4
+logreg,C=1.0,0.6490,0.6201,276.9
+logreg,C=10.0,0.6489,0.6201,246.7

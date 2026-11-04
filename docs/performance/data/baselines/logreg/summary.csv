@@ -1,0 +1,2 @@
+model,setting,test_accuracy,test_macro_f1,train_seconds,predict_seconds,model_bytes
+logreg,C=10.0,0.6500,0.6232,246.7,0.12,18695

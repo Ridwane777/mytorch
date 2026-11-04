@@ -11,6 +11,7 @@ build, the tests or the pushed network.
 | `mytorch_net.py` | reads a my_torch configuration (`configs/*.conf`) and builds the same architecture in PyTorch; reads the binary files written by `scripts/pytorch_reference.cpp` |
 | `gradient_check.py` | our gradients against autograd on one batch with identical weights (criterion 1e-5) |
 | `train_reference.py` | trains the PyTorch twin on the same data, same optimizer, batch size and epochs |
+| `baselines.py` | classical baselines (logistic regression, random forest, scikit-learn MLP, LightGBM) on the same data, chosen on validation, scored once on test (#43, ADR-0043); `sh scripts/bench_baselines.sh`, results in [`docs/performance/23-baselines.md`](../../docs/performance/23-baselines.md) |
 
 The my_torch side, plot and orchestration are in `scripts/` (`pytorch_reference.cpp`,
 `bench_pytorch_reference.sh`, `plot_pytorch_reference.py`): they include no PyTorch header and

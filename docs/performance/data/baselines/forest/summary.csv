@@ -1,0 +1,2 @@
+model,setting,test_accuracy,test_macro_f1,train_seconds,predict_seconds,model_bytes
+forest,trees=100 min_leaf=1,0.7659,0.7346,66.0,0.90,3427552688

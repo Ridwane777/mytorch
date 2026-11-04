@@ -1,0 +1,6 @@
+date: 2026-11-04T17:04:10Z
+commit: b1c9f54
+machine: 13th Gen Intel(R) Core(TM) i7-1355U, 12 threads, 15109 MB RAM, Linux 7.0.0-38-generic
+python: Python 3.14.4, scikit-learn 1.9.1 lightgbm 4.7.0 numpy 2.5.4
+split seed: 42, rows: train 572446, validation 71558, test 71555
+threads: 0 (0 = every hardware thread)
