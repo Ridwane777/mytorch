@@ -405,15 +405,29 @@ std::unique_ptr<Layer> readGlobalAvgPool(Reader &reader, const std::vector<std::
     return std::make_unique<GlobalAvgPool>(readShape(reader, w, settings));
 }
 
-// "board_planes inputs=… scalars=… count=…" (ADR-0037).
+// "to_planes inputs=… scalars=… count=… height=… width=…" (ADR-0041).
+std::unique_ptr<Layer> readToPlanes(Reader &reader, const std::vector<std::string> &w,
+                                    const Context &)
+{
+    auto settings = layerSettings(reader, w, 1, {"inputs", "scalars", "count", "height", "width"});
+    const std::size_t inputs = requiredCount(reader, w, settings, "inputs");
+    const std::size_t scalars = requiredCount(reader, w, settings, "scalars");
+    const std::size_t count = requiredCount(reader, w, settings, "count");
+    const std::size_t height = requiredCount(reader, w, settings, "height");
+    return std::make_unique<ToPlanes>(inputs, scalars, count, height,
+                                      requiredCount(reader, w, settings, "width"));
+}
+
+// "board_planes inputs=… scalars=… count=…": the name before ADR-0041, read as to_planes on
+// 8 × 8 planes, so that the files written before (the epoch-10 CNN snapshot) still load.
 std::unique_ptr<Layer> readBoardPlanes(Reader &reader, const std::vector<std::string> &w,
                                        const Context &)
 {
     auto settings = layerSettings(reader, w, 1, {"inputs", "scalars", "count"});
     const std::size_t inputs = requiredCount(reader, w, settings, "inputs");
     const std::size_t scalars = requiredCount(reader, w, settings, "scalars");
-    return std::make_unique<BoardPlanes>(inputs, scalars,
-                                         requiredCount(reader, w, settings, "count"));
+    return std::make_unique<ToPlanes>(inputs, scalars,
+                                      requiredCount(reader, w, settings, "count"), 8, 8);
 }
 
 template <typename T>
@@ -503,6 +517,7 @@ const std::map<std::string, LayerReader> &layerReaders()
         {"dropout", readDropout},
         {"batch_norm", readBatchNorm},
         {"layer_norm", readLayerNorm},
+        {"to_planes", readToPlanes},
         {"board_planes", readBoardPlanes},
         {"conv2d", readConv2D},
         {"max_pool2d", readPool<MaxPool2D>},

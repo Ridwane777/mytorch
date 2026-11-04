@@ -221,7 +221,7 @@ Test(global_avg_pool, forward_and_backward_match_hand_computation)
     }
 }
 
-Test(board_planes, forward_maps_the_fen_attacks_901_layout)
+Test(to_planes, forward_maps_the_fen_attacks_901_layout)
 {
     BoardPlanes planes(901, 768, 5);
     Matrix input(2, 901);
@@ -244,7 +244,29 @@ Test(board_planes, forward_maps_the_fen_attacks_901_layout)
     }
 }
 
-Test(board_planes, backward_scatters_squares_and_sums_scalars)
+Test(to_planes, any_plane_geometry_is_accepted)
+{
+    // Two planes of 3 × 4, then one scalar between them: nothing assumes a chessboard.
+    ToPlanes planes(25, 12, 1, 3, 4);
+    Matrix input(1, 25);
+    for (std::size_t c = 0; c < 25; c++)
+        input(0, c) = static_cast<Scalar>(c);
+    const Matrix out = planes.forward(input, false);
+
+    cr_assert_eq(planes.outputShape().channels, 3);
+    cr_assert_eq(planes.outputShape().height, 3);
+    cr_assert_eq(planes.outputShape().width, 4);
+    for (std::size_t s = 0; s < 12; s++) {
+        cr_assert_eq(out(0, s), static_cast<Scalar>(s));           // first plane
+        cr_assert_eq(out(0, 12 + s), static_cast<Scalar>(13 + s)); // second plane, after the scalar
+        cr_assert_eq(out(0, 24 + s), 12);                          // the scalar, broadcast
+    }
+    cr_assert_lt(gradient_check::inputError(planes, gradient_check::random(2, 25, 7),
+                                            planes.outputShape().size()),
+                 gradient_check::tolerance);
+}
+
+Test(to_planes, backward_scatters_squares_and_sums_scalars)
 {
     BoardPlanes planes(129, 64, 1); // 64 squares, 1 scalar, 64 squares
     Matrix grad(1, 3 * 64);
@@ -346,7 +368,7 @@ Test(global_avg_pool, gradients_match_finite_differences)
                  gradient_check::tolerance);
 }
 
-Test(board_planes, gradients_match_finite_differences)
+Test(to_planes, gradients_match_finite_differences)
 {
     for (const auto &[inputs, scalars, count] :
          std::vector<std::array<std::size_t, 3>>{{901, 768, 5}, {129, 64, 1}, {132, 0, 4}}) {
@@ -361,7 +383,7 @@ Test(board_planes, gradients_match_finite_differences)
 Test(convolution, a_small_cnn_matches_finite_differences_end_to_end)
 {
     gradient_check::Layers layers;
-    layers.push_back(std::make_unique<BoardPlanes>(129, 64, 1));
+    layers.push_back(std::make_unique<ToPlanes>(129, 64, 1, 8, 8));
     layers.push_back(std::make_unique<Conv2D>(PlaneShape{3, 8, 8}, 2, 3, 2, 1, 3));
     layers.push_back(std::make_unique<Tanh>()); // smooth: no kink for the finite differences
     layers.push_back(std::make_unique<AvgPool2D>(PlaneShape{2, 4, 4}, 2, 2));
@@ -395,11 +417,12 @@ Test(convolution, layers_reject_out_of_range_geometry)
     cr_assert_throw(AvgPool2D({1, 3, 3}, 2, 0), Error);
     cr_assert_throw(AvgPool2D({1, 3, 3}, 4, 1), Error);
     cr_assert_throw(GlobalAvgPool({1, 0, 3}), Error);
-    cr_assert_throw(BoardPlanes(901, 768, 0), Error);   // no scalar
-    cr_assert_throw(BoardPlanes(901, 700, 5), Error);   // scalars not on a plane boundary
-    cr_assert_throw(BoardPlanes(901, 768, 6), Error);   // 895 is not a multiple of 64
-    cr_assert_throw(BoardPlanes(900, 896, 5), Error);   // scalars do not fit
-    cr_assert_throw(BoardPlanes(5, 0, 5), Error);       // no square plane
+    cr_assert_throw(ToPlanes(901, 768, 0, 8, 8), Error);   // no scalar
+    cr_assert_throw(ToPlanes(901, 700, 5, 8, 8), Error);   // scalars not on a plane boundary
+    cr_assert_throw(ToPlanes(901, 768, 6, 8, 8), Error);   // 895 is not a multiple of 64
+    cr_assert_throw(ToPlanes(900, 896, 5, 8, 8), Error);   // scalars do not fit
+    cr_assert_throw(ToPlanes(5, 0, 5, 8, 8), Error);       // no square plane
+    cr_assert_throw(ToPlanes(17, 0, 1, 0, 4), Error);      // empty plane
 }
 
 Test(convolution, layers_reject_an_input_of_another_width)

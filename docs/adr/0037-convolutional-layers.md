@@ -1,6 +1,6 @@
 # ADR-0037: Convolutional layers and CNN for the chessboard
 
-- **Status**: Accepted (2026-11-04)
+- **Status**: Accepted (2026-11-04); its `board_planes` layer is superseded by ADR-0041
 - **Date**: 2026-10-29
 - **Deciders**: Meric-Gbemetonou (issue #29), approved by Ridwane777
 

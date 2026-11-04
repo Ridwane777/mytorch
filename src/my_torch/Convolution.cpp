@@ -68,62 +68,69 @@ void writeShape(std::ostream &out, const char *type, const PlaneShape &shape)
 
 } // namespace
 
-// ---- BoardPlanes -------------------------------------------------------------------------------
+// ---- ToPlanes ----------------------------------------------------------------------------------
 
-BoardPlanes::BoardPlanes(std::size_t inputs, std::size_t scalars, std::size_t count)
-    : _inputs(inputs), _scalars(scalars), _count(count), _squarePlanes(0)
+ToPlanes::ToPlanes(std::size_t inputs, std::size_t scalars, std::size_t count, std::size_t height,
+                   std::size_t width)
+    : _inputs(inputs), _scalars(scalars), _count(count), _height(height), _width(width), _planes(0)
 {
+    if (height == 0 || width == 0)
+        throw Error("to_planes: height and width must be positive");
+    const std::size_t cells = height * width;
     if (count == 0)
-        throw Error("board_planes: count must be positive");
-    if (scalars % 64 != 0)
-        throw Error("board_planes: scalars must be a multiple of 64 (the planes before them)");
+        throw Error("to_planes: count must be positive");
+    if (scalars % cells != 0)
+        throw Error("to_planes: scalars must be a multiple of " + std::to_string(cells) +
+                    " (the planes before them)");
     if (scalars + count > inputs)
-        throw Error("board_planes: the scalars do not fit in " + std::to_string(inputs) +
-                    " inputs");
-    if ((inputs - count) % 64 != 0 || inputs == count)
-        throw Error("board_planes: inputs - count must be a positive multiple of 64");
-    _squarePlanes = (inputs - count) / 64;
+        throw Error("to_planes: the scalars do not fit in " + std::to_string(inputs) + " inputs");
+    if ((inputs - count) % cells != 0 || inputs == count)
+        throw Error("to_planes: inputs - count must be a positive multiple of " +
+                    std::to_string(cells));
+    _planes = (inputs - count) / cells;
 }
 
-Matrix BoardPlanes::forward(const Matrix &input, bool /*training*/)
+Matrix ToPlanes::forward(const Matrix &input, bool /*training*/)
 {
-    requireWidth("board_planes", _inputs, input.cols());
-    const std::size_t beforeScalars = _scalars / 64;
+    requireWidth("to_planes", _inputs, input.cols());
+    const std::size_t cells = _height * _width;
+    const std::size_t beforeScalars = _scalars / cells;
     Matrix out(input.rows(), outputShape().size());
 
     parallelFor(input.rows(), [&](std::size_t begin, std::size_t end) {
         for (std::size_t r = begin; r < end; r++) {
             const Scalar *in = input.data() + r * _inputs;
             Scalar *dst = out.data() + r * out.cols();
-            for (std::size_t p = 0; p < _squarePlanes; p++) {
-                const Scalar *plane = in + p * 64 + (p >= beforeScalars ? _count : 0);
-                std::copy(plane, plane + 64, dst + p * 64);
+            for (std::size_t p = 0; p < _planes; p++) {
+                const Scalar *plane = in + p * cells + (p >= beforeScalars ? _count : 0);
+                std::copy(plane, plane + cells, dst + p * cells);
             }
             for (std::size_t j = 0; j < _count; j++)
-                std::fill(dst + (_squarePlanes + j) * 64, dst + (_squarePlanes + j + 1) * 64,
+                std::fill(dst + (_planes + j) * cells, dst + (_planes + j + 1) * cells,
                           in[_scalars + j]);
         }
     });
     return out;
 }
 
-Matrix BoardPlanes::backward(const Matrix &gradOutput)
+Matrix ToPlanes::backward(const Matrix &gradOutput)
 {
-    requireWidth("board_planes", outputShape().size(), gradOutput.cols());
-    const std::size_t beforeScalars = _scalars / 64;
+    requireWidth("to_planes", outputShape().size(), gradOutput.cols());
+    const std::size_t cells = _height * _width;
+    const std::size_t beforeScalars = _scalars / cells;
     Matrix grad(gradOutput.rows(), _inputs);
 
     parallelFor(gradOutput.rows(), [&](std::size_t begin, std::size_t end) {
         for (std::size_t r = begin; r < end; r++) {
             const Scalar *g = gradOutput.data() + r * gradOutput.cols();
             Scalar *dst = grad.data() + r * _inputs;
-            for (std::size_t p = 0; p < _squarePlanes; p++)
-                std::copy(g + p * 64, g + (p + 1) * 64,
-                          dst + p * 64 + (p >= beforeScalars ? _count : 0));
+            for (std::size_t p = 0; p < _planes; p++)
+                std::copy(g + p * cells, g + (p + 1) * cells,
+                          dst + p * cells + (p >= beforeScalars ? _count : 0));
             for (std::size_t j = 0; j < _count; j++) {
                 Scalar sum = 0;
-                for (std::size_t s = 0; s < 64; s++)
-                    sum += g[(_squarePlanes + j) * 64 + s];
+                for (std::size_t s = 0; s < cells; s++)
+                    sum += g[(_planes + j) * cells + s];
                 dst[_scalars + j] = sum;
             }
         }
@@ -131,41 +138,41 @@ Matrix BoardPlanes::backward(const Matrix &gradOutput)
     return grad;
 }
 
-std::size_t BoardPlanes::outputWidth(std::size_t inputWidth) const
+std::size_t ToPlanes::outputWidth(std::size_t inputWidth) const
 {
-    requireWidth("board_planes", _inputs, inputWidth);
+    requireWidth("to_planes", _inputs, inputWidth);
     return outputShape().size();
 }
 
-std::string BoardPlanes::type() const
+std::string ToPlanes::type() const
 {
-    return "board_planes";
+    return "to_planes";
 }
 
-void BoardPlanes::save(std::ostream &out) const
+void ToPlanes::save(std::ostream &out) const
 {
-    out << "board_planes inputs=" << _inputs << " scalars=" << _scalars << " count=" << _count
-        << '\n';
+    out << "to_planes inputs=" << _inputs << " scalars=" << _scalars << " count=" << _count
+        << " height=" << _height << " width=" << _width << '\n';
 }
 
-std::size_t BoardPlanes::inputs() const noexcept
+std::size_t ToPlanes::inputs() const noexcept
 {
     return _inputs;
 }
 
-std::size_t BoardPlanes::scalars() const noexcept
+std::size_t ToPlanes::scalars() const noexcept
 {
     return _scalars;
 }
 
-std::size_t BoardPlanes::count() const noexcept
+std::size_t ToPlanes::count() const noexcept
 {
     return _count;
 }
 
-PlaneShape BoardPlanes::outputShape() const noexcept
+PlaneShape ToPlanes::outputShape() const noexcept
 {
-    return {_squarePlanes + _count, 8, 8};
+    return {_planes + _count, _height, _width};
 }
 
 // ---- Conv2D ------------------------------------------------------------------------------------
