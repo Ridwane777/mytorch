@@ -1,0 +1,5 @@
+# Upper bound of the encoding cost per epoch on the dense configuration: parse the 57,244 positions of the training subset, encode them (fen-attacks-901) and write them as bytes; GNU time, wall seconds and peak kilobytes, 3 runs, 2026-11-04T11:37:10Z, load average 4.14 7.74 8.31
+# command: runs/pytorch_reference/bin/pytorch_reference export configs/final_network.conf runs/pytorch_reference/data/train.txt PREFIX
+0.65 s 47084 KB
+0.74 s 47096 KB
+0.73 s 47184 KB
