@@ -7,6 +7,8 @@ Two choices say what is held equal beyond that:
 
   --init shared    start from the exact initial weights my_torch drew (DIR/init_weights.bin);
   --init native    PyTorch's own default initialisation, seeded with the configuration's init seed;
+  --init scheme    my_torch's initialisation scheme (mytorch_net.apply_mytorch_init) drawn by PyTorch's
+                   generator, seeded the same way: our distributions, not our draws;
   --order shared   replay the batches in the order my_torch used (DIR/orders.bin);
   --order native   shuffle with torch.randperm, seeded with the configuration's train seed.
 --seed-index K adds K to both seeds (my_torch: `pytorch_reference train ... INDEX`), to measure the
@@ -72,7 +74,7 @@ def main() -> int:
     ap.add_argument("--variant", required=True)
     ap.add_argument("--model", required=True)
     ap.add_argument("--dtype", choices=["float64", "float32"], default="float64")
-    ap.add_argument("--init", choices=["shared", "native"], required=True)
+    ap.add_argument("--init", choices=["shared", "native", "scheme"], required=True)
     ap.add_argument("--order", choices=["shared", "native"], required=True)
     ap.add_argument("--threads", type=int, required=True)
     ap.add_argument("--out-dir", required=True)
@@ -104,6 +106,8 @@ def main() -> int:
     if reference:
         manifest = mytorch_net.read_manifest(reference / "manifest.txt")
         mytorch_net.check_manifest(net, manifest)
+    if args.init == "scheme":
+        mytorch_net.apply_mytorch_init(net)
     if args.init == "shared":
         mytorch_net.load_parameters(net, mytorch_net.read_parameters(reference / "init_weights.bin", manifest))
 

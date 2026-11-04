@@ -30,6 +30,7 @@ VARIANTS = [
     ("torch_shared_float64", "PyTorch float64, our weights and batches", "#31a354"),
     ("torch_native_float64", "PyTorch float64, own init and shuffle", "#3182bd"),
     ("torch_native_float32", "PyTorch float32, own init and shuffle", "#756bb1"),
+    ("torch_scheme_float64", "PyTorch float64, our init scheme, own draws and shuffle", "#8c6d31"),
 ]
 LABEL = {key: label for key, label, _ in VARIANTS}
 COLOR = {key: color for key, _, color in VARIANTS}
@@ -248,7 +249,7 @@ def curves(rows, out, models):
 
 def time_memory(summary, out, models):
     fig, axes = plt.subplots(1, 2, figsize=(12, 4.6))
-    width = 0.2
+    width = 0.16
     for k, (variant, label, color) in enumerate(VARIANTS):
         for ax, key, err in ((axes[0], "median_epoch_s", True), (axes[1], "peak_rss_mb", False)):
             xs, ys, lows, highs = [], [], [], []
@@ -256,7 +257,7 @@ def time_memory(summary, out, models):
                 rows = [r for r in summary if r["model"] == model and r["variant"] == variant and r["seed"] == "0"]
                 if rows:
                     r = rows[0]
-                    xs.append(i + (k - 1.5) * width)
+                    xs.append(i + (k - (len(VARIANTS) - 1) / 2) * width)
                     ys.append(float(r[key]))
                     lows.append(float(r[key]) - float(r["min_epoch_s"]) if err else 0)
                     highs.append(float(r["max_epoch_s"]) - float(r[key]) if err else 0)
@@ -283,8 +284,8 @@ def accuracy(summary, out, models):
                 ax.scatter([i] * len(values), values, color=color, s=28, zorder=3)
                 ax.hlines(statistics.mean(values), i - 0.25, i + 0.25, color=color, linewidth=2)
         ax.set_xticks(range(len(VARIANTS)))
-        ax.set_xticklabels(["my_torch", "PyTorch\nour weights\nand batches", "PyTorch f64\nown init", "PyTorch f32\nown init"],
-                           fontsize=8)
+        ax.set_xticklabels(["my_torch", "PyTorch\nour weights\nand batches", "PyTorch f64\nown init", "PyTorch f32\nown init",
+                            "PyTorch f64\nour init scheme"], fontsize=8)
         ax.set_ylabel("validation accuracy after the last epoch")
         ax.set_title(f"{NAMES[model]}: one point per seed, bar = mean", fontsize=9)
         ax.grid(axis="y", alpha=0.3)

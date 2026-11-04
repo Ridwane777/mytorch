@@ -10,11 +10,14 @@
 #             validation split (the test split is never read): my_torch, PyTorch from our initial
 #             weights and batches (float64), PyTorch with its own initialisation and shuffling
 #             (float64, then float32), several seeds for my_torch and PyTorch float64;
+#   scheme    PyTorch float64 again, with my_torch's initialisation scheme (our distributions drawn by
+#             PyTorch's generator, shuffling still PyTorch's), to tell the effect of the scheme from
+#             the effect of the seed;
 #   collect   tables and graphs (scripts/plot_pytorch_reference.py).
 # Usage: sh scripts/bench_pytorch_reference.sh
 # Environment: DATASET (default dataset), SEED (split seed, 42), RUN (default runs/pytorch_reference,
 # large intermediate files, git-ignored), OUT (default docs/performance/data/pytorch_reference),
-# STEPS (default "gradient sweep train collect"), FRACTION (0.1), EPOCHS (10), SEEDS_DENSE (5),
+# STEPS (default "gradient sweep train scheme collect"), FRACTION (0.1), EPOCHS (10), SEEDS_DENSE (5),
 # SEEDS_CNN (3), THREADS_LIST ("1 2 4 6 8 12"), SWEEP_ROWS (4000), SWEEP_EPOCHS (3), VALID_ROWS (0 = the whole validation
 # split; a smaller number is for trying the script out), GRAD_ROWS (64),
 # WARMUP (100), MODELS ("dense cnn").
@@ -26,7 +29,7 @@ DATASET="${DATASET:-dataset}"
 SEED="${SEED:-42}"
 RUN="${RUN:-runs/pytorch_reference}"
 OUT="${OUT:-docs/performance/data/pytorch_reference}"
-STEPS="${STEPS:-gradient sweep train collect}"
+STEPS="${STEPS:-gradient sweep train scheme collect}"
 FRACTION="${FRACTION:-0.1}"
 EPOCHS="${EPOCHS:-10}"
 SEEDS_DENSE="${SEEDS_DENSE:-5}"
@@ -178,6 +181,29 @@ if wants train; then
     done
 fi
 
+# 5b. PyTorch float64 with our initialisation scheme (what remains different is the draws and the
+# shuffling), same seeds as the native runs.
+if wants scheme; then
+    for model in $MODELS; do
+        cfg=$(config "$model")
+        t_f64=$(python3 scripts/plot_pytorch_reference.py best-threads "$OUT/thread_sweep.csv" "$model" torch_float64)
+        n=$(seeds_of "$model")
+        k=0
+        while [ "$k" -lt "$n" ]; do
+            v="$RUN/train/$model/torch_scheme_float64_s$k"
+            mkdir -p "$v"
+            cp /proc/loadavg "$v/load.txt"
+            echo "threads $t_f64" > "$v/threads.txt"
+            timed "$v/time.txt" "$PY" comparison/train_reference.py --config "$cfg" \
+                --train "$RUN/data/train" --valid "$RUN/data/valid" --epochs "$EPOCHS" \
+                --variant torch_scheme_float64 --model "$model" --dtype float64 --init scheme \
+                --order native --threads "$t_f64" --out-dir "$v" --seed-index "$k" 2> "$v/log.txt"
+            echo "$model torch scheme float64 seed $k: $(tail -n 1 "$v/log.txt")"
+            k=$((k + 1))
+        done
+    done
+fi
+
 # 6. Tables, graphs and the run card.
 if wants collect; then
     {
@@ -190,6 +216,7 @@ if wants collect; then
         echo "split seed: $SEED, training part: $total lines, kept: $keep ($FRACTION), validation: $(wc -l < "$RUN/data/valid.txt") lines, test split not read"
         echo "epochs: $EPOCHS, seeds: dense $SEEDS_DENSE, cnn $SEEDS_CNN, gradient batch: $GRAD_ROWS rows, warm-up: $WARMUP steps"
         echo "sweep: $SWEEP_ROWS rows, $SWEEP_EPOCHS epochs, threads $THREADS_LIST"
+        echo "first training run: $(date -u -r "$RUN/train/dense/my_torch_s0/load.txt" +%Y-%m-%dT%H:%M:%SZ), last: $(ls -t "$RUN"/train/*/*/time.txt | head -n 1 | xargs date -u +%Y-%m-%dT%H:%M:%SZ -r)"
         echo "load average (1, 5, 15 min) when collecting: $(cut -d' ' -f1-3 /proc/loadavg)"
     } > "$OUT/run.txt"
     python3 scripts/plot_pytorch_reference.py collect "$RUN" "$OUT" $MODELS

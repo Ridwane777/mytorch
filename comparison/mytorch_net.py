@@ -17,6 +17,7 @@ This file is used only under comparison/ (ADR-0036).
 from __future__ import annotations
 
 import dataclasses
+import math
 from pathlib import Path
 
 import numpy as np
@@ -195,6 +196,27 @@ class Net(nn.Module):
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         return self.layers(x)
+
+
+def apply_mytorch_init(net: Net) -> None:
+    """my_torch's initialisation scheme, drawn with PyTorch's generator (seed it before).
+
+    Dense weights U(+-sqrt(1 / fan_in)) (Init::Uniform, the default of include/my_torch/Dense.hpp),
+    convolution weights N(0, 2 / fan_in) (He normal, the default of Conv2D), every bias zero.
+    PyTorch's own default differs on two points: convolution weights U(+-1 / sqrt(fan_in)), a
+    variance of 1 / (3 fan_in) against 2 / fan_in (6 times smaller), and biases drawn uniformly
+    in +-1 / sqrt(fan_in) instead of zero. Dense weights are drawn from the same law as PyTorch's.
+    """
+    with torch.no_grad():
+        for entry in net.entries:
+            tensor = entry.tensor
+            if entry.index == 1:
+                tensor.zero_()
+            elif entry.kind == "dense":
+                bound = 1 / math.sqrt(tensor.shape[1])
+                tensor.uniform_(-bound, bound)
+            else:
+                tensor.normal_(0, math.sqrt(2 / tensor[0].numel()))
 
 
 def read_manifest(path: str | Path) -> list[tuple[int, str, int, int, int]]:
