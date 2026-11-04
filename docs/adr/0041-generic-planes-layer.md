@@ -1,9 +1,8 @@
 # ADR-0041: A generic planes layer, so that the library knows nothing about chess
 
-- **Status**: Proposed
+- **Status**: Accepted (2026-11-04)
 - **Date**: 2026-11-04
-- **Deciders**: Ridwane777, after the first defense; review by Meric-BG (the change touches
-  `include/my_torch/`)
+- **Deciders**: Ridwane777, after the first defense; accepted by the pair
 - **Supersedes**: the `board_planes` layer of ADR-0037 (the rest of ADR-0037 stands)
 
 ## Context
