@@ -63,6 +63,19 @@ class Layer {
     }
     // Stable name written in the network file (#8), for example "dense" or "relu".
     virtual std::string type() const = 0;
+
+    // The layers a container layer holds (Residual, Concat, ADR-0046), in order; empty for every
+    // other layer. Code that must see every layer walks them.
+    virtual std::vector<Layer *> children() const
+    {
+        return {};
+    }
+    // Forward with only the dropout layers in training mode (Monte Carlo dropout, ADR-0034):
+    // prediction mode for every other layer. Dropout and the containers override it.
+    virtual Matrix forwardMonteCarlo(const Matrix &input)
+    {
+        return forward(input, false);
+    }
 };
 
 } // namespace my_torch

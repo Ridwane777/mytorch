@@ -28,6 +28,7 @@
 
 #include "BinaryFormat.hpp"
 #include "my_torch/Activations.hpp"
+#include "my_torch/Containers.hpp"
 #include "my_torch/Convolution.hpp"
 #include "my_torch/Dense.hpp"
 #include "my_torch/Dropout.hpp"
@@ -118,6 +119,11 @@ class Reader {
 
     Reader(const std::string &path, std::vector<Line> lines) : _path(path), _lines(std::move(lines))
     {
+    }
+
+    const std::string &path() const noexcept
+    {
+        return _path;
     }
 
     // Byte offset in the file where the line last returned starts.
@@ -265,7 +271,8 @@ std::uint64_t mix(std::uint64_t x)
 struct Context {
     bool config;        // a configuration file: no weights, weights drawn from seeds
     std::uint64_t seed; // seed of this network (config only)
-    std::size_t layer;  // index of the layer being read
+    std::size_t layer;  // index of the layer being read, counted depth first (ADR-0046)
+    std::size_t *read;  // layers read so far, depth first: containers read their layers with it
 
     std::uint64_t layerSeed() const
     {
@@ -500,6 +507,51 @@ std::unique_ptr<Layer> readLayerNorm(Reader &reader, const std::vector<std::stri
     return layer;
 }
 
+// Reads the next layer record, and for a container the records of its layers.
+std::unique_ptr<Layer> readLayer(Reader &reader, bool config, std::uint64_t seed,
+                                 std::size_t &read);
+
+// A container's count of layers or branches, "key=N" with N >= 1.
+std::size_t containerCount(Reader &reader, const std::vector<std::string> &w, const char *key)
+{
+    auto settings = layerSettings(reader, w, 1, {key});
+    if (!settings.count(key))
+        reader.fail(w[0] + ": missing " + key);
+    const std::size_t count = reader.count(settings[key]);
+    if (count == 0)
+        reader.fail(w[0] + ": " + key + " must be positive");
+    return count;
+}
+
+LayerSequence readSequence(Reader &reader, std::size_t count, const Context &ctx)
+{
+    LayerSequence layers;
+    for (std::size_t i = 0; i < count; i++)
+        layers.push_back(readLayer(reader, ctx.config, ctx.seed, *ctx.read));
+    return layers;
+}
+
+std::unique_ptr<Layer> readResidual(Reader &reader, const std::vector<std::string> &w,
+                                    const Context &ctx)
+{
+    return std::make_unique<Residual>(
+        readSequence(reader, containerCount(reader, w, "layers"), ctx));
+}
+
+std::unique_ptr<Layer> readConcat(Reader &reader, const std::vector<std::string> &w,
+                                  const Context &ctx)
+{
+    const std::size_t count = containerCount(reader, w, "branches");
+    std::vector<LayerSequence> branches;
+    for (std::size_t b = 0; b < count; b++) {
+        const auto line = reader.words();
+        if (line.empty() || line[0] != "branch")
+            reader.fail("concat: expected 'branch' for branch " + std::to_string(b + 1));
+        branches.push_back(readSequence(reader, containerCount(reader, line, "layers"), ctx));
+    }
+    return std::make_unique<Concat>(std::move(branches));
+}
+
 // One entry per layer type: adding a layer to the format is one line here plus its save().
 using LayerReader = std::function<std::unique_ptr<Layer>(Reader &, const std::vector<std::string> &,
                                                          const Context &)>;
@@ -521,8 +573,29 @@ const std::map<std::string, LayerReader> &layerReaders()
         {"max_pool2d", readPool<MaxPool2D>},
         {"avg_pool2d", readPool<AvgPool2D>},
         {"global_avg_pool", readGlobalAvgPool},
+        {"residual", readResidual},
+        {"concat", readConcat},
     };
     return readers;
+}
+
+std::unique_ptr<Layer> readLayer(Reader &reader, bool config, std::uint64_t seed, std::size_t &read)
+{
+    const auto w = reader.words();
+    if (w.empty())
+        reader.fail("expected a layer");
+    const auto found = layerReaders().find(w[0]);
+    if (found == layerReaders().end())
+        reader.fail("unknown layer type '" + w[0] + "'");
+    const Context ctx{config, seed, read++, &read};
+    try {
+        return found->second(reader, w, ctx);
+    } catch (const Error &error) {
+        const std::string message = error.what();
+        if (message.rfind(reader.path() + ":", 0) == 0)
+            throw;
+        reader.fail(message);
+    }
 }
 
 void writeConfig(std::ostream &out, const TrainConfig &c)
@@ -755,23 +828,10 @@ Network Network::parse(const std::string &bytes, const std::string &path, bool c
     if (layers.size() != 1)
         reader.fail("layers: expected a count");
     const std::uint64_t layerCount = reader.count(layers[0]);
-    for (std::uint64_t i = 0; i < layerCount; i++) {
-        const auto w = reader.words();
-        if (w.empty())
-            reader.fail("expected a layer");
-        const auto found = layerReaders().find(w[0]);
-        if (found == layerReaders().end())
-            reader.fail("unknown layer type '" + w[0] + "'");
-        const Context ctx{config, initSeed + index, static_cast<std::size_t>(i)};
-        try {
-            net.add(found->second(reader, w, ctx));
-        } catch (const Error &error) {
-            const std::string message = error.what();
-            if (message.rfind(path + ":", 0) == 0)
-                throw;
-            reader.fail(message);
-        }
-    }
+    // Layers are counted depth first: without containers, layer i keeps index i (and its seed).
+    std::size_t read = 0;
+    for (std::uint64_t i = 0; i < layerCount; i++)
+        net.add(readLayer(reader, config, initSeed + index, read));
 
     if (config) {
         if (!reader.done()) {
