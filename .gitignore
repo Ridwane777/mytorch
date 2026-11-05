@@ -41,4 +41,5 @@ my_torch-project.pdf
 /runs/
 /bonus/my_torch_eda
 /bonus/my_torch_nn_dump
+/bonus/my_torch_ensemble
 .aws_train_state

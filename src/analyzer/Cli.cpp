@@ -107,8 +107,31 @@ const Encoding &encodingOf(const my_torch::Network &net)
     return encoding;
 }
 
+// LOADFILE is an ensemble (ADR-0045): each member reads the positions in its own encoding.
+int predictEnsemble(const Options &o)
+{
+    my_torch::Ensemble ensemble = my_torch::Ensemble::load(o.network);
+    std::vector<const Encoding *> encodings;
+    for (std::size_t i = 0; i < ensemble.size(); i++)
+        encodings.push_back(&encodingOf(ensemble.member(i)));
+    const std::vector<Sample> samples = parseFile(o.chessboards, LabelPolicy::Optional);
+    const auto &labels = ensemble.labels();
+
+    for (std::size_t begin = 0; begin < samples.size(); begin += PREDICT_CHUNK) {
+        const std::size_t end = std::min(begin + PREDICT_CHUNK, samples.size());
+        std::vector<my_torch::Matrix> rows;
+        for (const Encoding *encoding : encodings)
+            rows.push_back(encodeRows(*encoding, samples, begin, end));
+        for (const std::size_t c : ensemble.classify(rows))
+            std::cout << labels[c] << '\n';
+    }
+    return 0;
+}
+
 int predict(const Options &o)
 {
+    if (my_torch::Ensemble::isEnsembleFile(o.network))
+        return predictEnsemble(o);
     my_torch::Network net = my_torch::Network::load(o.network);
     const Encoding &encoding = encodingOf(net);
     // Read and check the whole file before printing the first prediction.

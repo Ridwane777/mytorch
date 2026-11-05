@@ -20,6 +20,9 @@ GUI_SRC		=	gui/Analysis.cpp gui/Saliency.cpp ../src/analyzer/Encoding.cpp $(ORAC
 # Network files are binary (ADR-0042): this prints one as text.
 NN_DUMP		=	my_torch_nn_dump
 
+# Ensembles of networks (ADR-0045): links the library and the analyzer's encodings.
+ENSEMBLE	=	my_torch_ensemble
+
 # Python module (ADR-0044): the library compiled position-independent with the pybind11 bindings.
 # Not part of all: it needs pybind11, installed in python/.venv (see python/README.md).
 PYTHON		?=	python/.venv/bin/python
@@ -29,7 +32,7 @@ PY_SRC		=	python/bindings.cpp $(wildcard ../src/my_torch/*.cpp)
 TESTS		=	unit_tests
 TESTS_SRC	=	$(wildcard tests/*.cpp)
 
-all:	$(ORACLE) $(POSITIONS) $(EDA) $(GUI) $(NN_DUMP)
+all:	$(ORACLE) $(POSITIONS) $(EDA) $(GUI) $(NN_DUMP) $(ENSEMBLE)
 
 $(ORACLE):	oracle/main.cpp $(ORACLE_SRC) oracle/Oracle.hpp ../src/analyzer/Fen.hpp
 	$(CXX) $(CXXFLAGS) $(RELEASE) -o $@ oracle/main.cpp $(ORACLE_SRC) $(LDFLAGS)
@@ -48,6 +51,10 @@ $(GUI):	gui/main.cpp $(GUI_SRC) gui/Analysis.hpp gui/Saliency.hpp $(LIB)
 
 $(NN_DUMP):	nn_dump/main.cpp $(LIB)
 	$(CXX) $(CXXFLAGS) $(RELEASE) -pthread -o $@ nn_dump/main.cpp $(LIB) $(LDFLAGS)
+
+$(ENSEMBLE):	ensemble/main.cpp ../src/analyzer/Encoding.cpp ../src/analyzer/Fen.cpp $(LIB)
+	$(CXX) $(CXXFLAGS) $(RELEASE) -pthread -o $@ ensemble/main.cpp ../src/analyzer/Encoding.cpp \
+		../src/analyzer/Fen.cpp $(LIB) $(LDFLAGS)
 
 python:	$(PYMODULE)
 
@@ -69,7 +76,7 @@ clean:
 	rm -f *.gcda *.gcno
 
 fclean:	clean
-	rm -f $(ORACLE) $(POSITIONS) $(EDA) $(GUI) $(NN_DUMP) $(TESTS) python/my_torch*.so
+	rm -f $(ORACLE) $(POSITIONS) $(EDA) $(GUI) $(NN_DUMP) $(ENSEMBLE) $(TESTS) python/my_torch*.so
 
 re:	fclean all
 

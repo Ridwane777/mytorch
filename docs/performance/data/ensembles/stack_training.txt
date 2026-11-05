@@ -1,0 +1,2 @@
+combiner: 11 epochs on 57247 positions, loss 0.0526326, accuracy 0.981728, held-out loss 0.0546289, accuracy 0.982182
+runs/baselines/ensembles/models/stack.nn: stack of 2 networks

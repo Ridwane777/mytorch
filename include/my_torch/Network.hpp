@@ -211,7 +211,11 @@ class Network {
     static Network fromConfig(const std::string &path, std::uint64_t index = 0);
 
   private:
-    static Network parse(const std::string &path, bool config, std::uint64_t index);
+    // Ensemble stores its members in its own file (ADR-0045): it reads and writes them as bytes.
+    friend class Ensemble;
+    // Parses the content of a network file or of a configuration; path names it in the errors.
+    static Network parse(const std::string &bytes, const std::string &path, bool config,
+                         std::uint64_t index);
     std::string records() const;
 
     std::vector<std::unique_ptr<Layer>> _layers;

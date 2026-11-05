@@ -38,6 +38,7 @@ performance of the code itself.
 | 24 | [24-binary-format.md](24-binary-format.md) | Binary network file (ADR-0042) against text: size ÷ 2.55, save and load about 2 times slower, identical predictions on the test split | defense |
 | 25 | [25-python-bindings.md](25-python-bindings.md) | Python module (ADR-0044) against the C++ library: probabilities identical bit for bit and every label the analyzer's on the test split, prediction 12 % slower because of the NumPy copies | defense |
 | 26 | [26-comparison.md](26-comparison.md) | Final comparison (#44): rule-based oracle 100 %, our CNN 98.07 % first among learned models, LightGBM 96.75 %, our dense 96.15 %; same results as PyTorch, 3 to 6 times slower to train, 2 to 3 times less memory; lines of code | #44 |
+| 27 | [27-ensembles.md](27-ensembles.md) | Ensembles of the dense network and the CNN: stack 98.26 % and mean 1:2 98.23 % against the CNN alone 98.07 % (significant); mean 1:1 and vote no gain; cost of both members | #40 |
 | **Bonus** | | | |
 | 14 | [14-stalemate.md](14-stalemate.md) | Stalemate: generated positions and a six-class network | #24 |
 

@@ -1,0 +1,5 @@
+model,fixed,broken,p_value
+average_1,403,387,0.59
+weighted,263,150,2.9e-08
+vote,403,387,0.59
+stack,239,101,4.9e-14

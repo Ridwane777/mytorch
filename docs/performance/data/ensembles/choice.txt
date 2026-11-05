@@ -1,0 +1,1 @@
+chosen CNN weight on validation: 2 (accuracy 0.9816)

@@ -302,6 +302,11 @@ std::string readValue(Cursor &in, unsigned char tag)
 
 } // namespace
 
+std::uint64_t checksum(const char *data, std::size_t length)
+{
+    return fnv1a(data, length);
+}
+
 bool isBinary(const std::string &bytes)
 {
     return bytes.size() >= sizeof signature && std::memcmp(bytes.data(), signature, 8) == 0;
