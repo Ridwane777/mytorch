@@ -1,9 +1,10 @@
 # ADR-0045: Ensembles of networks in the library, in one binary file
 
-- **Status**: Proposed
+- **Status**: Accepted (2026-11-05)
 - **Date**: 2026-11-05
-- **Deciders**: Ridwane777 (issue #40, assigned to Meric-BG); to be accepted by the pair, with
-  Meric-BG's review of the change to `include/my_torch/`
+- **Deciders**: Ridwane777 (issue #40, assigned to Meric-BG); accepted by Ridwane777 and merged
+  without a GitHub review from Meric-BG of the change to `include/my_torch/` (to be reviewed after
+  the fact)
 
 ## Context
 Issue #40 asks to combine several networks (mean of the probabilities, vote, stacking), to load an
