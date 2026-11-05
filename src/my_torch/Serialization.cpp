@@ -679,9 +679,10 @@ void Network::saveText(const std::string &path) const
     writeFile(path, text + "end checksum=" + hex(fnv1a(text, text.size())) + "\n");
 }
 
-Network Network::parse(const std::string &path, bool config, std::uint64_t index)
+Network Network::parse(const std::string &bytes, const std::string &path, bool config,
+                       std::uint64_t index)
 {
-    std::string text = readFile(path);
+    std::string text = bytes;
     if (!config && binary_format::isBinary(text))
         text = binary_format::decode(text, path); // checked there: its records, as text
     Reader reader(path, splitLines(text, config));
@@ -802,12 +803,12 @@ Network Network::parse(const std::string &path, bool config, std::uint64_t index
 
 Network Network::load(const std::string &path)
 {
-    return parse(path, false, 0);
+    return parse(readFile(path), path, false, 0);
 }
 
 Network Network::fromConfig(const std::string &path, std::uint64_t index)
 {
-    return parse(path, true, index);
+    return parse(readFile(path), path, true, index);
 }
 
 } // namespace my_torch

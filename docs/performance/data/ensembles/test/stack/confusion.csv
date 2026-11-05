@@ -1,0 +1,6 @@
+expected \ predicted,Nothing,Check White,Check Black,Checkmate White,Checkmate Black
+Nothing,29755,0,0,1,0
+Check White,2,13010,0,487,0
+Check Black,0,0,10938,0,376
+Checkmate White,0,220,0,9013,0
+Checkmate Black,0,0,158,0,7595

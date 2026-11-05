@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstddef>
+#include <cstdint>
 #include <string>
 
 // Binary network file, format version 2 (ADR-0042). Internal to the library: Network::save writes
@@ -25,6 +27,9 @@
 // Every value is stored exactly: reading a file gives back the same doubles, bit for bit.
 
 namespace my_torch::binary_format {
+
+// FNV-1a 64 of length bytes from data: the checksum of the binary files (also used by Ensemble).
+std::uint64_t checksum(const char *data, std::size_t length);
 
 // True if the bytes start with the signature of a version 2 file.
 bool isBinary(const std::string &bytes);

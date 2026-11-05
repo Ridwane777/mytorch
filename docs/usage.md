@@ -24,6 +24,9 @@ make                                              # builds my_torch_analyzer and
 | `--train` | The network file (layers, weights, input encoding, labels, training settings) and a file of FENs with expected outputs | One line per epoch on standard output (loss and accuracy, and validation figures when `validation` > 0), then the trained network to SAVEFILE, or LOADFILE without `--save` |
 | `--predict` | The network file and a file of FENs (expected outputs optional) | Only the predictions on standard output, one per line |
 
+- In `--predict`, LOADFILE may also be an **ensemble** built by `bonus/my_torch_ensemble` (ADR-0045):
+  one file holding several networks and how to combine them (mean, vote or a trained combiner).
+  The analyzer recognizes it by its first bytes; the command line is the same.
 - The answer printed is the label of the most probable output. A network whose labels are
   `Nothing`, `Check` and `Checkmate` answers without colors; one with five labels answers with them.
 - In `--train`, an expected output trains the label equal to it, or else the label equal to its

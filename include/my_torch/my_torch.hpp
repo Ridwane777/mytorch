@@ -8,6 +8,7 @@
 #include "my_torch/Data.hpp"
 #include "my_torch/Dense.hpp"
 #include "my_torch/Dropout.hpp"
+#include "my_torch/Ensemble.hpp"
 #include "my_torch/Error.hpp"
 #include "my_torch/Factory.hpp"
 #include "my_torch/Layer.hpp"
