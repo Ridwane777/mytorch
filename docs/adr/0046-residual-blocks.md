@@ -1,10 +1,9 @@
 # ADR-0046: Residual connections and concatenation as container layers, the network stays a sequence
 
-- **Status**: Proposed
+- **Status**: Accepted (2026-11-05)
 - **Date**: 2026-11-05
-- **Deciders**: Ridwane777 (issue #31); option A chosen by Ridwane777, to be accepted by the pair
-  with Meric-BG's review **before** any code, since it changes `include/my_torch/` and the
-  network file
+- **Deciders**: Ridwane777 (issue #31); option A accepted by the pair before any code; the code
+  that changes `include/my_torch/` and the network file goes through its own reviewed PR
 
 ## Context
 Issue #31 asks for residual connections (`output = F(x) + x`) and concatenation, and for a
