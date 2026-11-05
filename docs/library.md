@@ -63,6 +63,7 @@ Built outside the repository against `build/libmy_torch.a` only, it printed (202
 | --- | --- | --- |
 | Layers | `Dense` (with L1/L2 and a choice of initialisation), `ReLU`, `LeakyReLU`, `Sigmoid`, `Tanh`, `Softmax`, `Dropout` | ADR-0004, ADR-0010, ADR-0020 |
 | Convolution | `ToPlanes` (a flat row to planes of height × width, ADR-0041), `Conv2D` (im2col), `MaxPool2D`, `AvgPool2D`, `GlobalAvgPool`; rows are channel-major `channels × height × width`; `Layer::outputWidth` follows the widths | ADR-0037 |
+| Containers | `Residual` (output = its layers applied to the input, plus the input) and `Concat` (branches side by side), layers that hold layers and nest; `Layer::children()` lists the layers inside, `Layer::forwardMonteCarlo` keeps only the dropout layers active through them | ADR-0046 |
 | Inspection | `modelSummary(network)` (layers, widths, parameters), `TrainConfig::onEpoch` (called after each epoch, to read weights and gradients), `inputGradient(input, output)` (saliency) | ADR-0035 |
 | Uncertainty | `predictMonteCarlo(input, passes, seed)`: mean of several predictions with only the dropout layers active, with the entropy, mutual information and disagreement of each row | ADR-0034 |
 | Normalization | `BatchNorm` (batch statistics in training, running averages in prediction) and `LayerNorm` (per example), with trained gamma and beta, between a `Dense` and its activation | ADR-0033 |

@@ -49,7 +49,9 @@ constexpr std::array words = {
     "validation_tail", "clip_norm", "clip_value", "lr", "momentum", "nesterov", "beta1", "beta2",
     "epsilon", "weight_decay", "amsgrad", "decay", "gamma", "base", "min", "warmup", "delta",
     "smoothing", "rate", "slope", "l1", "l2", "init", "channels", "height", "width", "filters",
-    "kernel", "stride", "padding", "size", "inputs", "scalars", "count"};
+    "kernel", "stride", "padding", "size", "inputs", "scalars", "count",
+    // container layers (ADR-0046)
+    "residual", "concat", "branch", "branches"};
 static_assert(words.size() < 256, "a word code is one byte");
 
 const std::map<std::string, unsigned char> &wordCodes()

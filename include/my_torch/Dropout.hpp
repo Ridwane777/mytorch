@@ -17,6 +17,11 @@ class Dropout : public Layer {
 
     Matrix forward(const Matrix &input, bool training) override;
     Matrix backward(const Matrix &gradOutput) override;
+    // Monte Carlo dropout keeps the dropout layers in training mode.
+    Matrix forwardMonteCarlo(const Matrix &input) override
+    {
+        return forward(input, true);
+    }
     std::string type() const override;
     Scalar rate() const noexcept;
     std::uint64_t seed() const noexcept;

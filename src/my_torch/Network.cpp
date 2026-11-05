@@ -266,9 +266,17 @@ UncertainPrediction Network::predictMonteCarlo(const Matrix &input, std::size_t 
 {
     if (passes == 0)
         throw Error("predictMonteCarlo: at least one pass is needed");
+    // Every layer, depth first, with the ones inside containers (ADR-0046): without containers,
+    // layer i keeps index i, so the generators below are the same as before them.
+    std::vector<Layer *> all;
+    for (const auto &layer : _layers) {
+        all.push_back(layer.get());
+        for (Layer *child : layer->children())
+            all.push_back(child);
+    }
     std::vector<std::size_t> dropouts;
-    for (std::size_t i = 0; i < _layers.size(); i++)
-        if (dynamic_cast<const Dropout *>(_layers[i].get()))
+    for (std::size_t i = 0; i < all.size(); i++)
+        if (dynamic_cast<const Dropout *>(all[i]))
             dropouts.push_back(i);
     if (dropouts.empty())
         throw Error("predictMonteCarlo: the network has no dropout layer, every pass would be the "
@@ -277,12 +285,12 @@ UncertainPrediction Network::predictMonteCarlo(const Matrix &input, std::size_t 
     std::vector<std::string> saved;
     for (const std::size_t i : dropouts) {
         std::ostringstream state;
-        _layers[i]->saveState(state);
+        all[i]->saveState(state);
         saved.push_back(state.str());
         std::ostringstream fresh;
         fresh << std::mt19937_64(seed * 1000003 + i);
         std::istringstream in(fresh.str());
-        _layers[i]->loadState(in);
+        all[i]->loadState(in);
     }
 
     const std::size_t rows = input.rows();
@@ -292,7 +300,7 @@ UncertainPrediction Network::predictMonteCarlo(const Matrix &input, std::size_t 
     for (std::size_t pass = 0; pass < passes; pass++) {
         Matrix output = input;
         for (const auto &layer : _layers)
-            output = layer->forward(output, dynamic_cast<const Dropout *>(layer.get()) != nullptr);
+            output = layer->forwardMonteCarlo(output);
         if (pass == 0) {
             result.mean = Matrix(rows, output.cols());
             for (auto &v : votes)
@@ -313,7 +321,7 @@ UncertainPrediction Network::predictMonteCarlo(const Matrix &input, std::size_t 
     }
     for (std::size_t k = 0; k < dropouts.size(); k++) {
         std::istringstream in(saved[k]);
-        _layers[dropouts[k]]->loadState(in);
+        all[dropouts[k]]->loadState(in);
     }
 
     for (std::size_t r = 0; r < rows; r++) {

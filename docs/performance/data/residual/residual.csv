@@ -1,0 +1,4 @@
+model,accuracy,macro_f1,Nothing,Check White,Check Black,Checkmate White,Checkmate Black,final_train_loss,final_validation_loss,best_validation_accuracy,train_seconds,seconds_per_epoch,train_peak_mb,predict_seconds,file_bytes
+"CNN, 2 convolutions (reference)",0.9417,0.9178,0.999,0.9147,0.9186,0.8594,0.8971,0.0746,0.155,0.9492,502.88,50.3,430,10.63,594203
+"6 convolutions, no shortcut (control)",0.9576,0.9402,0.9998,0.9422,0.9316,0.9149,0.9123,0.0619,0.1126,0.9601,1806.81,180.7,1048,59.0,950071
+"6 convolutions, 2 residual blocks",0.9543,0.9355,0.9997,0.934,0.9334,0.8976,0.9128,0.0544,0.1235,0.9606,1678.62,167.9,1112,60.62,950087

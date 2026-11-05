@@ -69,6 +69,19 @@ softmax
 | `conv2d channels=… height=… width=… filters=… kernel=… stride=… padding=…` | 2D convolution on a channel-major `channels × height × width` row; `init` (`he_normal`): same names as for `dense`, configurations only (ADR-0037) |
 | `max_pool2d channels=… height=… width=… size=… stride=…`, `avg_pool2d …` | Pooling over `size × size` windows, no padding, output size rounded down (ADR-0037) |
 | `global_avg_pool channels=… height=… width=…` | Mean of each channel, `channels` outputs (ADR-0037) |
+| `residual layers=N`, then N layer lines | Residual block: output = the N layers applied to the input, plus the input itself. The N layers must give back the width they receive (identity shortcut). The N lines are not counted in `layers <count>` (ADR-0046) |
+| `concat branches=N`, then N times `branch layers=M` and M layer lines | Branches side by side: each branch reads the same input, the output is their outputs one after the other, width the sum of theirs (ADR-0046) |
+
+Containers nest: a branch may hold a residual block, and so on. Example, a residual block of two
+convolutions (`configs/residual/cnn_residual.conf`):
+
+```
+residual layers=3
+conv2d channels=32 height=8 width=8 filters=32 kernel=3 stride=1 padding=1
+relu
+conv2d channels=32 height=8 width=8 filters=32 kernel=3 stride=1 padding=1
+relu
+```
 
 The spatial layers do not infer their geometry: `channels × height × width` must equal the number of
 outputs of the previous layer, and a configuration that does not chain is refused with the line and
