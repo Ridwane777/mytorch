@@ -13,8 +13,9 @@ using namespace my_torch;
 
 // Every gradient below is compared with centred finite differences (gradient_check.hpp, step 1e-6)
 // in double precision; the tolerance is gradient_check::tolerance = 1e-6 on the relative error
-// (absolute below 1, see maxError). The whole-network checks use networkError, whose relative
-// error has no floor and is therefore documented with its own, looser tolerance.
+// (absolute below 1, see maxError). The whole-network check uses networkError, whose relative
+// error has a floor of 1e-10 by default; it is raised to 1e-3 there (see the test) because the bias
+// of the keys has a gradient of exactly 0.
 
 namespace {
 
