@@ -110,9 +110,12 @@ inline Matrix forward(Layers &layers, const Matrix &input)
 // Checks the gradients of every parameter of a complete network, from the prediction to the loss:
 // backpropagation written by hand like Network::fit (the final Softmax backward is skipped when
 // the loss fuses it), then compared with the finite differences of loss.value. Returns the largest
-// relative error over all weights and biases.
+// relative error over all weights and biases. `floor` bounds the denominator from below: a
+// gradient that is exactly zero (the bias of the keys of an attention layer, which a softmax
+// ignores) is then compared in absolute terms instead of against the rounding noise of the
+// finite difference.
 inline Scalar networkError(Layers &layers, const my_torch::Loss &loss, const Matrix &input,
-                           const Matrix &target)
+                           const Matrix &target, Scalar floor = 1e-10)
 {
     if (loss.fusesSoftmax() && (layers.empty() || layers.back()->type() != "softmax"))
         throw std::logic_error("a loss that fuses Softmax needs a final Softmax layer");
@@ -141,7 +144,7 @@ inline Scalar networkError(Layers &layers, const my_torch::Loss &loss, const Mat
             const Scalar numeric = (plus - minus) / (2 * step);
             const Scalar a = p.grad->data()[i];
             worst = std::max(worst, std::abs(a - numeric) /
-                                        std::max(1e-10, std::abs(a) + std::abs(numeric)));
+                                        std::max(floor, std::abs(a) + std::abs(numeric)));
         }
     }
     return worst;

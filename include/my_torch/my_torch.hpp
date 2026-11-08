@@ -3,6 +3,7 @@
 // Public header of the my_torch module: the analyzer and the generator include only this one.
 
 #include "my_torch/Activations.hpp"
+#include "my_torch/Attention.hpp"
 #include "my_torch/Checkpoint.hpp"
 #include "my_torch/Containers.hpp"
 #include "my_torch/Convolution.hpp"

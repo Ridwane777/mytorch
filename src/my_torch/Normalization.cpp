@@ -297,4 +297,14 @@ Matrix &LayerNorm::beta() noexcept
     return _beta;
 }
 
+const Matrix &LayerNorm::gamma() const noexcept
+{
+    return _gamma;
+}
+
+const Matrix &LayerNorm::beta() const noexcept
+{
+    return _beta;
+}
+
 } // namespace my_torch
