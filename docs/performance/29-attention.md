@@ -28,9 +28,9 @@ Measurement for issue #32: does self-attention over the 64 squares (`self_attent
   ([`run.txt`](data/attention/run.txt)). This is **not** the machine of report 28 (i7-1355U,
   g++ 15.2.0): the accuracies of the CNN are identical (0.9417, same seed and data), its times are
   not (53.7 s per epoch here, 50 s there).
-- **Load**: the machine was shared and not idle. The load average at the start of training is
-  6.1 to 8.7 for the dense network and the CNN, and 0.59 for `transformer1` and 4.4 for
-  `transformer2` (`loadavg_before.txt` and `loadavg_after.txt` in each network directory). Times
+- **Load**: the machine was shared and not idle. The 1-minute load average at the start of
+  training is 7.6 (dense), 8.4 (CNN), 0.59 (`transformer1`) and 4.4 (`transformer2`); at the end
+  8.7, 6.1, 3.2 and 4.9 (`loadavg_before.txt` and `loadavg_after.txt` in each network directory). Times
   are therefore indicative; the ratios between networks are the reading, not the seconds.
 - **Interrupted run**: the machine rebooted while `transformer1` was training. The dense network
   and the CNN had finished and were kept; `transformer1` was trained again from scratch, then
@@ -68,24 +68,25 @@ Each transformer against the CNN, same test positions
 
 ## Reading
 
-- **The transformers do not beat the CNN here**: 91.67 % and 91.80 % against 94.17 %, about 2.4
-  points of accuracy and 3.6 points of macro F1 below, and the difference is significant (they
-  break about 1.7 times as many positions as they fix). Both are far above the dense network
+- **The transformers do not beat the CNN here**: 91.67 % and 91.80 % against 94.17 %, 2.4 to 2.5
+  points of accuracy and 3.6 to 3.7 points of macro F1 below, and the difference is significant (they
+  break about 1.8 times as many positions as they fix). Both are far above the dense network
   (76.97 %): looking at the board as 64 squares that talk to each other is a much better start
   than a flat vector, but a 2-convolution CNN already does it better.
 - **Overfitting is visible**: the final training loss of the transformers (0.038 and 0.050) is
   five to eight times below their validation loss (0.307 and 0.274); the validation loss is lowest
-  at epoch 4 (0.203 and 0.202) and rises afterwards while the validation accuracy stays flat
-  (graph, top). The CNN's
+  at epoch 4 (0.203 and 0.202) and rises afterwards while the validation accuracy gains only
+  about one point (0.906 to 0.917 and 0.908 to 0.916; graph, top). The CNN's
   validation loss is the lowest of the four (0.155). With 57,244 positions, the larger networks
   memorize.
 - **A second block adds 0.13 point of accuracy** (91.80 % against 91.67 %) for 1.8 times the time
   per epoch and 1.6 times the memory. No test compares the two transformers with each other, and
   a gap this small is within what a different seed could change; it is not evidence that depth
   helps. The best validation accuracy is 0.9216 against 0.9190, the same order.
-- **The mate classes are the weak ones** for every network, the transformers more than the CNN
-  (F1 on `Checkmate Black`: 0.816 and 0.830 against 0.897). Mate means "every reply fails", which
-  is a precise count over attack maps, not a soft pattern.
+- **The mate classes are the weak ones** for the CNN and the transformers, the transformers more
+  than the CNN (F1 on `Checkmate Black`: 0.816 and 0.830 against 0.897); for the dense network the
+  check classes are lower (`Check Black` 0.675). A possible explanation, not measured here: mate
+  means "every reply fails", a precise count over attack maps rather than a soft pattern.
 - **Cost**: per epoch, 3.3 times (one block) and 6.1 times (two blocks) the CNN; training memory
   4.4 and 6.8 times; prediction 4.2 and 8.0 times (70 s and 134 s for 71,555 positions). The
   network files are about 4 times larger (2.1 and 2.2 MiB against 0.57 MiB).
