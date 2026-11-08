@@ -1,0 +1,5 @@
+network,model,positions,accuracy,macro_f1,F1 Nothing,F1 Check White,F1 Check Black,F1 Checkmate White,F1 Checkmate Black,final_train_loss,final_validation_loss,best_validation_accuracy,train_seconds,seconds_per_epoch,train_peak_mib,predict_seconds,predict_peak_mib,file_mib,fixed_vs_cnn,broken_vs_cnn,mcnemar_p_vs_cnn
+dense,Dense 901-256-128-5,71555,0.7697,0.7419,0.8527,0.7155,0.675,0.7303,0.736,0.0629,1.0457,0.7678,234.46,23.4,155,4.92,146,2.03,1915,14225,0
+cnn,"CNN, 2 convolutions",71555,0.9417,0.9178,0.999,0.9147,0.9186,0.8594,0.8971,0.0746,0.155,0.9492,536.76,53.7,429,16.77,416,0.57,,,
+transformer1,"Transformer, 1 block",71555,0.9167,0.8811,1.0,0.8825,0.8786,0.828,0.8162,0.0382,0.3073,0.919,1796.94,179.7,1880,70.44,1858,2.14,2362,4153,2.4e-110
+transformer2,"Transformer, 2 blocks",71555,0.918,0.8818,1.0,0.8846,0.8877,0.8067,0.83,0.0497,0.274,0.9216,3261.98,326.2,2932,134.2,2884,2.24,2154,3847,3.6e-107

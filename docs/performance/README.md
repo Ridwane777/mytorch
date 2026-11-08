@@ -40,6 +40,7 @@ performance of the code itself.
 | 26 | [26-comparison.md](26-comparison.md) | Final comparison (#44): rule-based oracle 100 %, our CNN 98.07 % first among learned models, LightGBM 96.75 %, our dense 96.15 %; same results as PyTorch, 3 to 6 times slower to train, 2 to 3 times less memory; lines of code | #44 |
 | 27 | [27-ensembles.md](27-ensembles.md) | Ensembles of the dense network and the CNN: stack 98.26 % and mean 1:2 98.23 % against the CNN alone 98.07 % (significant); mean 1:1 and vote no gain; cost of both members | #40 |
 | 28 | [28-residual.md](28-residual.md) | Residual blocks (10 % of the data, 10 epochs): 6 convolutions beat 2 (95.76 % against 94.17 %), but the 2 residual blocks do not beat the same depth without shortcuts (95.43 %, McNemar p = 1.1e-5) | #31 |
+| 29 | [29-attention.md](29-attention.md) | Mini transformer (10 % of the data, 10 epochs): 91.67 % (1 block) and 91.80 % (2 blocks) against 94.17 % for the CNN (McNemar p < 1e-100), 3 to 6 times slower per epoch, 4 to 7 times the memory; the dense network reaches 76.97 % | #32 |
 | **Bonus** | | | |
 | 14 | [14-stalemate.md](14-stalemate.md) | Stalemate: generated positions and a six-class network | #24 |
 

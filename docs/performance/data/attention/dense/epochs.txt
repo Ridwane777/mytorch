@@ -1,0 +1,10 @@
+epoch 1/10  loss 0.8516  accuracy 0.6079  validation loss 0.7295  validation accuracy 0.6607
+epoch 2/10  loss 0.6569  accuracy 0.6957  validation loss 0.6443  validation accuracy 0.7013
+epoch 3/10  loss 0.5308  accuracy 0.7615  validation loss 0.5988  validation accuracy 0.7274
+epoch 4/10  loss 0.4030  accuracy 0.8268  validation loss 0.5805  validation accuracy 0.7509
+epoch 5/10  loss 0.2944  accuracy 0.8793  validation loss 0.5944  validation accuracy 0.7601
+epoch 6/10  loss 0.2067  accuracy 0.9187  validation loss 0.6639  validation accuracy 0.7598
+epoch 7/10  loss 0.1364  accuracy 0.9499  validation loss 0.8046  validation accuracy 0.7588
+epoch 8/10  loss 0.1035  accuracy 0.9617  validation loss 0.8851  validation accuracy 0.7603
+epoch 9/10  loss 0.0804  accuracy 0.9707  validation loss 0.9296  validation accuracy 0.7658
+epoch 10/10  loss 0.0629  accuracy 0.9777  validation loss 1.0457  validation accuracy 0.7678

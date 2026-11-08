@@ -98,5 +98,6 @@ what is built.
 - ❌ A configuration needs about ten lines per block; a bad `tokens × dim` chain is an error at
   load time, not a shape the library fixes silently.
 - Follow-up: a performance report (accuracy, time per epoch, memory) against the dense network and
-  the CNNs; revisit if training time makes the comparison unfair, or if a mean-pooled head or
-  sinusoidal positions turn out equivalent and cheaper.
+  the CNNs, done in [29-attention.md](../performance/29-attention.md); revisit if training time
+  makes the comparison unfair, or if a mean-pooled head or sinusoidal positions turn out
+  equivalent and cheaper.
