@@ -69,6 +69,11 @@ softmax
 | `conv2d channels=… height=… width=… filters=… kernel=… stride=… padding=…` | 2D convolution on a channel-major `channels × height × width` row; `init` (`he_normal`): same names as for `dense`, configurations only (ADR-0037) |
 | `max_pool2d channels=… height=… width=… size=… stride=…`, `avg_pool2d …` | Pooling over `size × size` windows, no padding, output size rounded down (ADR-0037) |
 | `global_avg_pool channels=… height=… width=…` | Mean of each channel, `channels` outputs (ADR-0037) |
+| `to_tokens inputs=… scalars=… count=… tokens=…` | Reshape of a flat row into `tokens` tokens: one value from every plane of `tokens` cells, then the `count` scalars (from column `scalars`) repeated on every token; rows are token-major (feature `f` of token `t` in column `t·features + f`). For `fen-attacks-901`: `inputs=901 scalars=768 count=5 tokens=64`, 64 tokens of 19 features. Parameter-free (ADR-0047) |
+| `token_dense tokens=… inputs=… outputs=…` | One `dense` layer applied to every token with the same weights; `l1` (0), `l2` (0), `init` (`he_normal`, configurations only) as for `dense` (ADR-0047) |
+| `positional tokens=… dim=…` | Learned position table (`tokens × dim`) added to every sample, drawn from N(0, 0.1²) (ADR-0047) |
+| `self_attention tokens=… dim=… heads=…` | Multi-head self-attention without mask; `dim` must be a multiple of `heads`; projections drawn with Xavier uniform (ADR-0047) |
+| `token_norm tokens=… dim=…` | Layer normalization of each token over its `dim` features; `epsilon` (1e-5) (ADR-0047) |
 | `residual layers=N`, then N layer lines | Residual block: output = the N layers applied to the input, plus the input itself. The N layers must give back the width they receive (identity shortcut). The N lines are not counted in `layers <count>` (ADR-0046) |
 | `concat branches=N`, then N times `branch layers=M` and M layer lines | Branches side by side: each branch reads the same input, the output is their outputs one after the other, width the sum of theirs (ADR-0046) |
 
