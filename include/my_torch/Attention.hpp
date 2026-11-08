@@ -153,6 +153,7 @@ class SelfAttention : public Layer {
     Matrix &weights(std::size_t i);
     const Matrix &weights(std::size_t i) const;
     Matrix &bias(std::size_t i);
+    const Matrix &bias(std::size_t i) const;
     // Attention matrices of the last training forward: row (sample·heads + head)·tokens + query,
     // column key; every row sums to 1. Empty after a prediction forward.
     const Matrix &attention() const noexcept;

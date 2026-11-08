@@ -584,6 +584,11 @@ Matrix &SelfAttention::bias(std::size_t i)
     return _bias.at(i);
 }
 
+const Matrix &SelfAttention::bias(std::size_t i) const
+{
+    return _bias.at(i);
+}
+
 const Matrix &SelfAttention::attention() const noexcept
 {
     return _attention;
