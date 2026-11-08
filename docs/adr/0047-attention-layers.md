@@ -1,8 +1,8 @@
 # ADR-0047: Attention layers for a mini transformer, built from the residual container
 
-- **Status**: Proposed
+- **Status**: Accepted (2026-11-08)
 - **Date**: 2026-11-08
-- **Deciders**: the pair (issue #32); Proposed until both members have reviewed it. The code
+- **Deciders**: the pair (issue #32); accepted by both members after the review of PR #112. The code
   changes `include/my_torch/` and the network file, so it goes through a reviewed PR.
 
 ## Context
