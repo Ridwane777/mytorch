@@ -1,0 +1,8 @@
+Timing pilot (not a result): one epoch of configs/attention/transformer1.conf, epochs=1,
+validation_tail=71558, first 10 % of the training part (57244 positions), seed 42.
+Only its duration was used, to choose the budget of scripts/bench_attention.sh.
+command: my_torch_analyzer --train --save t1.nn t1_1.nn train.txt (under /usr/bin/time -f "%e s %M KiB")
+load average before (1, 5, 15 min): 5.09 5.27 4.51
+load average after: 8.67 7.43 5.61
+epoch 1/1  loss 0.3795  accuracy 0.8141  validation loss 0.2692  validation accuracy 0.8701
+251.20 s 1924996 KiB

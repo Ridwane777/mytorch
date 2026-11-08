@@ -35,6 +35,7 @@ and the main code never includes `bonus/`.
 | `Error` | `my_torch::Error`, the only exception type thrown by the project | ADR-0004 |
 | `Layer`, `Dense`, `Activations`, `Dropout`, `Normalization` | The `Layer` interface (`forward`, `backward`, `parameters`, `penalty`, `save`, `saveState`, `outputWidth`, `type`) and its layers: `Dense` (with L1/L2), `ReLU`, `LeakyReLU`, `Sigmoid`, `Tanh`, `Softmax`, `Dropout`, `BatchNorm`, `LayerNorm` | ADR-0004, ADR-0010, ADR-0033 |
 | `Convolution` | `ToPlanes`, `Conv2D`, `MaxPool2D`, `AvgPool2D`, `GlobalAvgPool`: the spatial layers (channel-major rows), `Layer::outputWidth` tells the width each layer needs and gives | ADR-0037, ADR-0041 |
+| `Attention` | `ToTokens`, `TokenDense`, `Positional`, `SelfAttention`, `TokenNorm`: the token layers of a mini transformer (rows `tokens × dim`, token-major), blocks built from `Residual` | ADR-0047 |
 | `Loss`, `Losses` | The `Loss` interface (`value`, `gradient`, `fusesSoftmax`) and `MSE`, `MAE`, `Huber`, `BinaryCrossEntropy`, `CrossEntropy` | ADR-0007 |
 | `Optimizer`, `Optimizers` | The `Optimizer` interface (`step`, `setLearningRate`) and `SGD` (momentum, Nesterov), `Adam`, `AdamW`, `RMSProp`, `Adagrad` | ADR-0008 |
 | `Schedulers` | `ConstantRate`, `StepDecay`, `ExponentialDecay`, `CosineAnnealing`, `Warmup` | ADR-0008 |

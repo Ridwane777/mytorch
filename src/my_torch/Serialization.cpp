@@ -28,6 +28,7 @@
 
 #include "BinaryFormat.hpp"
 #include "my_torch/Activations.hpp"
+#include "my_torch/Attention.hpp"
 #include "my_torch/Containers.hpp"
 #include "my_torch/Convolution.hpp"
 #include "my_torch/Dense.hpp"
@@ -436,6 +437,105 @@ std::unique_ptr<Layer> readBoardPlanes(Reader &reader, const std::vector<std::st
                                       8, 8);
 }
 
+// "to_tokens inputs=… scalars=… count=… tokens=…" (ADR-0047).
+std::unique_ptr<Layer> readToTokens(Reader &reader, const std::vector<std::string> &w,
+                                    const Context &)
+{
+    auto settings = layerSettings(reader, w, 1, {"inputs", "scalars", "count", "tokens"});
+    const std::size_t inputs = requiredCount(reader, w, settings, "inputs");
+    const std::size_t scalars = requiredCount(reader, w, settings, "scalars");
+    const std::size_t count = requiredCount(reader, w, settings, "count");
+    return std::make_unique<ToTokens>(inputs, scalars, count,
+                                      requiredCount(reader, w, settings, "tokens"));
+}
+
+// Reads `rows` lines of `matrix.cols()` numbers into the matrix (the weights of the token layers).
+void readRows(Reader &reader, Matrix &matrix)
+{
+    for (std::size_t r = 0; r < matrix.rows(); r++) {
+        const auto row = reader.numbers(matrix.cols());
+        for (std::size_t c = 0; c < matrix.cols(); c++)
+            matrix(r, c) = row[c];
+    }
+}
+
+// "token_dense tokens=… inputs=… outputs=… [l1=…] [l2=…] [init=…]" (ADR-0047); in a network file,
+// one line of weights per input and the line of biases follow.
+std::unique_ptr<Layer> readTokenDense(Reader &reader, const std::vector<std::string> &w,
+                                      const Context &ctx)
+{
+    auto settings = layerSettings(
+        reader, w, 1,
+        ctx.config ? std::vector<std::string>{"tokens", "inputs", "outputs", "l1", "l2", "init"}
+                   : std::vector<std::string>{"tokens", "inputs", "outputs", "l1", "l2"});
+    const std::size_t tokens = requiredCount(reader, w, settings, "tokens");
+    const std::size_t inputs = requiredCount(reader, w, settings, "inputs");
+    const std::size_t outputs = requiredCount(reader, w, settings, "outputs");
+    Regularization reg;
+    if (settings.count("l1"))
+        reg.l1 = reader.number(settings["l1"]);
+    if (settings.count("l2"))
+        reg.l2 = reader.number(settings["l2"]);
+    const Init init =
+        settings.count("init") ? readInit(reader, settings["init"], "token_dense") : Init::HeNormal;
+    auto dense = std::make_unique<TokenDense>(
+        tokens, inputs, outputs, static_cast<std::uint32_t>(ctx.layerSeed()), reg, init);
+    if (ctx.config)
+        return dense;
+    readRows(reader, dense->weights());
+    readRows(reader, dense->bias());
+    return dense;
+}
+
+// "positional tokens=… dim=…" (ADR-0047); in a network file, one line of `dim` numbers per token.
+std::unique_ptr<Layer> readPositional(Reader &reader, const std::vector<std::string> &w,
+                                      const Context &ctx)
+{
+    auto settings = layerSettings(reader, w, 1, {"tokens", "dim"});
+    const std::size_t tokens = requiredCount(reader, w, settings, "tokens");
+    auto layer = std::make_unique<Positional>(tokens, requiredCount(reader, w, settings, "dim"),
+                                              static_cast<std::uint32_t>(ctx.layerSeed()));
+    if (!ctx.config)
+        readRows(reader, layer->table());
+    return layer;
+}
+
+// "self_attention tokens=… dim=… heads=…" (ADR-0047); in a network file, for the projections q, k,
+// v and o: one line of weights per input feature, then the biases.
+std::unique_ptr<Layer> readSelfAttention(Reader &reader, const std::vector<std::string> &w,
+                                         const Context &ctx)
+{
+    auto settings = layerSettings(reader, w, 1, {"tokens", "dim", "heads"});
+    const std::size_t tokens = requiredCount(reader, w, settings, "tokens");
+    const std::size_t dim = requiredCount(reader, w, settings, "dim");
+    auto layer =
+        std::make_unique<SelfAttention>(tokens, dim, requiredCount(reader, w, settings, "heads"),
+                                        static_cast<std::uint32_t>(ctx.layerSeed()));
+    if (ctx.config)
+        return layer;
+    for (std::size_t i = 0; i < 4; i++) {
+        readRows(reader, layer->weights(i));
+        readRows(reader, layer->bias(i));
+    }
+    return layer;
+}
+
+// "token_norm tokens=… dim=… [epsilon=…]" (ADR-0047); in a network file, the lines gamma and beta.
+std::unique_ptr<Layer> readTokenNorm(Reader &reader, const std::vector<std::string> &w,
+                                     const Context &ctx)
+{
+    auto settings = layerSettings(reader, w, 1, {"tokens", "dim", "epsilon"});
+    const std::size_t tokens = requiredCount(reader, w, settings, "tokens");
+    const std::size_t dim = requiredCount(reader, w, settings, "dim");
+    auto layer = std::make_unique<TokenNorm>(
+        tokens, dim, settings.count("epsilon") ? reader.number(settings["epsilon"]) : 1e-5);
+    if (ctx.config)
+        return layer;
+    readRows(reader, layer->gamma());
+    readRows(reader, layer->beta());
+    return layer;
+}
+
 template <typename T>
 std::unique_ptr<Layer> readPlain(Reader &reader, const std::vector<std::string> &w, const Context &)
 {
@@ -575,6 +675,11 @@ const std::map<std::string, LayerReader> &layerReaders()
         {"global_avg_pool", readGlobalAvgPool},
         {"residual", readResidual},
         {"concat", readConcat},
+        {"to_tokens", readToTokens},
+        {"token_dense", readTokenDense},
+        {"positional", readPositional},
+        {"self_attention", readSelfAttention},
+        {"token_norm", readTokenNorm},
     };
     return readers;
 }

@@ -1,0 +1,4 @@
+positions: 71555
+fixed: 2154
+broken: 3847
+p: 3.6e-107

@@ -75,6 +75,8 @@ class LayerNorm : public Layer {
     Scalar epsilon() const noexcept;
     Matrix &gamma() noexcept;
     Matrix &beta() noexcept;
+    const Matrix &gamma() const noexcept;
+    const Matrix &beta() const noexcept;
 
   private:
     Scalar _epsilon;
