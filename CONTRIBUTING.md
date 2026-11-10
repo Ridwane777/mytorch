@@ -3,7 +3,7 @@
 ## The main rule
 
 **Nobody pushes directly to `main`.** Changes get in through a Pull Request reviewed by the other
-member of the pair. The autograder evaluates from `main`, and the defense is done from it.
+member of the pair. `main` is always the deliverable state.
 
 ## The cycle
 

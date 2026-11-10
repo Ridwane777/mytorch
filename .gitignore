@@ -16,10 +16,10 @@ build/
 .venv-format/
 __pycache__/
 
-# Datasets: too large, shown during the defense (see README)
+# Extracted dataset (dataset.zip is tracked, see README)
 dataset/
-dataset.zip
-# Subject provided by the school
+
+# Project specification (not distributed)
 my_torch-project.pdf
 
 # Intermediate networks; only my_torch_network_* is pushed

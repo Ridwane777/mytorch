@@ -31,13 +31,13 @@ make                                              # builds my_torch_analyzer and
   `Nothing`, `Check` and `Checkmate` answers without colors; one with five labels answers with them.
 - In `--train`, an expected output trains the label equal to it, or else the label equal to its
   first word (`Check White` trains `Check`).
-- With `--checkpoint FILE` (ADR-0032, an option beyond the subject's usage), the whole training
+- With `--checkpoint FILE` (ADR-0032, an option beyond the required usage), the whole training
   state (weights, optimizer memory, generators, history, early stopping) is written to FILE after
   every epoch. If FILE exists, training resumes after its last epoch and ends with the same weights
   as an uninterrupted run; an epoch cut in the middle is run again. A checkpoint from another
   training (other settings, layers or data size) is refused: delete it to start again. Raising
   `epochs` in the network file and rerunning extends a finished training.
-- With `--progress-every N` (an option beyond the subject's usage, `--train` only, N a positive
+- With `--progress-every N` (an option beyond the required usage, `--train` only, N a positive
   integer, ADR-0038), every N epochs the epoch's measurements are printed on standard error and the
   weights of that epoch are saved into `SAVEFILE.YYYYMMDD-HHMMSS.epochN.nn` (the time of the save, so that no snapshot replaces another; or `LOADFILE.<time>.epochN.nn` without
   `--save`). Standard output is unchanged.

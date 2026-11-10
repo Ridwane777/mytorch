@@ -1,6 +1,6 @@
 # Terms of use
 
-1. **Purpose.** my_torch is a school project: a neural-network library written
+1. **Purpose.** my_torch is a team project: a neural-network library written
    from scratch and a chess position classifier. It is made for learning and demonstration.
 2. **Rights.** No license is granted: all rights reserved by the authors
    ([licenses.md](licenses.md), ADR-0025). Using it beyond reading and evaluating the project

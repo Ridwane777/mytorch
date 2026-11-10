@@ -2,7 +2,7 @@
 
 - **Status**: Accepted (2026-11-04)
 - **Date**: 2026-11-04
-- **Deciders**: Ridwane777, after the first defense; accepted by the pair
+- **Deciders**: Ridwane777, after the first review; accepted by the pair
 - **Supersedes**: the `board_planes` layer of ADR-0037 (the rest of ADR-0037 stands)
 
 ## Context
@@ -11,7 +11,7 @@ it through `include/my_torch/`, and `docs/library.md` says it "knows nothing abo
 `BoardPlanes` layer added with the CNN (ADR-0037) broke that promise: it hard-coded planes of 64
 cells (an 8 × 8 board), and its comments described the `fen-attacks-901` encoding of the analyzer.
 The documentation contradicted the code, and the question "is the module independent of the
-project?" was asked at the first defense.
+project?" was asked at the first review.
 
 What the layer does is not specific to chess: it cuts a flat row into planes and repeats a few
 scalars on planes of their own. Only the plane size (8 × 8) and the meaning of the columns are.

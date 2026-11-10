@@ -17,7 +17,7 @@ code, and nothing checked that it agreed with the library.
 | Option | Pros | Cons |
 | --- | --- | --- |
 | Keep the Python scripts | Nothing to do | Two implementations of every metric; the published ones are not the tested ones |
-| A `--score` mode in `my_torch_analyzer` | No extra tool | The command line is fixed by the subject (ADR-0014): adding a mode risks the autograder |
+| A `--score` mode in `my_torch_analyzer` | No extra tool | The command line is fixed by the requirements (ADR-0014): adding a mode risks the evaluation harness |
 | **A small C++ tool, `scripts/score.cpp`, calling the library (chosen)** | One implementation, the tested one; class names read from the network file, so it also serves the six-class bonus; JSON output that the scripts read | One more tool to build in the scripts; the library's API grows |
 
 ## Decision

@@ -6,7 +6,7 @@ The executables have no runtime dependency other than the C++ standard library.
 | Dependency | Role | Tested version | License | If it disappears |
 | --- | --- | --- | --- | --- |
 | g++ (C++20) | Compilation (ADR-0002) | 13.3.0 and 15.2.0 | GPL v3 with runtime exception | clang++ (21.1.8 builds the project and passes every test) |
-| GNU make | Compilation (required by the subject) | — | GPL v3 | — |
+| GNU make | Compilation (a project requirement) | — | GPL v3 | — |
 | Criterion | Unit tests (dev only) | 2.4.1 and 2.4.2 | MIT | GoogleTest, Catch2 |
 | clang-format | Code formatting (dev only) | 18.1.8, pinned: installed with pip in `.venv-format/` locally and with pipx in the CI (CONTRIBUTING.md) | Apache 2.0 with LLVM exception | Manual review against `.clang-format`; another version formats differently, so the CI check would fail |
 | GNU time (`/usr/bin/time`) | Time and peak memory in the benchmark and training scripts (dev only) | — | GPL v3 | `getrusage` in a small wrapper |
@@ -38,4 +38,4 @@ written in the repository.
 Each license and its constraint on our code: [legal/licenses.md](legal/licenses.md). None of them
 constrains the executables, which only link the C++ standard library (GCC Runtime Library Exception).
 
-To check: the versions available on the autograder image ("the dump").
+To check: the versions available on the target environment.

@@ -122,13 +122,13 @@ cmd_launch() {
 
     # 1. Private bucket (encrypted by default); code and dataset go in as one archive. The
     # dataset is part of it; build products, previous runs, snapshots, the AWS CLI installer
-    # and the student resources are not.
+    # and the project resources are not.
     aws s3api create-bucket --bucket "$BUCKET" --region "$REGION" \
         --create-bucket-configuration "LocationConstraint=$REGION" > /dev/null
     aws s3api put-public-access-block --bucket "$BUCKET" --public-access-block-configuration \
         BlockPublicAcls=true,IgnorePublicAcls=true,BlockPublicPolicy=true,RestrictPublicBuckets=true
     tar --exclude='./build' --exclude='./runs' --exclude='./aws' --exclude='*.zip' \
-        --exclude='./student_resources_MyTorch' --exclude='*.gcda' --exclude='*.gcno' \
+        --exclude='./*_resources_MyTorch' --exclude='*.gcda' --exclude='*.gcno' \
         --exclude='./.git' --exclude="./$STATE" --exclude='*.epoch*.nn' \
         --exclude='./my_torch_analyzer' --exclude='./my_torch_generator' \
         --exclude='./unit_tests*' -czf "$TMP/code.tar.gz" .

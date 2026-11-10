@@ -3,7 +3,7 @@
 Analysis for issue #12: what does the dataset contain, and how is it cut into sets that never
 share a position? Related decision: [ADR-0017](../adr/0017-dataset-split.md).
 
-**Status: measured** on the real dataset (723,019 positions, `dataset.zip` given by the school, not pushed),
+**Status: measured** on the real dataset (723,019 positions, `dataset.zip`, provided by Epitech and redistributed with authorization),
 2026-10-26.
 
 ## Method

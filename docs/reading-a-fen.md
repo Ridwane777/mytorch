@@ -5,7 +5,7 @@ and for the position encoding.
 
 ## 1. The dataset
 
-The dataset is provided by the school and is not pushed (`dataset/` is in `.gitignore`). It contains three folders
+The dataset is `dataset.zip` at the repository root (provided by Epitech, redistributed with authorization): `unzip dataset.zip` gives `dataset/` (git-ignored). It contains three folders
 (`check/`, `checkmate/`, `nothing/`), each with `10_pieces.txt`, `20_pieces.txt` and `many_pieces.txt`.
 One line = one position + the expected answer. Distribution measured on the 723,019 lines:
 

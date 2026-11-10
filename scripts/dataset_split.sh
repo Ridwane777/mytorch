@@ -19,7 +19,7 @@ fail() {
 }
 
 set -- "$DATASET"/*/*.txt
-[ -e "$1" ] || fail "$DATASET/ not found or empty: extract the dataset (dataset.zip, given by the school) at the root of the repository, or set DATASET to its directory"
+[ -e "$1" ] || fail "$DATASET/ not found or empty: extract the dataset (unzip dataset.zip, provided by Epitech) at the root of the repository, or set DATASET to its directory"
 
 python3 -I scripts/dataset_split.py --dataset "$DATASET" --out "$OUT" --stats "$STATS" --seed "$SEED"
 # No -I here: it would hide a matplotlib installed in the user's site-packages.

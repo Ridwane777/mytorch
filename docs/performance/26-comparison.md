@@ -1,6 +1,6 @@
 # Final comparison: my_torch against PyTorch, classical methods and the oracle
 
-Summary for the defense (issue #44): where our library and our networks stand against an
+Summary for a review (issue #44): where our library and our networks stand against an
 industrial framework (PyTorch), classical machine learning, and the rule-based oracle. It gathers
 measurements made on **the same split and encoding** (ADR-0017, seed 42; `fen-attacks-901`),
 re-runs nothing that is already measured, and adds the oracle and the lines of code. Details and
@@ -96,7 +96,7 @@ Non-blank lines that are not only a comment, counted by `report.py`:
   framework runtime (PyTorch holds 221 MiB right after its imports).
 - **What a framework saves is code.** Our library is 5,572 lines plus 4,396 of tests; the same two
   networks written with PyTorch take 427 lines, the four classical families 129. Writing the library
-  is what the subject asks; the price is the time to write, test and optimize it.
+  is what the specification asks; the price is the time to write, test and optimize it.
 - **From Python**, our library gives the same bits as from C++, with 12 % more time for the NumPy
   copies (25).
 

@@ -7,7 +7,7 @@
 ## Context
 Issue #36 asks for a model summary, weight and gradient histograms per epoch, and a saliency map
 per square ("which squares decided Check"), shown on real positions, to understand the network
-and to show it at the defense. `fit` gave no access to the network between epochs, and the
+and to show it in a review. `fit` gave no access to the network between epochs, and the
 library had no gradient with respect to the input. The chess GUI (ADR-0029) analyses one position
 at a time and can draw over the board.
 
@@ -33,7 +33,7 @@ given as `?fen=`. `scripts/inspect.sh` measures them on the test split
 ## Consequences
 - ✅ The network looks at the right square: on 97.6 % of its right answers on the test positions in
   check or mate, the most important square by occlusion is the checking piece named by the oracle.
-- ✅ The GUI shows it on any position, for the defense; the maps also show protection of the mating
+- ✅ The GUI shows it on any position, for a review; the maps also show protection of the mating
   piece and blocked escape squares.
 - ✅ `inputGradient` is checked by finite differences, the callback does not change the training
   (same losses as `my_torch_analyzer --train`), the GUI saliency is tested on the fool's mate.

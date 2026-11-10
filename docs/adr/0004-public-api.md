@@ -66,7 +66,7 @@ net.save("my_torch_network_full.nn");
 
 - ✅ Both work packages code in parallel against the same headers.
 - ✅ A new layer or a new optimizer is added without changing the rest (polymorphism).
-- ✅ Reproducible trainings, required by the subject and needed for comparisons.
+- ✅ Reproducible trainings, a project requirement and needed for comparisons.
 - ❌ No residual blocks or attention with a sequential network: #31 and #32 will require a new
   ADR to move to a graph.
 - ❌ The Softmax + cross-entropy coupling forces this case to be handled separately in

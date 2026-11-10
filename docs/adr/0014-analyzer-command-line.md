@@ -8,9 +8,9 @@
 ## Context
 
 `my_torch_analyzer [--predict | --train [--save SAVEFILE]] LOADFILE CHESSFILE` is the program the
-autograder runs. In `--predict` it must print one prediction per position, in file order; in
+evaluation harness runs. In `--predict` it must print one prediction per position, in file order; in
 `--train` it trains the network of LOADFILE and saves it to SAVEFILE or back to LOADFILE. The
-subject's own examples show three networks answering at three levels of detail (`Check`,
+specification's own examples show three networks answering at three levels of detail (`Check`,
 `Checkmate`, `Checkmate Black`). The network file (ADR-0012) already stores the label names, the
 name of the input encoding and the training settings. Four points remain: how the analyzer finds
 the encoding, how expected outputs map to a network with fewer labels, where the validation set
@@ -32,15 +32,15 @@ end to end; the variants and their comparison stay in #14.
 
 | Option | Pros | Cons |
 | --- | --- | --- |
-| **Exact label, else the first word of the expected output** | The 5-class dataset trains networks with 3 classes (`Check White` → `Check`) or 5 classes, as in the subject's examples | A rule to know; an output matching nothing is an error |
+| **Exact label, else the first word of the expected output** | The 5-class dataset trains networks with 3 classes (`Check White` → `Check`) or 5 classes, as in the specification's examples | A rule to know; an output matching nothing is an error |
 | Exact label only | Strict | A network without colors cannot be trained on the dataset |
 
 **Validation set for early stopping**
 
 | Option | Pros | Cons |
 | --- | --- | --- |
-| **A seeded fraction of CHESSFILE, set by `validation=` in the network's `train` line** | No extra command-line option (the subject fixes them); reproducible; stored with the other training settings | Not stratified by class; the held-out positions are not trained on |
-| A second file on the command line | Explicit | Not in the subject's interface |
+| **A seeded fraction of CHESSFILE, set by `validation=` in the network's `train` line** | No extra command-line option (the requirements fix them); reproducible; stored with the other training settings | Not stratified by class; the held-out positions are not trained on |
+| A second file on the command line | Explicit | Not in the required interface |
 
 **Memory**
 

@@ -295,6 +295,5 @@ scripts/check_comparison_isolation.sh              # no ML library outside bonus
 ```
 The script prints its variables (budget, seeds, thread counts, directories). Large intermediate
 files go to `runs/pytorch_reference/` (git-ignored). Decisions: [ADR-0040](../adr/0040-pytorch-reference.md)
-(protocol) and [ADR-0036](../adr/0036-comparison-framework.md) (isolation, awaiting the teaching
-staff's approval). Code: `scripts/pytorch_reference.cpp` (our side, library headers only),
+(protocol) and [ADR-0036](../adr/0036-comparison-framework.md) (isolation). Code: `scripts/pytorch_reference.cpp` (our side, library headers only),
 `bonus/comparaison/` (PyTorch), `scripts/plot_pytorch_reference.py` (tables and graphs, no PyTorch).

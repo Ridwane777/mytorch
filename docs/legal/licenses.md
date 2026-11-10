@@ -17,7 +17,7 @@ Every other tool is used to build, test or draw graphs, and never ships in the e
 | clang-format | Formatting only | Apache 2.0 with LLVM exception | None |
 | Python 3 | Scripts in `scripts/` and `bonus/` | PSF License | None |
 | matplotlib | Graphs of the scripts | matplotlib license (PSF-based, BSD-style) | None |
-| PyTorch (CPU wheel) and NumPy | Reference implementation of `bonus/comparaison/` only (ADR-0036, ADR-0040), in `bonus/comparaison/.venv`; never built into, linked to or called by the project | BSD-3-Clause style licenses | None for the executables (not linked, not distributed); the subject's ban on neural-network libraries is the real constraint, see ADR-0036 |
+| PyTorch (CPU wheel) and NumPy | Reference implementation of `bonus/comparaison/` only (ADR-0036, ADR-0040), in `bonus/comparaison/.venv`; never built into, linked to or called by the project | BSD-3-Clause style licenses | None for the executables (not linked, not distributed); the specification's ban on neural-network libraries is the real constraint, see ADR-0036 |
 | scikit-learn, LightGBM (and SciPy, joblib, threadpoolctl pulled by scikit-learn) | Classical baselines of `bonus/comparaison/` only (ADR-0036, ADR-0043), in `bonus/comparaison/.venv` | BSD-3-Clause (scikit-learn, SciPy, joblib, threadpoolctl), MIT (LightGBM) | None for the executables (not linked, not distributed) |
 | pybind11, NumPy | Python module of `bonus/python/` only (ADR-0044), in `bonus/python/.venv`; pybind11's headers are compiled into the module, never into the executables | BSD-3-Clause (both) | Keep pybind11's copyright notice if the module is ever distributed; nothing for the executables |
 | chess.js 0.10.3 | Rules of the game in the bonus GUI page (`bonus/gui/web/vendor/`) | BSD-2-Clause | Keep its copyright notice, which is in the copied file |
@@ -30,7 +30,6 @@ Versions, roles and replacements: [../dependencies.md](../dependencies.md).
 
 | Data | Origin | License | What we publish |
 | --- | --- | --- | --- |
-| `dataset.zip` (723,019 labelled positions) | Given by the school with the subject | None stated, upstream origin unknown | Nothing of the files: statistics and graphs only (risk R1) |
-| `my_torch-project.pdf` (subject) | the school | the school | Nothing (`.gitignore`) |
+| `dataset.zip` (723,019 labelled positions) | Provided by Epitech | None stated, upstream origin unknown | `dataset.zip`, redistributed with Epitech's authorization (risk R1) |
 | Example and test positions in `tests/`, `docs/`, `bonus/` | Written by us or produced by our tools | Same as the project | Everything |
 | `my_torch_network_final.nn` | Trained by us on the dataset | Same as the project | The weights. They are learned from the dataset but do not contain its positions |

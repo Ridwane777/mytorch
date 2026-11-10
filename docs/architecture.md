@@ -192,7 +192,7 @@ sequenceDiagram
 ## 5. The network file
 
 A network lives in one binary file (ADR-0042), written by the generator, read and rewritten by the
-analyzer, and pushed as `my_torch_network_*.nn` for the autograder. It starts with a signature and
+analyzer, and pushed as `my_torch_network_*.nn` for the evaluation harness. It starts with a signature and
 a format version, holds the input encoding name, the labels in order, the training settings and
 every layer with its weights (keywords as one-byte codes, integers and reals in binary), and ends
 with a checksum. `Network::saveText` writes the same content as text (the format of ADR-0012, which

@@ -26,7 +26,7 @@ fused softmax and cross-entropy (ADR-0007), and every network file already writt
 | **A. Container layers in the sequence (chosen)**: a `Residual` layer holds a sub-sequence and returns `F(x) + x`; a `Concat` layer holds branches and returns their outputs side by side | `Network` stays a sequence: `fit`, the optimizers, the checkpoints and the summary see one more `Layer`; the forward and backward of a container are a few lines (backward: the gradient through the sub-sequence plus the gradient itself); old files unchanged; nesting comes for free (a container may hold containers) | Only shortcuts that start and end around one block: no connection from any layer to any other; the code that looks at the top-level layers only (dropout detection of Monte Carlo dropout, width checks of the normalizations) must look inside containers |
 | B. A graph of layers: each layer names its inputs, forward runs them in a computed order | Any architecture (branches, skips across many blocks, several outputs) | `forward`, `backward` (gradients summed where an output feeds several layers), `fit`, the checkpoints and the file format all rewritten; a second file layout to read beside the sequential one; the largest risk of breaking what works, for architectures we do not plan to train |
 | C. A fixed residual network type (a `ResNet` class with N blocks) | Least code | Not a library feature: no concatenation, no reuse in the transformer blocks of #32 |
-| D. Nothing | No risk | The subject's "going further" track and #32 stay out of reach; the depth of our networks stays limited |
+| D. Nothing | No risk | The \"going further\" track of the specification and #32 stay out of reach; the depth of our networks stays limited |
 
 ## Decision
 Option A, in four parts.

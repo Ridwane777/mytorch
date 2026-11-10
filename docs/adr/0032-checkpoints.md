@@ -43,7 +43,7 @@ training is refused with an error. `epochs` is left out so that a finished train
 by raising it.
 
 The analyzer gets `--checkpoint FILE` in train mode (`docs/usage.md`). It extends ADR-0014 without
-changing it: the usage line of the subject is unchanged and the option is listed apart in `--help`.
+changing it: the required usage line is unchanged and the option is listed apart in `--help`.
 
 ## Consequences
 - ✅ Interrupted then resumed equals continuous, **bit for bit** (stricter than the 1e-6 asked):

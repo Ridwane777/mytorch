@@ -5,7 +5,7 @@
 - **Deciders**: Ridwane777, approved by Meric-BG
 
 ## Context
-The analyzer reads a file of FEN lines and prints one label per line: right for the autograder,
+The analyzer reads a file of FEN lines and prints one label per line: right for the evaluation harness,
 hard to show. At a demonstration, playing moves on a board and watching the network's answer change
 after each one shows what the network does, and where it fails, far better. A playable board needs
 every rule of the game (castling, en passant, promotion), and our oracle does not generate castling

@@ -408,7 +408,7 @@ Test(binary_format, labels_with_any_spacing_come_back_unchanged)
     net.add(std::make_unique<Softmax>());
     net.info().encoding = "my-encoding";
     net.info().inputs = 2;
-    net.info().labels = {"Check  White", " leading", "é unicode"};
+    net.info().labels = {"Check  White", " leading", "\xc3\xa9 unicode"};
     net.save(file);
     const Network loaded = Network::load(file);
     std::remove(file.c_str());

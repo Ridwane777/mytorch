@@ -7,7 +7,7 @@
 
 ## Context
 
-The subject requires the program to avoid overfitting. Validation loss is already recorded each
+A project requirement is the program to avoid overfitting. Validation loss is already recorded each
 epoch (#4, ADR-0009) and AdamW provides decoupled weight decay (#5, ADR-0008). Issue #7 adds L1/L2
 regularization, dropout and early stopping with restoration of the best model, configurable per
 layer where it makes sense. Three placements have to be decided, and they touch the public headers

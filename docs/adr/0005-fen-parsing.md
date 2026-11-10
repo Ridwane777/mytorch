@@ -8,7 +8,7 @@
 ## Context
 
 `my_torch_analyzer` reads files of positions in FEN notation, followed by a label (`--train`) or not
-(`--predict`). The subject requires invalid input to produce an error and exit code 84. The
+(`--predict`). A project requirement is invalid input to produce an error and exit code 84. The
 dataset has 723,019 lines; it is read again at every training. Guide to the notation:
 [`docs/reading-a-fen.md`](../reading-a-fen.md).
 

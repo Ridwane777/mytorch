@@ -7,7 +7,7 @@
 
 ## Context
 
-Handling stalemates is a bonus of the subject. The oracle (ADR-0006) detects them, but the dataset
+Handling stalemates is a bonus of the specification. The oracle (ADR-0006) detects them, but the dataset
 contains none (checked on all 723,019 lines), so a network cannot learn the class without new
 positions. Three things must be decided: how to produce stalemate positions, how to keep the
 network from learning a shortcut, and how the class reaches the analyzer.
@@ -32,7 +32,7 @@ network from learning a shortcut, and how the class reaches the analyzer.
 
 | Option | Pros | Cons |
 | --- | --- | --- |
-| **A sixth label `Stalemate` accepted by the FEN parser; the network's labels say whether it is used** | Nothing else changes: a 6-label network answers `Stalemate`, a 5-label one never does | The parser accepts a label the subject does not list |
+| **A sixth label `Stalemate` accepted by the FEN parser; the network's labels say whether it is used** | Nothing else changes: a 6-label network answers `Stalemate`, a 5-label one never does | The parser accepts a label the specification does not list |
 | A separate analyzer for the bonus | Main code untouched | Duplicates the analyzer |
 
 ## Decision
@@ -53,7 +53,7 @@ sixth label and the oracle maps its stalemate verdict to it. The experiment is r
   negatives reduce the sparse-board shortcut without removing it.
 - ❌ The baseline encoding has no side to move, which a stalemate depends on; to measure again with
   the encodings of #14.
-- ❌ The parser now accepts `Stalemate`, a label the subject does not list; a file using it is only
+- ❌ The parser now accepts `Stalemate`, a label the specification does not list; a file using it is only
   meaningful for a network that has this label.
 - Follow-up: measure again with an encoding that includes the side to move (#14) and on more data
   once the memory limit is solved (#17).

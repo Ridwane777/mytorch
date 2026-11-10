@@ -9,7 +9,7 @@
 
 Training moves every weight against its gradient. How far, and with what memory of past gradients,
 is the optimizer's job (SGD, Adam...). How the step size changes over time is the scheduler's job.
-The subject asks for faster learning and escaping local minima. ADR-0004 fixed the `Optimizer`
+The specification asks for faster learning and escaping local minima. ADR-0004 fixed the `Optimizer`
 interface (`step(parameters)`, `setLearningRate`); two questions were left open: where an
 optimizer keeps its memory, and how a schedule is expressed.
 

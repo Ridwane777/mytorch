@@ -1,6 +1,6 @@
 #!/bin/bash
 # Fails if a neural-network or machine-learning library is used outside bonus/comparaison/ (ADR-0036).
-# The subject forbids such libraries in the project; they are tolerated only in bonus/comparaison/,
+# The specification forbids such libraries in the project; they are tolerated only in bonus/comparaison/,
 # a separate directory with its own virtualenv, never built or called by the Makefile.
 #
 # Checks the files tracked by git (git grep): an untracked file is not seen, `git add` it first.

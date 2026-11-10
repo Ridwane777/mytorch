@@ -42,7 +42,7 @@ epoch lines of every training).
 DATASET=dataset TRAIN=20000 TEST=5000 SEED=42 sh scripts/bench_augmentation.sh docs/performance/data
 ```
 
-Requires the dataset (`dataset.zip`, given by the school) extracted at the root, g++, Python 3 and
+Requires the dataset (`dataset.zip`, provided by Epitech) extracted at the root, g++, Python 3 and
 matplotlib. Without the dataset the script prints an error on stderr and exits 1. Expected outputs in
 `docs/performance/data/`: `augmentation_runs.csv` (6 rows with the default `RUNS`),
 `augmentation_split.txt`, `augmentation_logs/`, `augmentation.png`.

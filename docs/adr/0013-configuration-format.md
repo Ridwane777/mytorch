@@ -7,7 +7,7 @@
 
 ## Context
 
-The subject requires `./my_torch_generator config_file_1 nb_1 [config_file_2 nb_2...]` to write
+A project requirement is `./my_torch_generator config_file_1 nb_1 [config_file_2 nb_2...]` to write
 `nb` blank networks per configuration (`basic_network.conf 3` gives `basic_network_1.nn` to
 `basic_network_3.nn`), and leaves the configuration format free. The network file (ADR-0012)
 already describes everything a network needs except its weights. Three more points must be
@@ -29,7 +29,7 @@ argument out of several is wrong.
 | Option | Pros | Cons |
 | --- | --- | --- |
 | **Seeds derived from `init seed` + network index, mixed with SplitMix64 per layer** | Networks of one command differ; the same command writes the same files byte for byte | Changing the seed of one network means changing the configuration |
-| Seed from the clock | Different every run | Not reproducible, against the subject |
+| Seed from the clock | Different every run | Not reproducible, against the reproducibility requirement |
 
 **Writing**
 
@@ -39,7 +39,7 @@ argument out of several is wrong.
 | Write as soon as each configuration is read | Read once | `a.conf 2 bad.conf 1` leaves `a_1.nn` and `a_2.nn` behind with exit code 84 |
 
 Files are written in the current directory, named after the configuration file without its
-directory and extension, as in the subject's example.
+directory and extension, as in the specification's example.
 
 ## Decision
 

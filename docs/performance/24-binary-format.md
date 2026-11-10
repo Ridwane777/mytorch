@@ -2,7 +2,7 @@
 
 Measurement for [ADR-0042](../adr/0042-binary-network-file-format.md), which replaces the text
 network file of [ADR-0012](../adr/0012-network-file-format.md) by a binary one after the first
-defense ("the whole file is plain text, without any encoding"). Two questions: what does the binary
+review ("the whole file is plain text, without any encoding"). Two questions: what does the binary
 format change in size and time, and does the analyzer answer exactly the same?
 
 ## Method

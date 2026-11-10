@@ -14,7 +14,7 @@ the hyperparameter search (ADR-0030, abandoned) has 0.2 and is trained on all th
 ## Options considered
 | Option | Pros | Cons |
 | --- | --- | --- |
-| **Monte Carlo dropout: N passes with only the dropout layers active (chosen, the subject's suggestion)** | No new training; any network with dropout | N times the prediction cost; only for networks with dropout |
+| **Monte Carlo dropout: N passes with only the dropout layers active (chosen, the specification's suggestion)** | No new training; any network with dropout | N times the prediction cost; only for networks with dropout |
 | Ensemble of independently trained networks (#40) | Usually the best uncertainty | N full trainings (hours each) |
 | Plain confidence: the top probability of one pass | Free, every network | Not a model uncertainty; taken as the baseline to beat |
 | Calibration (temperature scaling) | Better probabilities | Needs a fit on the validation split; changes no ranking of the positions |

@@ -10,7 +10,7 @@
 The dataset is imbalanced. The counts reported in issue #16 (and measured in
 [reading-a-fen.md](../reading-a-fen.md)) are 300,000 positions `Nothing`, 249,300 `Check` (both
 colours) and 173,719 `Checkmate` (both colours), out of 723,019. A network trained on the natural
-distribution can reach a good accuracy by favouring the majority class, which the subject's
+distribution can reach a good accuracy by favouring the majority class, which the specification's
 per-class view (and [ADR-0011](0011-classification-metrics.md): precision, recall and F1 per class)
 is meant to reveal. The imbalance is moderate (the largest of the three families is under twice
 the smallest), but the five labels are finer than the three families, and the rarest label is

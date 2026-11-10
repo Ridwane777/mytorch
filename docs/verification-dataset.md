@@ -12,7 +12,7 @@ network.
 2. The oracle classifies the position: it checks whether the king of the side to move is attacked
    and whether a legal move remains.
 3. The verdict is compared with the line's label. Stalemates and illegal positions are counted
-   separately, because they have no label in the subject.
+   separately, because they have no label in the specification.
 
 Reproduce:
 

@@ -12,7 +12,7 @@ a validation set. `my_torch_analyzer --train` takes one file, and its only valid
 was `validation=<fraction>`, positions drawn at random from that file (ADR-0014). On an augmented
 file this leaks: the mirror or the flip of a validation position sits in the training part, so the
 validation loss looks better than it is and early stopping stops at the wrong time (the ❌ of
-ADR-0019). The dataset split (ADR-0017) already provides a separate validation set. The subject also
+ADR-0019). The dataset split (ADR-0017) already provides a separate validation set. The specification also
 requires every training to be reproducible from the scripts and configurations kept in the
 repository.
 
@@ -22,7 +22,7 @@ repository.
 
 | Option | Pros | Cons |
 | --- | --- | --- |
-| **A. `validation_tail=N`: the last N lines of the file are the validation set, in order** | No leak: the untouched validation split is appended after the augmented training lines; early stopping stays available; the subject's command line is unchanged | One more key in the `train` line of the network file |
+| **A. `validation_tail=N`: the last N lines of the file are the validation set, in order** | No leak: the untouched validation split is appended after the augmented training lines; early stopping stays available; the required command line is unchanged | One more key in the `train` line of the network file |
 | B. No validation (`validation=0`) and a fixed number of epochs | Nothing to write | No early stopping; the number of epochs has to be guessed |
 | C. Keep `validation=<fraction>` on the augmented file | Nothing to write | The leak described in ADR-0019 |
 

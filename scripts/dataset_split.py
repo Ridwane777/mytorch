@@ -54,7 +54,7 @@ def read_dataset(dataset):
     files = sorted(str(p) for p in root.glob("*/*.txt")) if root.is_dir() else []
     if not files:
         raise DatasetError(
-            f"{dataset}/ not found or empty: extract the dataset (dataset.zip, given by the school) at "
+            f"{dataset}/ not found or empty: extract the dataset (unzip dataset.zip, provided by Epitech) at "
             "the root of the repository, or pass its directory with --dataset")
 
     label_counts = Counter()

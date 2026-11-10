@@ -78,5 +78,5 @@ network use? Related decision: [ADR-0023](../adr/0023-final-architecture.md).
   close to validation accuracy) or by the data.
 - Five seeds give a rough idea of the spread, not a precise interval.
 - Only the hidden layers and the initialisation were varied; the learning rate, batch size and
-  dropout are the subject of the hyperparameter search (#10).
+  dropout are the specification of the hyperparameter search (#10).
 - Times come from a shared machine and were affected by other users.

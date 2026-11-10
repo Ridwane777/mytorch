@@ -7,7 +7,7 @@
 
 ## Context
 
-The subject values evaluation with several metrics, and accuracy alone hides what matters here: the
+The specification values evaluation with several metrics, and accuracy alone hides what matters here: the
 dataset is imbalanced (300,000 `Nothing` against 79,424 `Checkmate Black`), so a network that
 always answers `Nothing` already reaches 41 % accuracy while finding no check at all. On the
 overfitting benchmark (#7, ADR-0010) accuracy also barely moved while the loss changed a lot.

@@ -9,7 +9,7 @@
 
 The network file is the only link between the generator (`my_torch_generator` writes untrained
 networks), the analyzer (`--train` loads, trains and saves; `--predict` loads and predicts) and the
-autograder, which loads our pushed `my_torch_network_*.nn`. The subject leaves the format free but
+evaluation harness, which loads our pushed `my_torch_network_*.nn`. The specification leaves the format free but
 asks to think about what information is actually necessary. Three facts drive the choice:
 
 - the analyzer must answer exactly like the original network with only this file: it needs the
@@ -25,7 +25,7 @@ asks to think about what information is actually necessary. Three facts drive th
 
 | Option | Pros | Cons |
 | --- | --- | --- |
-| **Text, numbers with 17 significant digits** | Readable and editable by hand, diffable in Git, shown as is in a defense; 17 digits read back every double exactly | 2.7 times larger than raw binary, slower to parse |
+| **Text, numbers with 17 significant digits** | Readable and editable by hand, diffable in Git, shown as is in a review; 17 digits read back every double exactly | 2.7 times larger than raw binary, slower to parse |
 | Text, numbers in hexadecimal floating point | Exact and fast to parse | Numbers unreadable for a human |
 | Binary | Smallest and fastest | Unreadable; byte order and layout to specify; harder to debug |
 

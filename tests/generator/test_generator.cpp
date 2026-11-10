@@ -75,7 +75,7 @@ std::string errorOf(const std::string &path)
 
 } // namespace
 
-Test(generator, follows_the_subject_example)
+Test(generator, follows_the_spec_example)
 {
     const std::string conf = writeConfig("basic_network", header + body);
 

@@ -10,7 +10,7 @@ namespace analyzer {
 
 enum class Color { White, Black };
 
-// The five outputs of the subject, plus Stalemate for the stalemate bonus (#24, ADR-0015).
+// The five outputs of the specification, plus Stalemate for the stalemate bonus (#24, ADR-0015).
 enum class Label { Nothing, CheckWhite, CheckBlack, CheckmateWhite, CheckmateBlack, Stalemate };
 
 struct Castling {

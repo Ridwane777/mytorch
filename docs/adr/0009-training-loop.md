@@ -12,7 +12,7 @@ schedulers of #5 (ADR-0008). Three points are not settled by ADR-0004:
 
 - the `fit` signature fixed in ADR-0004 has no place for a learning-rate scheduler, which arrived
   later with #5;
-- the subject requires a reproducible training, and #4 requires the same result for the same seed;
+- the specification requires a reproducible training, and #4 requires the same result for the same seed;
 - the epoch loss must stay correct when the last batch is smaller than the others.
 
 ## Options considered

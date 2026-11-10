@@ -1,6 +1,6 @@
 # bonus/comparaison/: reference implementations (ADR-0036, ADR-0040)
 
-Everything under this directory may use PyTorch, which the subject forbids in the project. It is
+Everything under this directory may use PyTorch, which the project constraints forbid in the project. It is
 never built, called or tested by the Makefile, and `scripts/check_comparison_isolation.sh` fails if
 a machine-learning library is imported anywhere else. Removing `bonus/comparaison/` changes nothing in the
 build, the tests or the pushed network.

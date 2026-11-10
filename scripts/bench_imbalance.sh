@@ -38,7 +38,7 @@ fail() {
 }
 
 set -- "$DATASET"/*/*.txt
-[ -e "$1" ] || fail "$DATASET/ not found or empty: extract the dataset (dataset.zip, given by the school) at the root of the repository, or set DATASET to its directory"
+[ -e "$1" ] || fail "$DATASET/ not found or empty: extract the dataset (unzip dataset.zip, provided by Epitech) at the root of the repository, or set DATASET to its directory"
 
 WORK="$(mktemp -d)"
 trap 'rm -rf "$WORK"' EXIT

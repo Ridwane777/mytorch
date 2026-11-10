@@ -1,6 +1,6 @@
 #!/bin/sh
-# Defense demo (docs/defense/demo.md): every step of the project in a few minutes, without the
-# the school dataset. Each step waits for Enter; DEMO_AUTO=1 runs them all without pausing.
+# Demo (docs/demo.md): every step of the project in a few minutes, without the
+# full dataset. Each step waits for Enter; DEMO_AUTO=1 runs them all without pausing.
 # Usage: sh scripts/demo.sh
 set -eu
 export LC_ALL=C
@@ -8,7 +8,7 @@ export LC_ALL=C
 cd "$(dirname "$0")/.."
 WORK="$(mktemp -d)"
 trap 'rm -rf "$WORK"' EXIT
-POSITIONS=docs/defense/demo_positions.txt
+POSITIONS=docs/demo_positions.txt
 
 step() {
     printf '\n\033[1m== %s\033[0m\n' "$1"

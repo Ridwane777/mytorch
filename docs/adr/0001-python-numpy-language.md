@@ -6,7 +6,7 @@
 
 ## Context
 
-The subject requires a language that runs on "the dump" (the autograder image). Neural-network libraries
+A project requirement is a language that runs on the target environment. Neural-network libraries
 (PyTorch, TensorFlow…) are forbidden: forward propagation, backpropagation, optimizers and saving must be
 written by the team. The deliverable also includes reproducible training scripts and benchmarks with charts.
 
@@ -34,8 +34,8 @@ matplotlib is used only for benchmark charts, outside the evaluated executable.
 
 ❌ **Lost**
 - Lower performance than optimized C/C++ on the non-vectorized parts (FEN parsing, training loops).
-- External dependency (NumPy) to check on the autograder image (local versions: Python 3.12.3,
+- External dependency (NumPy) to check on the target environment (local versions: Python 3.12.3,
   NumPy 1.26.4).
-- Risk of misinterpretation: at the defense we will need to show that NumPy is not a neural-network
+- Risk of misinterpretation: in a review we will need to show that NumPy is not a neural-network
   library and that no automatic differentiation is used.
 - Parallelism (bonus) limited by the GIL; it will go through vectorization or multiprocessing.

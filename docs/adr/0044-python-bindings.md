@@ -2,14 +2,14 @@
 
 - **Status**: Accepted (2026-11-04)
 - **Date**: 2026-11-04
-- **Deciders**: Ridwane777 (question raised after the first defense); accepted by the pair
+- **Deciders**: Ridwane777 (question raised after the first review); accepted by the pair
 
 ## Context
-After the first defense, we were asked whether the library can be used from another language,
+After the first review, we were asked whether the library can be used from another language,
 the way NumPy is written in C and used from Python. It could not: the library is a static C++
 archive (`build/libmy_torch.a`) that only a C++ program can call. Its public API
 (`include/my_torch/`) is already independent of chess (ADR-0041), so the question is only how to
-expose it, not what to expose. The subject forbids neural-network libraries, not binding tools;
+expose it, not what to expose. A core project constraint forbids neural-network libraries, not binding tools;
 the bonus belongs in `bonus/` and must not change what the root Makefile builds.
 
 ## Options considered

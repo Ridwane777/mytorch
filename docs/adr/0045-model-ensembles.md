@@ -11,8 +11,8 @@ Issue #40 asks to combine several networks (mean of the probabilities, vote, sta
 ensemble in the analyzer, and to compare it with a single model. We have two trained networks that
 read the same positions differently: the pushed dense network (96.15 % on the test split) and the
 CNN snapshot (98.07 %). Three choices: where the code lives, how an ensemble is stored, and how the
-analyzer is given one, knowing that the subject's command line
-(`--predict LOADFILE CHESSFILE`) must not change and that the first defense criticized network
+analyzer is given one, knowing that the required command line
+(`--predict LOADFILE CHESSFILE`) must not change and that the first review criticized network
 files kept as plain text.
 
 ## Options considered
@@ -20,7 +20,7 @@ files kept as plain text.
 | --- | --- | --- |
 | **`Ensemble` in the library, one binary file holding every member (chosen)** | Generic (any networks with the same labels, any encodings); one self-contained file to copy; signature, version and checksum like the network files (ADR-0042); the analyzer recognizes it by its first bytes, same command line | A change to the public headers (`include/my_torch/`), reviewed by both members; the members are copied into the file (2.7 MB for ours) |
 | A text file listing the paths of the members and their weights | Tiny, readable, no copy of the networks | Plain text again; breaks when a member is moved or renamed; a second file format to parse |
-| Several LOADFILEs on the command line | No new file | Changes the subject's command line; the combination and the weights would need options too |
+| Several LOADFILEs on the command line | No new file | Changes the required command line; the combination and the weights would need options too |
 | Combination in the analyzer only (`src/analyzer/`) | No change to the library's contract | The library cannot serve it to other programs (the Python bindings, ADR-0044); the generic part is chess-free and belongs to the library (ADR-0041) |
 
 ## Decision

@@ -126,7 +126,7 @@ Test(perft, endgame_with_en_passant_and_promotions)
     cr_assert_eq(perft(p, 5), 674624);
 }
 
-Test(labels, verdicts_convert_to_subject_labels)
+Test(labels, verdicts_convert_to_spec_labels)
 {
     cr_assert(toLabel(Verdict::CheckmateBlack) == analyzer::Label::CheckmateBlack);
     cr_assert(toLabel(Verdict::Stalemate) == analyzer::Label::Stalemate);

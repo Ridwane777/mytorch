@@ -1,4 +1,4 @@
-# Bonus (the subject requires bonus/ and allows a dedicated Makefile). The bonus reuses the FEN
+# Bonus (the specification requires bonus/ and allows a dedicated Makefile). The bonus reuses the FEN
 # parser from batch B; the main code never depends on bonus/.
 CXX		?=	g++
 CXXFLAGS	+=	-std=c++20 -Wall -Wextra -Werror -I../include -I../src/analyzer -Ioracle -Ipositions -Igui

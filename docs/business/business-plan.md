@@ -1,6 +1,6 @@
 # Business plan: my_torch, a teaching library
 
-> An exercise for the defense. Market figures are not given when we could not source them: the
+> An exercise. Market figures are not given when we could not source them: the
 > sizing below says what to measure, not invented numbers.
 
 ## 1. Summary
@@ -15,7 +15,7 @@ product to backpropagation, instead of calling a black box.
 - Deep-learning courses mostly teach with PyTorch or TensorFlow: students learn the API, not what
   happens inside (gradients, optimizers, initialisation, numerical stability).
 - Writing a library from scratch is the classic exercise to learn it, but teachers must then build
-  the subject, the tests and the reference solution themselves, and keep them correct.
+  the specification, the tests and the reference solution themselves, and keep them correct.
 - Existing from-scratch libraries are either tiny demos (a scalar autograd in a few hundred lines)
   or full frameworks too large to read.
 
@@ -38,7 +38,7 @@ teach machine learning; individual learners as a secondary audience.
 **Sizing, to measure before any investment**: number of schools teaching deep learning in France,
 share of courses with a "from scratch" project, price paid today for course material. We have no
 sourced figure for these: the first action of the roadmap is to ask the pedagogical teams of a few
-schools, starting with the school.
+schools.
 
 | Alternative | Strength | Weakness for this use |
 | --- | --- | --- |
@@ -46,7 +46,7 @@ schools, starting with the school.
 | micrograd (A. Karpathy) | Tiny, famous, free | Scalar values only, a demo rather than a course |
 | tinygrad | Small real framework | Aimed at performance, not at teaching step by step |
 | "From scratch" books and courses | Pedagogical | Usually in Python with NumPy; no tested reference library to build on |
-| Teachers' own projects | Free, tailored | Cost of writing and maintaining subject, tests and solution |
+| Teachers' own projects | Free, tailored | Cost of writing and maintaining the assignment, tests and solution |
 
 **Our difference**: a complete, tested, documented reference in C++ with its decision records and
 measurements, which is exactly what a teacher needs to grade a from-scratch project.

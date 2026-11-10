@@ -2,12 +2,12 @@
 
 - **Status**: Accepted (2026-11-04)
 - **Date**: 2026-11-04
-- **Deciders**: Ridwane777, after the first defense; accepted by the pair
+- **Deciders**: Ridwane777, after the first review; accepted by the pair
 - **Supersedes**: ADR-0012 (network file format, versioned self-describing text with a checksum)
 
 ## Context
-ADR-0012 chose a text file: readable, diffable, shown as is in a defense, at 2.7 times the size of
-raw binary (docs/performance/13-serialization.md). The first defense judged otherwise: "the whole
+ADR-0012 chose a text file: readable, diffable, shown as is in a review, at 2.7 times the size of
+raw binary (docs/performance/13-serialization.md). The first review judged otherwise: "the whole
 file is plain text, without any encoding" cost a point. A network file is data written and read by
 programs; the readability argument belongs to a tool, not to the file itself.
 
@@ -21,7 +21,7 @@ read the files already written (the pushed network, the CNN snapshot, the test f
 | Raw binary: header, then each layer as fixed fields and arrays | Smallest; fastest to read | One binary reader and writer per layer type (twelve), a second serialization next to the text one, every future layer twice |
 | **Typed binary tokens over the same records (chosen)** | Every value binary (keywords as one-byte codes, integers in LEB128, reals as binary64, lengths in front of strings); one encoder and one decoder for every layer, present and future; the text reader and all its checks are reused, so binary and text cannot disagree | One byte of type per token and a byte per record over raw binary; reading decodes to records then parses them, slower than a dedicated reader |
 | Text compressed with a general compressor (zlib) | Small; little code | A compression library is a new dependency, or a compressor to write; the content is still text inside |
-| Keep text, document it better | No work | Does not answer the defense |
+| Keep text, document it better | No work | Does not answer the review |
 
 ## Decision
 `Network::save` writes version 2: the signature `MYTORCH\0`, the version (uint32), the payload

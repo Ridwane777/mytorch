@@ -2,7 +2,7 @@
 
 - **Status**: Accepted (2026-11-04)
 - **Date**: 2026-11-04
-- **Deciders**: Meric-Gbemetonou (issue #42), approved by Ridwane777; use of the libraries in `bonus/comparaison/` approved by the teaching staff as a bonus beyond the subject
+- **Deciders**: Meric-Gbemetonou (issue #42), approved by Ridwane777; use of the libraries in `bonus/comparaison/` kept as an optional extension
 
 ## Context
 ADR-0036 allows PyTorch under `bonus/comparaison/` only. Issue #42 asks what to build with it: the same

@@ -10,7 +10,7 @@ of the training time is spent in the three matrix products of each `Dense` layer
 `Xᵀ·G` (weight gradient) and `G·Wᵀ` (input gradient). Before this ADR they were a plain triple loop
 on one thread, and the two backward products first copied a transposed matrix. The training machine
 is a laptop with 12 hardware threads (i7-1355U); a shared VPS is available but slower and noisy.
-Constraints: no external library doing the work for us (subject), standard C++20 only, and every
+Constraints: no external library doing the work for us (project constraint), standard C++20 only, and every
 result reproducible: a run must give the same network whatever the number of threads.
 
 ## Options considered

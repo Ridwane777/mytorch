@@ -2,7 +2,7 @@
 
 | Term | Meaning in this project |
 | --- | --- |
-| FEN | Forsyth–Edwards Notation: one line describing a chess position (board, side to move, castling, en passant, move counters) ([reading-a-fen.md](../reading-a-fen.md)) |
+| FEN | Forsyth–Edwards Notation: one line describing a chess position (board, side to move, castling, en passant, move counters) ([reading-a-fen.md](reading-a-fen.md)) |
 | Encoding | How a FEN becomes the numbers fed to the network, e.g. `fen-attacks-901` (ADR-0016) |
 | Dense layer | Every input connected to every output: `output = input · W + b` |
 | Activation | Non-linear function after a layer (ReLU, sigmoid, tanh), without which layers would collapse into one linear map |
