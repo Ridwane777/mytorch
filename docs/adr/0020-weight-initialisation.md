@@ -90,7 +90,7 @@ orthonormal rows otherwise, with a gain of 1. Biases stay at zero. Everything dr
   (0.0642) end above the default (0.00985), and the seeds do not overlap. We have no explanation
   and no chess measurement, so we cannot recommend an initialisation for the chess network yet, and
   `configs/basic_network.conf` is left as it was.
-- ❌ `Dense.hpp` is the public contract between the two work packages (AGENTS.md): the new `Init`
+- ❌ `Dense.hpp` is the public contract between the two work packages (CONTRIBUTING.md): the new `Init`
   type and constructor parameter need both partners' review. Existing calls compile unchanged.
 - ❌ `std::normal_distribution` and `std::uniform_real_distribution` are implementation-defined: the
   normal forms and `orthogonal`, and in principle `uniform` too, can give other weights with

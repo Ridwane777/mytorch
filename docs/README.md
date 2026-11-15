@@ -1,7 +1,7 @@
-# Project file — document map
+# Project file: document map
 
 Entry point to follow the work **without reading the code**. Writing rules:
-[AGENTS.md](../AGENTS.md). Keep this table up to date with each document added.
+[CONTRIBUTING.md](../CONTRIBUTING.md). Keep this table up to date with each document added.
 
 Status as of 2026-10-26:
 

@@ -37,8 +37,8 @@ which writes the split); it writes [`comparison.csv`](data/comparison/comparison
 
 | | my_torch | PyTorch (float64) | PyTorch (float32) |
 | --- | --- | --- | --- |
-| Gradients against autograd | — | within 4.4e-16 (dense) and 6.7e-16 (CNN) | — |
-| Same weights and batches, 10 epochs | — | same predicted class on 71,558 / 71,558 validation positions | — |
+| Gradients against autograd | - | within 4.4e-16 (dense) and 6.7e-16 (CNN) | - |
+| Same weights and batches, 10 epochs | - | same predicted class on 71,558 / 71,558 validation positions | - |
 | Validation accuracy, dense (5 seeds) | 0.7664 ± 0.0012 | 0.7638 ± 0.0025 | 0.7668 (1 seed) |
 | Validation accuracy, CNN (3 seeds) | 0.9438 ± 0.0041 | 0.9518 ± 0.0048 | 0.9492 (1 seed) |
 | Seconds per epoch, dense | 20.9 (12 threads) | 4.9 (2 threads) | 3.2 |

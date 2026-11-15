@@ -24,7 +24,7 @@ Chess has two symmetries that keep the answer, so each training position can giv
 Together they give four positions per input. Three questions: where the symmetries live, how they
 reach the training, and how to know they are right. The constraints: the analyzer and the generator
 only include `include/my_torch/` and the network file format (ADR-0012) is a contract between the
-two work packages (AGENTS.md); `--train` already holds out a seeded validation fraction from its
+two work packages (CONTRIBUTING.md); `--train` already holds out a seeded validation fraction from its
 input (ADR-0014); the gain was measured on the real dataset on 2026-10-26
 ([performance/05-augmentation.md](../performance/05-augmentation.md)): accuracy 59.0 % to 67.1 %, recall of
 `Check Black` 32.0 % to 50.3 % and of `Checkmate Black` 59.9 % to 72.6 %.

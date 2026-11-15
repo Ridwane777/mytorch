@@ -46,7 +46,7 @@ end to end; the variants and their comparison stay in #14.
 
 | Option | Pros | Cons |
 | --- | --- | --- |
-| **`--predict` encodes and predicts 4,096 positions at a time** | Memory bounded whatever the file size, order kept | — |
+| **`--predict` encodes and predicts 4,096 positions at a time** | Memory bounded whatever the file size, order kept | - |
 | Encode the whole file at once | Simplest | 723,019 positions × 768 inputs × 8 bytes ≈ 4.4 GB |
 
 `--train` still encodes the whole file, because `fit` takes its data as one matrix.

@@ -22,7 +22,7 @@ What we keep, in one or two sentences.
 - Follow-up: tests, documents, threshold beyond which the decision should be revisited
 
 <!--
-Reminders (AGENTS.md):
+Reminders (CONTRIBUTING.md):
 - write the ADR when the decision is made, and add its line to README.md (the index);
 - an accepted ADR is never rewritten: a new one is created to supersede it,
   and only the Status line of the old one changes.

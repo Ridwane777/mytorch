@@ -67,7 +67,7 @@ Option A, in four parts.
    (decided in the implementation, reviewed with it). The fused softmax stays a top-level last
    layer, as today.
 
-Each new backward gets its finite-difference test (AGENTS.md), and a residual CNN is measured
+Each new backward gets its finite-difference test (CONTRIBUTING.md), and a residual CNN is measured
 against the current CNN (98.07 % on the test split) in a performance report.
 
 ## Consequences

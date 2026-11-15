@@ -45,4 +45,4 @@ step described in ADR-0022, which is otherwise unchanged.
   labels present in the expected or predicted files, the library over every class of the network.
   They agree whenever every class appears, as in all our runs; for a class absent from both, the
   library counts an F1 of 0, like scikit-learn with an explicit list of labels.
-- ❌ `Metrics.hpp`, a public header, changes: the review of both members is needed (AGENTS.md).
+- ❌ `Metrics.hpp`, a public header, changes: the review of both members is needed (CONTRIBUTING.md).

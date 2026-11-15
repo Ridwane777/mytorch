@@ -75,7 +75,7 @@ Option A, with these choices:
    unchanged. A program from before this ADR refuses a file with these layers ("unknown layer
    type"), which is expected.
 
-Each new gradient gets a finite-difference test (AGENTS.md). Whether the transformer beats the
+Each new gradient gets a finite-difference test (CONTRIBUTING.md). Whether the transformer beats the
 dense network and the CNNs is measured afterwards in a performance report; this ADR only decides
 what is built.
 

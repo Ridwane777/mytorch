@@ -62,7 +62,7 @@ and the main code never includes `bonus/`.
 | --- | --- | --- |
 | `Generator` | `generator::run`: checks every configuration, then writes `<name>_1.nn` to `<name>_N.nn` | ADR-0013 |
 | `bonus/oracle/Oracle` | `isAttacked`, `legalMoves`, `play`, `classify` (check, checkmate, stalemate, illegal), `perft` | ADR-0006 |
-| `bonus/eda` | `my_torch_eda`: one pass over the dataset with the oracle, statistics for the exploratory analysis | — |
+| `bonus/eda` | `my_torch_eda`: one pass over the dataset with the oracle, statistics for the exploratory analysis | - |
 | `bonus/positions/Positions` | `generate`: sparse legal positions labeled by the oracle, a chosen share of them stalemates (`bonus/my_torch_positions`) | ADR-0015 |
 
 ## 3. Main classes

@@ -36,8 +36,8 @@ Test part ([`ensembles.csv`](data/ensembles/ensembles.csv), [`mcnemar.csv`](data
 
 | Model | Accuracy | Macro F1 | F1 Check W | F1 Check B | F1 Mate W | F1 Mate B | Against the CNN: fixed / broken (p) | Prediction | Peak memory | File |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Dense alone | 0.9615 | 0.9478 | 0.9427 | 0.9470 | 0.9224 | 0.9309 | — | 4.0 s | 146 MB | 2.1 MB |
-| CNN alone | 0.9807 | 0.9729 | 0.9701 | 0.9738 | 0.9578 | 0.9630 | — | 16.5 s | 416 MB | 0.6 MB |
+| Dense alone | 0.9615 | 0.9478 | 0.9427 | 0.9470 | 0.9224 | 0.9309 | - | 4.0 s | 146 MB | 2.1 MB |
+| CNN alone | 0.9807 | 0.9729 | 0.9701 | 0.9738 | 0.9578 | 0.9630 | - | 16.5 s | 416 MB | 0.6 MB |
 | Mean 1:1 | 0.9809 | 0.9732 | 0.9714 | 0.9732 | 0.9595 | 0.9621 | 403 / 387 (0.59) | 19.9 s | 535 MB | 2.7 MB |
 | Vote 1:1 | 0.9809 | 0.9732 | 0.9714 | 0.9732 | 0.9595 | 0.9621 | 403 / 387 (0.59) | 19.3 s | 535 MB | 2.7 MB |
 | **Mean 1:2** (weight chosen on validation) | **0.9823** | **0.9751** | 0.9730 | 0.9754 | 0.9619 | 0.9652 | 263 / 150 (3e-8) | 19.9 s | 535 MB | 2.7 MB |

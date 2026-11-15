@@ -2,7 +2,7 @@
 
 my_torch is an Epitech school project (3rd year), built by a team of two and published with
 authorization. The specification itself is not copied here; the requirements below are the ones
-recorded in [AGENTS.md](../AGENTS.md) and in the ADRs that cite them.
+recorded in [CONTRIBUTING.md](../CONTRIBUTING.md) and in the ADRs that cite them.
 
 ## 1. Required by the specification
 

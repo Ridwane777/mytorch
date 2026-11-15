@@ -97,7 +97,7 @@ Method: [performance/04-imbalance.md](../performance/04-imbalance.md).
 - ❌ **Resampling cannot be configured from the network file**: only weighting is described by the
   configuration, so a network trained with oversampling or undersampling is reproduced by
   the script that resamples its training file, not by `my_torch_generator` and the network file
-  alone. If a resampling option wins, the recipe has to be kept in `scripts/` (AGENTS.md: keep
+  alone. If a resampling option wins, the recipe has to be kept in `scripts/` (CONTRIBUTING.md: keep
   every training script).
 - ❌ Early stopping is disabled in the comparison (`validation=0 patience=0`): the best option may
   behave differently when early stopping is turned back on, and 20 fixed epochs may over-train the

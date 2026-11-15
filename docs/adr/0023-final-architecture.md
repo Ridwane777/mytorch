@@ -21,7 +21,7 @@ split stays an unbiased measure of the final network (`docs/performance/09-trial
 | 256, default | 0.825 (one seed) | One hidden layer | 0.4 point below the two-layer networks |
 | **256 → 128, default** | **0.829 (mean of 5 seeds, ±0.3)** | Within noise of the best; stable across seeds; 264,453 parameters; about 1.5 times faster to train than 512 → 256 | 0.3 point below the 512 → 256 mean, a gap the measurement cannot confirm |
 | 512 → 256, default | 0.832 (mean of 5 seeds, ±0.6) | Best mean | Not significantly better (Welch's t ≈ 1.0); twice as variable; 594,437 parameters, a 2.2 times larger network file, longer training |
-| Any of these with `he_uniform` | 0.5 to 1 point lower than the default, in all four architectures | — | Consistently worse here |
+| Any of these with `he_uniform` | 0.5 to 1 point lower than the default, in all four architectures | - | Consistently worse here |
 
 ## Decision
 

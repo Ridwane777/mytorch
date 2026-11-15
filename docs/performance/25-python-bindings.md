@@ -27,7 +27,7 @@ pushed network predicts the whole test split in C++ and through the module, on t
 | --- | --- | --- |
 | Median of 5 runs | 1.729 s | 1.944 s (+12 %) |
 | Probabilities | reference | identical, bit for bit (largest difference 0) |
-| Labels against `my_torch_analyzer` | — | 71,555 / 71,555 |
+| Labels against `my_torch_analyzer` | - | 71,555 / 71,555 |
 
 Every run: [`times.csv`](data/python_bindings/times.csv); summary:
 [`summary.txt`](data/python_bindings/summary.txt).

@@ -8,7 +8,7 @@
 Issue #41 asks to compare our network with existing ones, to know whether 0.9615 accuracy and
 0.9478 macro F1 on the test split (`docs/performance/10-final-network.md`) are good or only
 look good. A core project constraint forbids neural-network libraries (PyTorch, TensorFlow, Keras,
-scikit-learn, JAX…) and automatic differentiation in the project (`AGENTS.md`). A comparison
+scikit-learn, JAX…) and automatic differentiation in the project (`CONTRIBUTING.md`). A comparison
 needs exactly those libraries to run the other side. The question is therefore not only which
 tools to use, but where they may live without touching the deliverable: `my_torch_analyzer`,
 `my_torch_generator`, the library, the Makefile and the pushed network.
@@ -57,7 +57,7 @@ not from the setup:
    time measured on it. A result without its machine is not reported.
 
 The results go to `docs/performance/` with a graph and the script that produces both, as every
-other measurement (AGENTS.md). Measured numbers are kept apart from published ones.
+other measurement (CONTRIBUTING.md). Measured numbers are kept apart from published ones.
 
 Risk, stated plainly: the project constraints forbid neural-network libraries in the project. This layout
 keeps them out of everything that is built, run, tested and pushed as the project, and the guard

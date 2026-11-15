@@ -43,7 +43,7 @@ network, against the pushed dense network and the epoch-10 CNN. Decision:
 | Random forest (leaf 1) | 0.7659 | 0.7346 | 66 s | 0.9 s | **3.4 GB** | 7.2 GB |
 | scikit-learn MLP (lr 0.001) | 0.9165 | 0.8917 | 1,486 s | 2.7 s | 9.5 MB | 2.8 GB |
 | LightGBM (255 leaves) | 0.9675 | 0.9539 | 361 s | 9.1 s | 113 MB | 3.2 GB |
-| my_torch dense, no augmentation | 0.9162 | 0.8934 | 4,109 s (server) | — | — | — |
+| my_torch dense, no augmentation | 0.9162 | 0.8934 | 4,109 s (server) | - | - | - |
 | **my_torch dense, pushed** (augmented) | 0.9615 | 0.9478 | 6,285 s (server) | 2.3 s | 5.4 MB | 0.15 GB |
 | **my_torch CNN, epoch 10** | **0.9807** | **0.9729** | not measured | 9.9 s | **1.5 MB** | 0.41 GB |
 
