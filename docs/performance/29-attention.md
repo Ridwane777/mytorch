@@ -18,7 +18,7 @@ Measurement for issue #32: does self-attention over the 64 squares (`self_attent
 - **Reduced budget**, the one of [report 28](28-residual.md): the first 10 % of the training part
   of the split (ADR-0017, seed 42), 57,244 positions, no augmentation; the whole validation part
   (71,558 positions) as `validation_tail`; 10 epochs, batch 64, no early stopping
-  (`patience=0`), seed 42. The networks are therefore far from the pushed CNN (98.07 %, full
+  (`patience=0`), seed 42. The networks are therefore far from the published CNN in `bonus/networks/` (98.07 %, full
   data): this report compares architectures with each other, not with that number.
 - **Test part, read once**: 71,555 positions, `my_torch_analyzer --predict` (time and peak memory
   by GNU time), scored by `scripts/score.cpp`. The last epoch is the network that is scored: no
@@ -112,7 +112,7 @@ Each transformer against the CNN, same test positions
   a ratio does not.
 - **No regularization** (no dropout, no weight decay): the library has neither. The overfitting
   above might be reduced by them; they were not tried.
-- **Not the pushed network**: the pushed CNN (98.07 %) was trained on all the data and is not
+- **Not the pushed network**: the published CNN in `bonus/networks/` (98.07 %) was trained on all the data and is not
   compared here.
 
 ## Consequence

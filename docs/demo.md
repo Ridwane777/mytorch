@@ -17,7 +17,7 @@ positions produced by our own generator. The full dataset is shown separately if
 | 4. Generator | A blank network from `configs/basic_network.conf` | The configuration format (ADR-0013, `docs/configuration.md`) |
 | 5. Training | 3,000 generated positions, early stopping after 9 epochs, then the network answers "Nothing" to every demo position | **On purpose**: 76 % of these positions are "Nothing", so a small network trained on little data learns the majority class. This is why the final network uses the whole dataset with augmentation (ADR-0019) |
 | 6. Errors | Missing network, missing file, bad FEN: message on stderr, exit code 84 | A project requirement; errors are exceptions caught in `main` (CONTRIBUTING.md) |
-| 7. Tests | 206 tests, gradients checked by finite differences | Every gradient has its finite-difference test |
+| 7. Tests | 368 tests, gradients checked by finite differences | Every gradient has its finite-difference test |
 
 Numbers from the run of 2026-10-27; the training in step 5 is seeded, so it prints the same lines
 each time.

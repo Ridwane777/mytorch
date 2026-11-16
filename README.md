@@ -18,6 +18,8 @@ format are all hand-written and checked by finite differences. On top of it,
 
 ## What is implemented
 
+Theory: the mathematics behind each part, from backpropagation to attention, in [docs/theory/](docs/theory/README.md).
+
 | Area | Content (`include/my_torch/`, `src/my_torch/`) |
 | --- | --- |
 | Linear algebra | Own `Matrix` class; blocked, multi-threaded matrix product, 4.2 to 4.7× faster on one thread and up to 23× on 12 ([12-matmul.md](docs/performance/12-matmul.md)) |
