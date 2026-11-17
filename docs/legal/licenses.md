@@ -1,8 +1,8 @@
 # Licenses and origin of the data
 
 ## The project
-**No license: all rights reserved** by its two authors ([ADR-0025](../adr/0025-project-license.md)).
-Reading the repository does not give the right to copy, modify or redistribute it.
+**MIT license**, copyright Ridwane777 and Meric Gbemetonou ([LICENSE](../../LICENSE), [ADR-0048](../adr/0048-mit-license.md),
+which supersedes ADR-0025). `dataset.zip` and the third-party files listed below are not covered.
 
 ## Dependencies
 The executables (`my_torch_analyzer`, `my_torch_generator`) depend only on the C++ standard library.

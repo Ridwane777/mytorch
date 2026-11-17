@@ -8,7 +8,7 @@
 | # | Risk | Reference text | Level, current project | Level, if it became a product | Measure |
 | --- | --- | --- | --- | --- | --- |
 | R1 | Redistributing the dataset provided by Epitech | French intellectual property code (CPI), art. L341-1 (database producer's right, Directive 96/9/EC); art. L122-4 (reproduction without consent) | Low | **High** | `dataset.zip` is redistributed with Epitech's authorization; the extracted `dataset/` stays git-ignored |
-| R2 | Ownership and license of the code | CPI art. L113-2 and L113-3 (work of collaboration, two authors); any third-party rights on the work | Medium | **High** | No license granted, all rights reserved (ADR-0025); the ownership is to settle before any release |
+| R2 | Ownership and license of the code | CPI art. L113-2 and L113-3 (work of collaboration, two authors); any third-party rights on the work | Medium | **High** | MIT license agreed by both authors (ADR-0048); dataset and third-party files excluded |
 | R3 | Breaking the core constraint (no neural-network library) | Project requirements | **High** if broken | - | All computation is ours (ADR-0002, ADR-0003); no NN library in the build (`docs/dependencies.md`); PyTorch and scikit-learn appear only in the bonus comparison plan (#42, #43), outside the shipped executables |
 | R4 | The name "my_torch" next to the PyTorch trademark | Trademark law (CPI book VII); PyTorch is a trademark of The Linux Foundation | Low (not used commercially) | **High** | Rename before any commercial use |
 | R5 | A wrong prediction used to make a decision | Civil code, art. 1240 (liability for fault) | Low | Medium | Accuracy published honestly (96.2 % on unseen positions, [10-final-network.md](../performance/10-final-network.md)); terms of use: provided as is, no warranty |
@@ -30,8 +30,7 @@
 ### R2: ownership of the code
 - The code was written by the two members of the pair (`git log`): it is a work of collaboration,
   owned jointly (CPI art. L113-3), and every release needs the agreement of both.
-- With no license file, nobody else gets any right to copy or reuse it: this is the default of
-  copyright law, and the choice of ADR-0025.
+- Both authors agreed to release the code under the MIT license (ADR-0048, superseding ADR-0025).
 - To check before any release: whether any third party holds rights on the work.
 
 ### R4: the name

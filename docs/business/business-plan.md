@@ -54,7 +54,7 @@ measurements, which is exactly what a teacher needs to grade a from-scratch proj
 ## 5. Business model
 | Offer | For whom | Revenue |
 | --- | --- | --- |
-| Library and documentation | Everyone | Free (needs a license first, see ADR-0025) |
+| Library and documentation | Everyone | Free (MIT, ADR-0048) |
 | Course kit: exercises, tests, teacher's solution | Schools, bootcamps | Yearly license per school |
 | Workshops: two-day "build your own deep-learning library" | Companies, schools | Per session |
 
@@ -72,7 +72,7 @@ No price is set: it depends on the interviews of section 4. The costs to cover a
 | Step | Content | Indicator |
 | --- | --- | --- |
 | 1. Validate | Interview the pedagogical teams of 3 to 5 schools | Number ready to test a kit |
-| 2. License and name | Choose the license (new ADR superseding ADR-0025), rename the product | Done or not |
+| 2. License and name | License chosen (ADR-0048, MIT); rename the product | Done or not |
 | 3. Course kit v1 | Exercises cut from the existing layers, optimizers and tests | One school pilot |
 | 4. Extend | Bonus layers already planned (convolution #29, normalisation #30, residual #31) | Number of exercises |
 | 5. Scale | Workshops, second school | Revenue covers the maintenance time |

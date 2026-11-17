@@ -28,7 +28,7 @@ One file per decision, based on [TEMPLATE.md](TEMPLATE.md). An accepted ADR is n
 | [0022](0022-validation-tail-and-training-pipeline.md) | Untouched validation set at the end of the training file, one-command training pipeline | Accepted | 2026-10-26 |
 | [0023](0023-final-architecture.md) | Final network architecture, 901 → 256 → 128 → 5 with the default initialisation | Accepted | 2026-10-27 |
 | [0024](0024-parallel-blocked-matmul.md) | Parallel and blocked matrix product, bit-identical results | Accepted | 2026-10-27 |
-| [0025](0025-project-license.md) | No license, all rights reserved | Accepted | 2026-10-27 |
+| [0025](0025-project-license.md) | No license, all rights reserved | Superseded by 0048 | 2026-10-27 |
 | [0026](0026-scores-from-the-library.md) | Published scores computed by the library | Accepted | 2026-10-27 |
 | [0027](0027-generic-data-splits.md) | Generic data splits in the library | Accepted | 2026-10-27 |
 | [0028](0028-hyperparameter-search-api.md) | Hyperparameter search in the library: search space, objective, grid and random strategies, resumable log | Accepted | 2026-10-28 |
@@ -51,3 +51,4 @@ One file per decision, based on [TEMPLATE.md](TEMPLATE.md). An accepted ADR is n
 | [0045](0045-model-ensembles.md) | Ensembles of networks: `Ensemble` in the library (weighted mean, vote, stacked combiner), one binary file holding every member, read by `--predict` with the same command line | Accepted | 2026-11-05 |
 | [0046](0046-residual-blocks.md) | Residual connections and concatenation as container layers (`residual`, `concat`) inside the sequential network; identity shortcut only; old network files unchanged | Accepted | 2026-11-05 |
 | [0047](0047-attention-layers.md) | Attention layers for a mini transformer (`to_tokens`, `token_dense`, `positional`, `self_attention`, `token_norm`); pre-norm blocks built from `residual`, learned positions, no encoding change; old network files unchanged | Accepted | 2026-11-08 |
+| [0048](0048-mit-license.md) | MIT license for the code, copyright of both authors; `dataset.zip` and third-party GUI files excluded | Accepted | 2026-11-17 |

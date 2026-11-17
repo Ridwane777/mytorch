@@ -86,3 +86,7 @@ Map: [`docs/README.md`](docs/README.md), to be kept up to date whenever a docume
 
 Rules: documentation **aligned with the code**, every number checked by a measurement, never an
 estimate presented as a measurement, weaknesses written honestly.
+
+## License
+
+Contributions are accepted under the project's [MIT license](LICENSE) (ADR-0048).

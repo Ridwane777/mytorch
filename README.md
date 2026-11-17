@@ -155,4 +155,4 @@ weight initialisation, convolutional layers and the CNN, the attention layers an
 the input encodings, data augmentation, class imbalance, dataset statistics and split,
 cross-validation, the PyTorch reference, unattended training on AWS, and the matching benchmarks.
 
-Rights: all rights reserved ([ADR-0025](docs/adr/0025-project-license.md)).
+License: [MIT](LICENSE), except `dataset.zip` (Epitech) and the third-party GUI files ([ADR-0048](docs/adr/0048-mit-license.md)).

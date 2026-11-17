@@ -6,5 +6,5 @@
 - **Context**: team project of two, published as a portfolio piece.
 - **Hosting**: GitHub, Inc., 88 Colin P. Kelly Jr. Street, San Francisco, CA 94107, United States;
   private repository of the `Ridwane777` organisation.
-- **Intellectual property**: all rights reserved ([licenses.md](licenses.md)).
+- **Intellectual property**: MIT license for the code, dataset excluded ([licenses.md](licenses.md)).
 - **Personal data**: none collected ([privacy-policy.md](privacy-policy.md)).

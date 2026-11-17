@@ -1,6 +1,6 @@
 # ADR-0025: No license, all rights reserved
 
-- **Status**: Accepted (2026-10-28)
+- **Status**: Superseded by [ADR-0048](0048-mit-license.md)
 - **Date**: 2026-10-27
 - **Deciders**: Ridwane777 (issue #20)
 
